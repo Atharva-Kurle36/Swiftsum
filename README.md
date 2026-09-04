@@ -1,0 +1,2 @@
+# Swiftsum
+Vedic Mathematics Project
