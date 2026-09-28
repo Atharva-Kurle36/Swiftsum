@@ -37,38 +37,38 @@ export default function IksFactDeck() {
     setCurrentIndex(randomChoice);
   };
 
-  // Auto-play timer (flashes fact every 4.5 seconds if active)
+  // Auto-play timer (flashes fact every 5 seconds if active)
   useEffect(() => {
     if (!isAutoPlaying) return;
     const timer = setInterval(() => {
       handleNext();
-    }, 4500);
+    }, 5000);
     return () => clearInterval(timer);
   }, [isAutoPlaying, handleNext]);
 
   const categories = ['All', 'Mathematics', 'Astronomy', 'Algorithms', 'Geometry', 'Linguistics'];
 
   return (
-    <section id="iks-facts" className="py-16 px-4 sm:px-6 lg:px-8 max-w-5xl mx-auto">
+    <section id="iks-facts" className="py-20 px-4 sm:px-6 lg:px-8 max-w-5xl mx-auto border-t border-[var(--border-subtle)]">
       
       {/* Header section */}
-      <div className="text-center mb-8">
-        <div className="inline-flex items-center gap-2 mb-2">
+      <div className="text-center mb-10">
+        <div className="inline-flex items-center gap-2 mb-3">
           <span className="vedic-badge gold">
-            <Sparkles className="w-3.5 h-3.5 text-[var(--gold)]" />
-            Indian Knowledge Systems (IKS) Lore
+            <Sparkles className="w-3.5 h-3.5 text-[var(--accent-copper)]" />
+            Indian Knowledge Systems (IKS) Archive
           </span>
         </div>
-        <h2 className="text-2xl sm:text-3xl font-serif font-bold text-[var(--ink)]">
+        <h2 className="text-3xl sm:text-4xl font-serif font-black text-[var(--text-pure)] tracking-tight">
           Chronicles of Ancient Indian Science
         </h2>
-        <p className="text-sm sm:text-base text-[var(--ink-muted)] max-w-xl mx-auto mt-2">
+        <p className="text-sm sm:text-base text-[var(--text-muted)] max-w-xl mx-auto mt-2">
           Discover the mathematical epiphanies, algorithmic poetry, and astronomical breakthroughs preserved across millennia.
         </p>
       </div>
 
       {/* Category filter pills */}
-      <div className="flex flex-wrap items-center justify-center gap-2 mb-8">
+      <div className="flex flex-wrap items-center justify-center gap-2 mb-10">
         {categories.map(cat => (
           <button
             key={cat}
@@ -76,10 +76,10 @@ export default function IksFactDeck() {
               setSelectedCategory(cat);
               setCurrentIndex(0);
             }}
-            className={`px-3 py-1.5 rounded-full text-xs font-medium cursor-pointer transition-all border ${
+            className={`px-3.5 py-1.5 rounded-full text-xs font-semibold cursor-pointer transition-all border ${
               selectedCategory === cat
-                ? 'bg-[var(--vermilion)] text-white border-[var(--vermilion)] shadow-sm'
-                : 'bg-[var(--parchment)] text-[var(--ink-muted)] border-[var(--parchment-border)] hover:bg-[#E4D5B1]'
+                ? 'bg-[var(--accent-copper)] text-[#090D16] border-[var(--accent-copper)] shadow-md shadow-[rgba(245,158,11,0.25)]'
+                : 'bg-[var(--bg-surface-elevated)] text-[var(--text-muted)] border-[var(--border-subtle)] hover:text-[var(--text-pure)] hover:border-[var(--border-medium)]'
             }`}
           >
             {cat}
@@ -88,14 +88,14 @@ export default function IksFactDeck() {
       </div>
 
       {/* Card Deck Wrapper */}
-      <div className="relative max-w-2xl mx-auto min-h-[420px] flex items-center justify-center">
+      <div className="relative max-w-2xl mx-auto min-h-[440px] flex items-center justify-center">
         
-        {/* Layered visual shadow cards beneath to simulate an ancient palm-leaf / manuscript deck */}
+        {/* Layered visual shadow cards beneath to simulate tactile astronomical plaques */}
         <div
-          className="absolute inset-x-4 inset-y-2 bg-[var(--parchment-dark)] border border-[var(--parchment-border)] rounded-2xl opacity-40 transform rotate-2 pointer-events-none transition-transform"
+          className="absolute inset-x-6 inset-y-2 bg-[var(--bg-surface-subtle)] border border-[var(--border-subtle)] rounded-2xl opacity-40 transform rotate-2 pointer-events-none transition-transform"
         />
         <div
-          className="absolute inset-x-2 inset-y-1 bg-[#E2D2AA] border border-[var(--parchment-border)] rounded-2xl opacity-60 transform -rotate-1 pointer-events-none transition-transform"
+          className="absolute inset-x-3 inset-y-1 bg-[var(--bg-surface-elevated)] border border-[var(--border-medium)] rounded-2xl opacity-60 transform -rotate-1 pointer-events-none transition-transform"
         />
 
         {/* Top Active Card */}
@@ -103,41 +103,41 @@ export default function IksFactDeck() {
           <motion.div
             key={currentFact.id}
             custom={direction}
-            initial={{ opacity: 0, scale: 0.94, y: direction * 15, rotateZ: direction * 1.5 }}
+            initial={{ opacity: 0, scale: 0.95, y: direction * 14, rotateZ: direction * 1.5 }}
             animate={{ opacity: 1, scale: 1, y: 0, rotateZ: 0 }}
-            exit={{ opacity: 0, scale: 0.94, y: -direction * 15, rotateZ: -direction * 1.5 }}
-            transition={{ duration: 0.35, ease: 'easeOut' }}
-            className="parchment-card w-full p-6 sm:p-8 relative z-10 border border-[var(--parchment-border)] bg-[var(--parchment-card)] shadow-xl"
+            exit={{ opacity: 0, scale: 0.95, y: -direction * 14, rotateZ: -direction * 1.5 }}
+            transition={{ duration: 0.32, ease: 'easeOut' }}
+            className="parchment-card w-full p-6 sm:p-8 relative z-10 border border-[var(--border-copper)] bg-[var(--bg-surface)] shadow-2xl"
           >
             {/* Top metadata row */}
-            <div className="flex items-center justify-between gap-3 mb-4 pb-3 border-b border-[var(--parchment-border)]">
+            <div className="flex items-center justify-between gap-3 mb-5 pb-3 border-b border-[var(--border-subtle)]">
               <div className="flex items-center gap-2">
-                <span className="vedic-badge text-[11px]">
+                <span className="vedic-badge text-[11px] text-[var(--accent-copper)] border-[var(--border-copper)] bg-[rgba(245,158,11,0.1)]">
                   {currentFact.category}
                 </span>
-                <span className="text-xs text-[var(--ink-light)] flex items-center gap-1">
-                  <Clock className="w-3.5 h-3.5" />
+                <span className="text-xs text-[var(--text-dim)] flex items-center gap-1 font-mono">
+                  <Clock className="w-3.5 h-3.5 text-[var(--accent-lapis)]" />
                   {currentFact.era}
                 </span>
               </div>
-              <span className="text-xs font-mono text-[var(--ink-muted)] bg-[var(--parchment)] px-2.5 py-1 rounded border border-[var(--parchment-border)]">
+              <span className="text-xs font-mono text-[var(--text-muted)] bg-[var(--bg-surface-elevated)] px-2.5 py-1 rounded border border-[var(--border-subtle)]">
                 {(currentIndex % filteredFacts.length) + 1} / {filteredFacts.length}
               </span>
             </div>
 
             {/* Fact Title */}
-            <h3 className="text-lg sm:text-xl font-serif font-bold text-[var(--ink)] mb-3 leading-snug">
+            <h3 className="text-lg sm:text-2xl font-serif font-black text-[var(--text-pure)] mb-3 leading-snug">
               {currentFact.title}
             </h3>
 
             {/* Sanskrit Shloka Quote (if available) */}
             {currentFact.sanskritVerse && (
-              <div className="p-3 sm:p-4 rounded-xl bg-[rgba(169,129,47,0.08)] border border-[rgba(169,129,47,0.22)] mb-4">
-                <p className="sanskrit-title text-base sm:text-lg text-[var(--ink)] text-center mb-1">
+              <div className="p-3.5 sm:p-4 rounded-xl bg-[rgba(245,158,11,0.06)] border border-[var(--border-copper)] mb-5">
+                <p className="sanskrit-title text-base sm:text-lg text-[var(--accent-copper)] text-center mb-1 font-bold">
                   {currentFact.sanskritVerse}
                 </p>
                 {currentFact.verseTranslation && (
-                  <p className="text-xs text-[var(--ink-muted)] italic text-center font-sans">
+                  <p className="text-xs text-[var(--text-muted)] italic text-center font-sans">
                     "{currentFact.verseTranslation}"
                   </p>
                 )}
@@ -145,24 +145,24 @@ export default function IksFactDeck() {
             )}
 
             {/* Description */}
-            <p className="text-sm sm:text-base text-[var(--ink)] leading-relaxed mb-4">
+            <p className="text-sm sm:text-base text-[var(--text-muted)] leading-relaxed mb-5">
               {currentFact.description}
             </p>
 
             {/* Impact / Significance */}
-            <div className="flex items-start gap-2.5 text-xs text-[var(--teal)] bg-[rgba(41,76,72,0.07)] p-3 rounded-lg border border-[rgba(41,76,72,0.2)] mb-4">
-              <Award className="w-4 h-4 flex-shrink-0 mt-0.5" />
+            <div className="flex items-start gap-2.5 text-xs text-[var(--accent-lapis)] bg-[rgba(56,189,248,0.08)] p-3.5 rounded-xl border border-[rgba(56,189,248,0.25)] mb-5">
+              <Award className="w-4 h-4 flex-shrink-0 mt-0.5 text-[var(--accent-lapis)]" />
               <div>
-                <span className="font-semibold">Significance: </span>
-                <span>{currentFact.significance}</span>
+                <span className="font-bold text-[var(--text-pure)]">Significance: </span>
+                <span className="text-[var(--text-muted)]">{currentFact.significance}</span>
               </div>
             </div>
 
             {/* Footer Source Attribution */}
-            <div className="pt-3 border-t border-[var(--parchment-border)] flex items-center justify-between text-xs text-[var(--ink-muted)]">
+            <div className="pt-3 border-t border-[var(--border-subtle)] flex items-center justify-between text-xs text-[var(--text-dim)]">
               <div className="flex items-center gap-1.5">
-                <BookOpen className="w-3.5 h-3.5 text-[var(--vermilion)]" />
-                <span className="font-semibold">{currentFact.treatise}</span>
+                <BookOpen className="w-3.5 h-3.5 text-[var(--accent-copper)]" />
+                <span className="font-semibold text-[var(--text-pure)]">{currentFact.treatise}</span>
               </div>
               <span className="italic">{currentFact.author}</span>
             </div>
@@ -170,12 +170,12 @@ export default function IksFactDeck() {
         </AnimatePresence>
       </div>
 
-      {/* Deck Controls (Flash Random, Auto-play, Previous, Next) */}
+      {/* Deck Controls */}
       <div className="mt-8 flex flex-wrap items-center justify-center gap-3">
         <button
           onClick={handlePrev}
           aria-label="Previous fact"
-          className="p-2.5 rounded-lg bg-[var(--parchment)] border border-[var(--parchment-border)] text-[var(--ink)] hover:bg-[#E2D2AA] cursor-pointer transition-colors"
+          className="p-2.5 rounded-xl bg-[var(--bg-surface-elevated)] border border-[var(--border-subtle)] text-[var(--text-pure)] hover:border-[var(--accent-copper)] cursor-pointer transition-colors"
         >
           <ChevronLeft className="w-5 h-5" />
         </button>
@@ -184,27 +184,27 @@ export default function IksFactDeck() {
           onClick={handleRandom}
           className="btn-vedic-primary !py-2.5 !px-5 text-xs sm:text-sm flex items-center gap-2"
         >
-          <Shuffle className="w-4 h-4 animate-spin-slow" />
+          <Shuffle className="w-4 h-4" />
           <span>Flash Random Fact</span>
         </button>
 
         <button
           onClick={() => setIsAutoPlaying(!isAutoPlaying)}
-          className={`px-4 py-2.5 rounded-lg text-xs sm:text-sm font-semibold flex items-center gap-2 border cursor-pointer transition-all ${
+          className={`px-4 py-2.5 rounded-xl text-xs sm:text-sm font-semibold flex items-center gap-2 border cursor-pointer transition-all ${
             isAutoPlaying
-              ? 'bg-[var(--teal)] text-white border-[var(--teal)] shadow-sm'
-              : 'bg-[var(--parchment)] text-[var(--ink)] border-[var(--parchment-border)] hover:bg-[#E2D2AA]'
+              ? 'bg-[var(--bg-surface-elevated)] text-[var(--accent-lapis)] border-[rgba(56,189,248,0.4)] shadow-sm'
+              : 'bg-[var(--bg-surface-elevated)] text-[var(--text-muted)] border-[var(--border-subtle)] hover:text-[var(--text-pure)]'
           }`}
         >
           {isAutoPlaying ? (
             <>
               <Pause className="w-4 h-4" />
-              <span>Auto-Flashing</span>
+              <span>Auto-Flashing (5s)</span>
             </>
           ) : (
             <>
               <Play className="w-4 h-4" />
-              <span>Auto-Play</span>
+              <span>Resume Auto-Play</span>
             </>
           )}
         </button>
@@ -212,7 +212,7 @@ export default function IksFactDeck() {
         <button
           onClick={handleNext}
           aria-label="Next fact"
-          className="p-2.5 rounded-lg bg-[var(--parchment)] border border-[var(--parchment-border)] text-[var(--ink)] hover:bg-[#E2D2AA] cursor-pointer transition-colors"
+          className="p-2.5 rounded-xl bg-[var(--bg-surface-elevated)] border border-[var(--border-subtle)] text-[var(--text-pure)] hover:border-[var(--accent-copper)] cursor-pointer transition-colors"
         >
           <ChevronRight className="w-5 h-5" />
         </button>

@@ -1,13 +1,13 @@
 import './globals.css';
 import type { Metadata } from 'next';
-import { Cinzel, Outfit, JetBrains_Mono, Rozha_One } from 'next/font/google';
+import { Plus_Jakarta_Sans, Outfit, JetBrains_Mono, Rozha_One } from 'next/font/google';
 import Navbar from '@/components/common/Navbar';
 import Footer from '@/components/common/Footer';
 
-const cinzel = Cinzel({
+const plusJakartaSans = Plus_Jakarta_Sans({
   subsets: ['latin'],
   weight: ['600', '700', '800'],
-  variable: '--font-cinzel',
+  variable: '--font-jakarta',
   display: 'swap',
 });
 
@@ -33,8 +33,8 @@ const rozhaOne = Rozha_One({
 });
 
 export const metadata: Metadata = {
-  title: 'Vedic Ganita Calculator — Indian Knowledge Systems (IKS)',
-  description: 'An interactive mathematics application demonstrating classical Vedic arithmetic sutras with step-by-step animations, crosswise digit diagrams, and ancient Indian scientific lore.',
+  title: 'SwiftSum — Vedic Ganita & Indian Knowledge Systems (IKS)',
+  description: 'An interactive computational workspace demonstrating classical Vedic arithmetic algorithms with animated vector ray diagrams, parallel coordinate matrices, and verified proofs aligned with NEP 2020.',
 };
 
 export default function RootLayout({
@@ -45,7 +45,7 @@ export default function RootLayout({
   return (
     <html
       lang="en"
-      className={`${cinzel.variable} ${outfit.variable} ${jetbrainsMono.variable} ${rozhaOne.variable}`}
+      className={`${plusJakartaSans.variable} ${outfit.variable} ${jetbrainsMono.variable} ${rozhaOne.variable}`}
     >
       <body className="min-h-screen flex flex-col justify-between">
         <Navbar />
@@ -57,4 +57,3 @@ export default function RootLayout({
     </html>
   );
 }
-

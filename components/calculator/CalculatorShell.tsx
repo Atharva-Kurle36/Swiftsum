@@ -1,6 +1,6 @@
 'use client';
 
-import React, { useState, useEffect } from 'react';
+import React, { useState } from 'react';
 import { useSearchParams } from 'next/navigation';
 import { SUTRA_REGISTRY } from '@/lib/math/registry';
 import { CalculationResult } from '@/lib/math/types';
@@ -9,7 +9,7 @@ import StepPlayer from './StepPlayer';
 import StepCard from './StepCard';
 import DigitCrossGrid from './DigitCrossGrid';
 import ResultBanner from './ResultBanner';
-import { Sparkles, BookOpen, Layers, CheckCircle2 } from 'lucide-react';
+import { Sparkles, BookOpen, Layers, CheckCircle2, ChevronRight, Cpu } from 'lucide-react';
 
 export default function CalculatorShell() {
   const searchParams = useSearchParams();
@@ -71,57 +71,57 @@ export default function CalculatorShell() {
       
       {/* Top Page Header */}
       <div className="text-center max-w-3xl mx-auto mb-10">
-        <div className="inline-flex items-center gap-2 mb-2">
+        <div className="inline-flex items-center gap-2 mb-3">
           <span className="vedic-badge gold">
-            <Sparkles className="w-3.5 h-3.5" />
-            Vedic Ganita Interactive Engine
+            <Cpu className="w-3.5 h-3.5 text-[var(--accent-copper)]" />
+            Parallel Vedic Arithmetic Workspace
           </span>
         </div>
-        <h1 className="text-3xl sm:text-4xl font-serif font-extrabold text-[var(--ink)] tracking-tight">
-          Sutra Arithmetic Workspace
+        <h1 className="text-3xl sm:text-4xl font-serif font-black text-[var(--text-pure)] tracking-tight">
+          Sutra Computational Engine
         </h1>
-        <p className="text-sm sm:text-base text-[var(--ink-muted)] mt-2">
-          Select an operation, configure numbers, and explore the classical steps with animated visual digit connections.
+        <p className="text-sm sm:text-base text-[var(--text-muted)] mt-2">
+          Select an operation, input parameters, and trace through classical sutras with live vector ray intersections.
         </p>
       </div>
 
       {/* Tabs Row for the 5 Classical Sutras */}
-      <div className="flex flex-wrap items-center justify-center gap-2 mb-10 pb-2 border-b border-[var(--parchment-border)]">
+      <div className="flex flex-wrap items-center justify-center gap-2.5 mb-10 pb-4 border-b border-[var(--border-subtle)]">
         {Object.values(SUTRA_REGISTRY).map(op => (
           <button
             key={op.id}
             onClick={() => handleTabChange(op.id)}
-            className={`px-4 py-2.5 rounded-xl text-xs sm:text-sm font-semibold cursor-pointer transition-all flex items-center gap-2 border ${
+            className={`px-4 py-2.5 rounded-xl text-xs sm:text-sm font-bold cursor-pointer transition-all flex items-center gap-2 border ${
               activeOpId === op.id
-                ? 'bg-[var(--vermilion)] text-white border-[var(--vermilion)] shadow-md shadow-[rgba(168,64,47,0.25)]'
-                : 'bg-[var(--parchment)] text-[var(--ink)] border-[var(--parchment-border)] hover:bg-[#E2D2AA]'
+                ? 'bg-[var(--accent-copper)] text-[#090D16] border-[var(--accent-copper)] shadow-lg shadow-[rgba(245,158,11,0.25)]'
+                : 'bg-[var(--bg-surface-elevated)] text-[var(--text-muted)] border-[var(--border-subtle)] hover:text-[var(--text-pure)] hover:border-[var(--border-medium)]'
             }`}
           >
             <span>{op.name}</span>
-            <span className="text-[10px] opacity-80 hidden md:inline">
-              ({op.sanskrit.split('/')[0].trim()})
+            <span className="text-[10px] opacity-75 hidden md:inline font-mono">
+              [{op.sanskrit.split('/')[0].trim()}]
             </span>
           </button>
         ))}
       </div>
 
       {/* Active Sutra Info Callout */}
-      <div className="parchment-card p-5 mb-8 border border-[var(--parchment-border)] bg-[rgba(236,224,194,0.35)] flex flex-col sm:flex-row items-start sm:items-center justify-between gap-4">
+      <div className="parchment-card p-5 mb-8 border border-[var(--border-copper)] bg-[var(--bg-surface)] flex flex-col sm:flex-row items-start sm:items-center justify-between gap-4">
         <div className="space-y-1">
-          <div className="flex items-center gap-2">
-            <span className="sanskrit-title font-bold text-base sm:text-lg text-[var(--vermilion)]">
+          <div className="flex items-center gap-2.5 flex-wrap">
+            <span className="sanskrit-title font-bold text-base sm:text-lg text-[var(--accent-copper)]">
               {activeConfig.sanskrit}
             </span>
             <span className="vedic-badge teal text-[10px]">
               Active Sutra
             </span>
           </div>
-          <p className="text-xs sm:text-sm text-[var(--ink-muted)]">
+          <p className="text-xs sm:text-sm text-[var(--text-muted)]">
             {activeConfig.description}
           </p>
         </div>
-        <div className="flex items-center gap-2 text-xs text-[var(--teal)] font-semibold bg-[var(--parchment)] px-3 py-1.5 rounded-lg border border-[var(--parchment-border)] flex-shrink-0">
-          <CheckCircle2 className="w-4 h-4 text-[var(--teal)]" />
+        <div className="flex items-center gap-2 text-xs text-emerald-400 font-semibold bg-emerald-500/10 px-3.5 py-1.5 rounded-xl border border-emerald-500/25 flex-shrink-0">
+          <CheckCircle2 className="w-4 h-4 text-emerald-400" />
           <span>Ground-Truth Verified</span>
         </div>
       </div>
@@ -139,18 +139,18 @@ export default function CalculatorShell() {
           />
 
           {/* Quick Summary Card */}
-          <div className="parchment-card p-5 border border-[var(--parchment-border)] bg-[var(--parchment-card)] text-xs text-[var(--ink-muted)] space-y-2">
-            <h4 className="font-serif font-bold text-sm text-[var(--ink)] flex items-center gap-1.5">
-              <BookOpen className="w-4 h-4 text-[var(--gold)]" />
-              Sutra Insights
+          <div className="parchment-card p-5 border border-[var(--border-subtle)] bg-[var(--bg-surface)] text-xs text-[var(--text-muted)] space-y-3">
+            <h4 className="font-serif font-bold text-sm text-[var(--text-pure)] flex items-center gap-2">
+              <BookOpen className="w-4 h-4 text-[var(--accent-copper)]" />
+              Sutra Mechanics
             </h4>
-            <p>
-              In Indian Knowledge Systems (IKS), arithmetic shortcuts are known as <em>Upa-sutras</em> and <em>Sutras</em>.
-              They exploit the base-10 positional decimal system developed by ancient Indian scholars to simplify mental calculations.
+            <p className="leading-relaxed">
+              In Indian Knowledge Systems (IKS), arithmetic shortcuts are termed <em>Sūtras</em> and <em>Upa-sūtras</em>.
+              They exploit the base-10 positional decimal system developed by Indian scholars to simplify mental calculations into parallel coordinate steps.
             </p>
-            <div className="pt-2 border-t border-[var(--parchment-border)] flex items-center justify-between text-[11px] text-[var(--ink-light)]">
-              <span>Method: {calcResult.methodUsed}</span>
-              <span className="font-mono">Steps: {calcResult.steps.length}</span>
+            <div className="pt-3 border-t border-[var(--border-subtle)] flex items-center justify-between text-[11px] text-[var(--text-dim)] font-mono">
+              <span>Method: <strong className="text-[var(--accent-copper)]">{calcResult.methodUsed}</strong></span>
+              <span>Total Steps: {calcResult.steps.length}</span>
             </div>
           </div>
         </div>

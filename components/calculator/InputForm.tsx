@@ -2,7 +2,7 @@
 
 import React, { useState, useEffect } from 'react';
 import { OperationConfig } from '@/lib/math/types';
-import { Sparkles, Calculator, HelpCircle } from 'lucide-react';
+import { Sparkles, Calculator, HelpCircle, ArrowRight } from 'lucide-react';
 
 interface InputFormProps {
   config: OperationConfig;
@@ -77,16 +77,16 @@ export default function InputForm({
   };
 
   return (
-    <div className="parchment-card p-6 border border-[var(--parchment-border)] bg-[var(--parchment-card)] shadow-sm space-y-5">
+    <div className="parchment-card p-6 border border-[var(--border-medium)] bg-[var(--bg-surface)] shadow-lg space-y-6">
       
       {/* Header */}
-      <div className="flex items-center justify-between pb-2 border-b border-[var(--parchment-border)]">
+      <div className="flex items-center justify-between pb-3 border-b border-[var(--border-subtle)]">
         <div>
-          <h3 className="font-serif font-bold text-base text-[var(--ink)]">
-            Input Configuration
+          <h3 className="font-serif font-black text-base text-[var(--text-pure)] tracking-tight">
+            Input Coordinate Parameters
           </h3>
-          <p className="text-xs text-[var(--ink-muted)]">
-            Enter whole numbers or select an ancient textbook preset
+          <p className="text-xs text-[var(--text-muted)] mt-0.5">
+            Enter whole numbers or select an algorithmic textbook preset
           </p>
         </div>
         <span className="vedic-badge gold text-[10px]">
@@ -96,86 +96,81 @@ export default function InputForm({
 
       {/* Preset Pills */}
       <div>
-        <span className="text-[11px] font-semibold text-[var(--ink-light)] uppercase tracking-wider block mb-2">
-          Recommended Demonstration Presets:
+        <span className="text-[10px] font-mono font-bold text-[var(--accent-copper)] uppercase tracking-wider block mb-2">
+          Demonstration Presets:
         </span>
         <div className="flex flex-wrap gap-2">
-          {config.presets.map((preset, idx) => (
-            <button
-              key={idx}
-              type="button"
-              onClick={() => handleSelectPreset(preset)}
-              className="text-xs font-medium px-3 py-1.5 rounded-lg bg-[var(--parchment)] border border-[var(--parchment-border)] text-[var(--ink)] hover:bg-[#E4D5B1] hover:border-[var(--gold)] cursor-pointer transition-all"
-            >
-              {preset.label}
-            </button>
-          ))}
+          {config.presets.map((preset, idx) => {
+            const label = preset.b !== undefined ? `${preset.a} × ${preset.b}` : `${preset.a}`;
+            const isSelected = valA === preset.a && (preset.b === undefined || valB === preset.b);
+            return (
+              <button
+                key={idx}
+                type="button"
+                onClick={() => handleSelectPreset(preset)}
+                className={`px-3 py-1.5 rounded-lg text-xs font-mono font-bold cursor-pointer transition-all border ${
+                  isSelected
+                    ? 'bg-[var(--accent-copper)] text-[#090D16] border-[var(--accent-copper)] shadow-sm'
+                    : 'bg-[var(--bg-surface-elevated)] text-[var(--text-pure)] border-[var(--border-subtle)] hover:border-[var(--accent-copper)]'
+                }`}
+              >
+                {preset.label || label}
+              </button>
+            );
+          })}
         </div>
       </div>
 
-      {/* Inputs Form */}
-      <form onSubmit={validateAndSubmit} className="space-y-4 pt-1">
-        
+      {/* Form Inputs */}
+      <form onSubmit={validateAndSubmit} className="space-y-4">
         {/* Input A */}
         <div>
-          <label className="block text-xs font-semibold text-[var(--ink)] mb-1">
-            {config.labelA}
+          <label className="flex items-center justify-between text-xs font-semibold text-[var(--text-pure)] mb-1.5">
+            <span>{config.labelA}</span>
+            <span className="text-[11px] text-[var(--text-dim)] font-mono">Digits only</span>
           </label>
-          <div className="relative">
-            <input
-              type="text"
-              inputMode="numeric"
-              value={valA}
-              onChange={e => {
-                const cleaned = e.target.value.replace(/\D/g, '');
-                setValA(cleaned);
-                if (errorA) setErrorA('');
-              }}
-              placeholder={config.placeholderA}
-              className={`w-full px-4 py-2.5 rounded-xl font-mono text-base bg-white border ${
-                errorA ? 'border-red-500' : 'border-[var(--parchment-border)]'
-              } text-[var(--ink)] focus:outline-none focus:ring-2 focus:ring-[var(--vermilion)] transition-all`}
-            />
-          </div>
-          {errorA && <p className="text-[11px] text-red-600 mt-1">{errorA}</p>}
+          <input
+            type="text"
+            value={valA}
+            onChange={e => setValA(e.target.value)}
+            placeholder={config.placeholderA || "e.g. 98"}
+            className="w-full"
+          />
+          {errorA && (
+            <p className="text-xs text-rose-400 mt-1 font-medium">{errorA}</p>
+          )}
         </div>
 
         {/* Input B (if required) */}
-        {config.requiresSecondInput && (
+        {config.requiresSecondInput && config.labelB && (
           <div>
-            <label className="block text-xs font-semibold text-[var(--ink)] mb-1">
-              {config.labelB}
+            <label className="flex items-center justify-between text-xs font-semibold text-[var(--text-pure)] mb-1.5">
+              <span>{config.labelB}</span>
+              <span className="text-[11px] text-[var(--text-dim)] font-mono">Digits only</span>
             </label>
-            <div className="relative">
-              <input
-                type="text"
-                inputMode="numeric"
-                value={valB}
-                onChange={e => {
-                  const cleaned = e.target.value.replace(/\D/g, '');
-                  setValB(cleaned);
-                  if (errorB) setErrorB('');
-                }}
-                placeholder={config.placeholderB}
-                className={`w-full px-4 py-2.5 rounded-xl font-mono text-base bg-white border ${
-                  errorB ? 'border-red-500' : 'border-[var(--parchment-border)]'
-                } text-[var(--ink)] focus:outline-none focus:ring-2 focus:ring-[var(--vermilion)] transition-all`}
-              />
-            </div>
-            {errorB && <p className="text-[11px] text-red-600 mt-1">{errorB}</p>}
+            <input
+              type="text"
+              value={valB}
+              onChange={e => setValB(e.target.value)}
+              placeholder={config.placeholderB || "e.g. 97"}
+              className="w-full"
+            />
+            {errorB && (
+              <p className="text-xs text-rose-400 mt-1 font-medium">{errorB}</p>
+            )}
           </div>
         )}
 
-        {/* Submit button */}
+        {/* Action Button */}
         <button
           type="submit"
-          className="btn-vedic-primary w-full !py-3 font-semibold text-sm shadow-md cursor-pointer flex items-center justify-center gap-2"
+          className="btn-vedic-primary w-full !py-3 text-sm font-bold flex items-center justify-center gap-2 mt-2"
         >
-          <Calculator className="w-4 h-4" />
-          <span>Execute Vedic Sutra Calculation</span>
+          <Calculator className="w-4 h-4 text-[#090D16]" />
+          <span>Execute Vedic Algorithm</span>
+          <ArrowRight className="w-4 h-4 text-[#090D16]" />
         </button>
       </form>
-
     </div>
   );
 }
