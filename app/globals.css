@@ -697,7 +697,36 @@ input[type="text"]:focus, input[type="number"]:focus { border-color: var(--royal
   .ab-hint-icon { animation: none; }
 }
 
-/* ===== Print: A4 academic submission ===== */
+/* ===== Palace backdrop inside the pinned hero sheet ===== */
+.ab-palace { position: absolute; inset: 0; z-index: 0; pointer-events: none; overflow: hidden; }
+#cover .cover-sheet > *:not(.ab-palace) { position: relative; z-index: 1; }
+.ab-palace-base {
+  position: absolute; inset: 0;
+  background:
+    linear-gradient(90deg, rgba(100,30,22,0.20) 0%, rgba(100,30,22,0.06) 18%, transparent 32%, transparent 68%, rgba(100,30,22,0.06) 82%, rgba(100,30,22,0.20) 100%),
+    linear-gradient(180deg, rgba(154,119,48,0.14) 0%, transparent 22%, transparent 82%, rgba(100,30,22,0.10) 100%);
+}
+.ab-palace-lattice {
+  position: absolute; inset: 0; opacity: 0.34;
+  background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='96' height='96' viewBox='0 0 96 96'%3E%3Cg fill='none' stroke='%239A7730' stroke-width='1'%3E%3Cpath d='M48 6 L57 39 L90 48 L57 57 L48 90 L39 57 L6 48 L39 39 Z'/%3E%3Ccircle cx='48' cy='48' r='8'/%3E%3Ccircle cx='0' cy='0' r='10'/%3E%3Ccircle cx='96' cy='0' r='10'/%3E%3Ccircle cx='0' cy='96' r='10'/%3E%3Ccircle cx='96' cy='96' r='10'/%3E%3C/g%3E%3C/svg%3E");
+  background-size: 96px 96px;
+}
+.ab-palace-arches { position: absolute; inset: 0; width: 100%; height: 100%; }
+.ab-palace-glow {
+  position: absolute; inset: 0;
+  background:
+    radial-gradient(circle at 27% 12%, rgba(233,185,78,0.35) 0%, transparent 22%),
+    radial-gradient(circle at 73% 12%, rgba(233,185,78,0.35) 0%, transparent 22%),
+    radial-gradient(ellipse at 50% 108%, rgba(100,30,22,0.18) 0%, transparent 45%);
+}
+.ab-palace-scrim {
+  position: absolute; inset: 0;
+  background: radial-gradient(ellipse at center, rgba(255,249,239,0.94) 26%, rgba(255,249,239,0.62) 58%, rgba(255,249,239,0.12) 100%);
+}
+
+@media print {
+  .ab-palace { display: none; }
+}
 @page { size: A4; margin: 18mm 15mm; }
 @media print {
   .ab-track { height: auto; }

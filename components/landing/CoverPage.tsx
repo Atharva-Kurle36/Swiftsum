@@ -4,6 +4,7 @@ import React, { useRef } from 'react';
 import { useReducedMotion } from 'framer-motion';
 import { LotusDivider } from '@/components/common/Motifs';
 import AncientBook, { BookHeadline } from '@/components/landing/AncientBook/AncientBook';
+import PalaceBackdrop from '@/components/landing/AncientBook/PalaceBackdrop';
 
 export default function CoverPage() {
   const heroRef = useRef<HTMLElement>(null);
@@ -15,6 +16,7 @@ export default function CoverPage() {
       <span className="corner tr" aria-hidden="true">◈</span>
       <span className="corner bl" aria-hidden="true">◈</span>
       <span className="corner br" aria-hidden="true">◈</span>
+      <PalaceBackdrop />
 
       <div className="ab-split">
         <div className="ab-split-copy">

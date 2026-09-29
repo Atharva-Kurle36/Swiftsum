@@ -1,108 +1,14 @@
 'use client';
 
-import React, { useState } from 'react';
+import React from 'react';
 import Link from 'next/link';
-import { motion, AnimatePresence } from 'framer-motion';
-import { Calculator, Sparkles, ArrowRight, Zap, Play, Clock, CheckCircle2, ChevronRight } from 'lucide-react';
-
-interface DemoCase {
-  id: string;
-  name: string;
-  sanskrit: string;
-  expression: string;
-  op: string;
-  a: string;
-  b?: string;
-  conventionalSteps: string[];
-  conventionalTime: string;
-  vedicInsight: string;
-  vedicSteps: string[];
-  vedicTime: string;
-  finalAnswer: string;
-}
-
-const DEMO_CASES: DemoCase[] = [
-  {
-    id: 'squaring-85',
-    name: 'Ekādhikena Pūrveṇa',
-    sanskrit: 'एकाधिकेन पूर्वेण',
-    expression: '85²',
-    op: 'squaring',
-    a: '85',
-    conventionalSteps: [
-      'Multiply 85 × 5 = 425',
-      'Shift and multiply 85 × 80 = 6800',
-      'Add 425 + 6800 column by column',
-      'Carries resolved over 3 cycles',
-    ],
-    conventionalTime: '18 - 25 seconds',
-    vedicInsight: 'Numbers ending in 5: multiply leading digits by (digits + 1) and append 25.',
-    vedicSteps: [
-      'Left partition: 8 × (8 + 1) = 8 × 9 = 72',
-      'Right partition: 5² = 25',
-      'Concatenate partitions: 72 | 25 = 7,225',
-    ],
-    vedicTime: '2 seconds (Mental)',
-    finalAnswer: '7,225',
-  },
-  {
-    id: 'nikhilam-98x97',
-    name: 'Nikhilam Navataścaramam',
-    sanskrit: 'निखिलं नवतश्चरमं दशतः',
-    expression: '98 × 97',
-    op: 'multiplication',
-    a: '98',
-    b: '97',
-    conventionalSteps: [
-      '98 × 7 = 686',
-      '98 × 90 = 8820',
-      'Add 686 + 8820 with carrying across 4 columns',
-      'Final total verified after multi-row tally',
-    ],
-    conventionalTime: '20 - 30 seconds',
-    vedicInsight: 'Base 100 deficits: 98 is (-2), 97 is (-3). Cross-subtract and multiply deviations.',
-    vedicSteps: [
-      'Base 100 Deficits: (98 - 100) = -02, (97 - 100) = -03',
-      'Left partition: 98 - 03 = 95 (or 97 - 02 = 95)',
-      'Right partition: (-02) × (-03) = 06',
-      'Synthesize: 95 | 06 = 9,506',
-    ],
-    vedicTime: '3 seconds (Mental)',
-    finalAnswer: '9,506',
-  },
-  {
-    id: 'urdhva-43x21',
-    name: 'Ūrdhva-Tiryagbhyām',
-    sanskrit: 'ऊर्ध्वतिर्यग्भ्याम्',
-    expression: '43 × 21',
-    op: 'multiplication',
-    a: '43',
-    b: '21',
-    conventionalSteps: [
-      '43 × 1 = 43',
-      '43 × 20 = 860',
-      'Combine 43 + 860 with carry arithmetic',
-      'Standard 3-line paper calculation',
-    ],
-    conventionalTime: '15 - 20 seconds',
-    vedicInsight: 'Vertically and crosswise: single-line parallel cross products straight to answer.',
-    vedicSteps: [
-      'Step 1 (Units): 3 × 1 = 3 (Placed: 3, Carry: 0)',
-      'Step 2 (Cross): (4×1) + (3×2) = 4 + 6 = 10 (Placed: 0, Carry: 1)',
-      'Step 3 (Tens): (4×2) + 1 carry = 9 (Placed: 9)',
-      'Complete left-to-right vector: 903',
-    ],
-    vedicTime: '4 seconds (Mental)',
-    finalAnswer: '903',
-  },
-];
+import { motion } from 'framer-motion';
+import { Calculator, Sparkles, ChevronRight } from 'lucide-react';
 
 export default function Hero() {
-  const [activeDemo, setActiveDemo] = useState<DemoCase>(DEMO_CASES[0]);
-
   return (
     <section id="top" className="hero-shell">
-      
+
       {/* Top Banner Tag */}
       <div className="text-center mb-6">
         <motion.div
@@ -156,152 +62,23 @@ export default function Hero() {
         >
           Vedic mathematics is not rote arithmetic or mystical shortcuts. It is an elegant, positional base-10 algebra designed for lightning-fast mental execution. Step through classical sutras with live vector cross-lines and ground-truth verification.
         </motion.p>
-      </div>
 
-      {/* THE SIGNATURE THESIS: Interactive Live "Speed of Sutra" Mental Math Demonstrator */}
-      <motion.div
-        initial={{ opacity: 0, y: 20 }}
-        animate={{ opacity: 1, y: 0 }}
-        transition={{ duration: 0.7, delay: 0.4 }}
-        className="max-w-4xl mx-auto parchment-card p-6 sm:p-8 border border-[#C49A45] bg-[#FFF9EF] shadow-[0_2px_12px_rgba(100,30,22,0.08)] mb-8"
-      >
-        <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-4 pb-4 border-b border-[#C49A45] mb-6">
-          <div>
-            <div className="flex items-center gap-2">
-              <Zap className="w-4 h-4 text-[#641E16]" />
-              <h3 className="font-serif font-extrabold text-lg text-[#641E16]">
-                The Speed of Sutra: Mental Micro-Demonstration
-              </h3>
-            </div>
-            <p className="text-xs text-[#6B5847] mt-0.5">
-              Select an expression below to witness how Vedic principles compress multi-step scratchwork into a single parallel glance.
-            </p>
-          </div>
-
-          {/* Preset Buttons */}
-          <div className="flex items-center gap-2 flex-wrap">
-            {DEMO_CASES.map(tc => (
-              <button
-                key={tc.id}
-                onClick={() => setActiveDemo(tc)}
-                className={`px-3 py-1.5 rounded-lg text-xs font-mono font-bold cursor-pointer transition-all border ${
-                  activeDemo.id === tc.id
-                    ? 'bg-[#641E16] text-[#FFF9EF] border-[#641E16]'
-                    : 'bg-[#FFF9EF] text-[#45352B] border-[#C49A45] hover:border-[#641E16] hover:text-[#641E16]'
-                }`}
-              >
-                {tc.expression}
-              </button>
-            ))}
-          </div>
-        </div>
-
-        {/* Live Side-by-Side Comparison Container */}
-        <AnimatePresence mode="wait">
-          <motion.div
-            key={activeDemo.id}
-            initial={{ opacity: 0, y: 8 }}
-            animate={{ opacity: 1, y: 0 }}
-            exit={{ opacity: 0, y: -8 }}
-            transition={{ duration: 0.3 }}
-            className="grid grid-cols-1 md:grid-cols-2 gap-6 items-stretch"
-          >
-            {/* Left: Conventional Long-Form Arithmetic */}
-            <div className="p-5 rounded-xl bg-[#FFF9EF] border border-[#C49A45] flex flex-col justify-between">
-              <div>
-                <div className="flex items-center justify-between mb-3 text-xs">
-                  <span className="font-semibold uppercase tracking-wider text-[#8C7763]">
-                    Conventional Scratchpad
-                  </span>
-                  <span className="flex items-center gap-1 font-mono text-[11px] text-[#8C2B1B]">
-                    <Clock className="w-3.5 h-3.5" />
-                    {activeDemo.conventionalTime}
-                  </span>
-                </div>
-                <div className="text-2xl font-mono font-bold text-[#6B5847] mb-3">
-                  {activeDemo.expression}
-                </div>
-                <div className="space-y-2 text-xs font-mono text-[#45352B]">
-                  {activeDemo.conventionalSteps.map((step, idx) => (
-                    <div key={idx} className="flex items-start gap-2">
-                      <span className="text-[#8C7763] select-none">[{idx + 1}]</span>
-                      <span>{step}</span>
-                    </div>
-                  ))}
-                </div>
-              </div>
-              <div className="mt-4 pt-3 border-t border-[#C49A45] text-[11px] text-[#8C7763]">
-                Requires scratch paper, multiple lines of intermediate products, and sequential column addition.
-              </div>
-            </div>
-
-            {/* Right: Vedic Ganita Mental Sutra */}
-            <div className="p-5 rounded-xl bg-[#FFF9EF] border border-[#C49A45] flex flex-col justify-between relative overflow-hidden">
-              <div>
-                <div className="flex items-center justify-between mb-3 text-xs">
-                  <span className="font-semibold uppercase tracking-wider text-[#641E16] flex items-center gap-1">
-                    <Sparkles className="w-3.5 h-3.5" />
-                    Vedic Sutra Shortcut
-                  </span>
-                  <span className="flex items-center gap-1 font-mono text-[11px] text-[#4F7A3A] font-bold bg-[rgba(79,122,58,0.1)] border border-[rgba(79,122,58,0.3)] px-2 py-0.5 rounded">
-                    <Clock className="w-3.5 h-3.5" />
-                    {activeDemo.vedicTime}
-                  </span>
-                </div>
-                <div className="flex items-baseline justify-between mb-3">
-                  <div className="text-3xl font-mono font-black text-[#641E16]">
-                    = {activeDemo.finalAnswer}
-                  </div>
-                  <span className="sanskrit-title text-xs text-[#6B5847] font-medium">
-                    {activeDemo.sanskrit}
-                  </span>
-                </div>
-                <p className="text-xs text-[#45352B] font-medium mb-3 bg-[#FAF0DB] p-2.5 rounded-lg border border-[#C49A45]">
-                  {activeDemo.vedicInsight}
-                </p>
-                <div className="space-y-2 text-xs font-mono text-[#45352B]">
-                  {activeDemo.vedicSteps.map((step, idx) => (
-                    <div key={idx} className="flex items-start gap-2">
-                      <span className="text-[#4F7A3A] select-none">✓</span>
-                      <span>{step}</span>
-                    </div>
-                  ))}
-                </div>
-              </div>
-
-              {/* Direct Deep-link to Calculator */}
-              <div className="mt-5 pt-3 border-t border-[#C49A45] flex items-center justify-between">
-                <span className="text-[11px] text-[#641E16] font-medium">
-                  Verified in {activeDemo.name}
-                </span>
-                <Link
-                  href={`/calculator?op=${activeDemo.op}&a=${activeDemo.a}${activeDemo.b ? `&b=${activeDemo.b}` : ''}`}
-                  className="text-xs font-bold text-[#641E16] bg-[#FFF9EF] hover:bg-[#641E16] hover:text-[#FFF9EF] px-3 py-1.5 rounded-lg border border-[#C49A45] transition-all flex items-center gap-1 group"
-                >
-                  <span>Step Through in Engine</span>
-                  <ArrowRight className="w-3.5 h-3.5 group-hover:translate-x-1 transition-transform" />
-                </Link>
-              </div>
-            </div>
-          </motion.div>
-        </AnimatePresence>
-
-        {/* Global Launch Bar below Demo */}
-        <div className="mt-6 pt-5 border-t border-[#C49A45] flex flex-col sm:flex-row items-center justify-between gap-4">
-          <div className="flex items-center gap-2 text-xs text-[#6B5847]">
-            <CheckCircle2 className="w-4 h-4 text-[#4F7A3A] flex-shrink-0" />
-            <span>Full 5-Sutra Suite: Multiplication, Squaring, Subtraction, Division & Divisibility</span>
-          </div>
+        <motion.div
+          initial={{ opacity: 0, y: 8 }}
+          animate={{ opacity: 1, y: 0 }}
+          transition={{ duration: 0.6, delay: 0.4 }}
+          className="mt-8"
+        >
           <Link
             href="/calculator"
-            className="btn-vedic-primary w-full sm:w-auto text-sm !py-2.5 !px-6"
+            className="btn-vedic-primary text-sm !py-2.5 !px-6"
           >
             <Calculator className="w-4 h-4" />
             <span>Open Vedic Arithmetic Engine</span>
             <ChevronRight className="w-4 h-4" />
           </Link>
-        </div>
-      </motion.div>
+        </motion.div>
+      </div>
 
     </section>
   );
