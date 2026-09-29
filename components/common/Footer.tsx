@@ -31,14 +31,11 @@ export default function Footer() {
           </div>
 
           <div className="md:col-span-3">
-            <h4 className="text-sm mb-4 uppercase tracking-wider">Report Sections</h4>
+            <h4 className="text-sm mb-4 uppercase tracking-wider">Pages</h4>
             <ul className="space-y-2.5 text-xs">
               {[
-                { href: '/#cover', t: 'Cover Page', s: 'title & submission details' },
-                { href: '/#how-it-works', t: 'Method', s: 'three-stage study loop' },
-                { href: '/#sutras', t: 'Sūtra Chapters', s: 'five classical pillars' },
-                { href: '/#iks-facts', t: 'Archive', s: 'heritage records' },
-                { href: '/#references', t: 'References', s: 'treatises & NEP 2020' },
+                { href: '/', t: 'Home', s: 'cover, sutras & archive' },
+                { href: '/about', t: 'About', s: 'objectives & scope' },
                 { href: '/calculator', t: 'Calculator', s: 'worked computation' },
               ].map(l => (
                 <li key={l.href}>

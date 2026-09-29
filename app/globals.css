@@ -146,7 +146,7 @@ p, li { color: var(--manuscript-brown); }
 /* ===== Manuscript ornament ===== */
 .manuscript-divider {
   display: flex; align-items: center; justify-content: center;
-  gap: 14px; margin: 24px 0; color: var(--antique-gold-deep);
+  gap: 14px; margin: 16px 0; color: var(--antique-gold-deep);
 }
 .manuscript-divider::before, .manuscript-divider::after {
   content: ""; height: 1px; flex: 1;
@@ -159,7 +159,7 @@ p, li { color: var(--manuscript-brown); }
   background: linear-gradient(90deg, transparent, var(--antique-gold) 20%, var(--antique-gold) 80%, transparent);
   border-top: 1px solid var(--antique-gold-deep);
   border-bottom: 1px solid var(--antique-gold-soft);
-  margin: 18px auto;
+  margin: 12px auto;
   max-width: 420px;
 }
 .gold-rule-thin {
@@ -296,7 +296,7 @@ p, li { color: var(--manuscript-brown); }
 .manuscript-table tr:nth-child(even) td { background: #FAF0DB; }
 
 /* ===== Section shells (consistent rhythm) ===== */
-.section-shell { padding: 64px 16px; max-width: 80rem; margin: 0 auto; position: relative; }
+.section-shell { padding: 44px 16px; max-width: 80rem; margin: 0 auto; position: relative; }
 @media (min-width: 640px) { .section-shell { padding-left: 24px; padding-right: 24px; } }
 @media (min-width: 1024px) { .section-shell { padding-left: 32px; padding-right: 32px; } }
 .section-shell + .section-shell { border-top: 1px solid var(--border-subtle); }
@@ -307,8 +307,8 @@ p, li { color: var(--manuscript-brown); }
 @media (min-width: 1024px) { .section-shell-alt > .section-inner { padding-left: 32px; padding-right: 32px; } }
 .section-shell-accent { max-width: none; background: rgba(255,249,239,0.7); border-top: 1px solid var(--border-subtle); }
 .section-shell-accent > .section-inner { max-width: 56rem; margin: 0 auto; padding-left: 16px; padding-right: 16px; }
-.hero-shell { position: relative; padding: 40px 16px 56px; max-width: 80rem; margin: 0 auto; }
-@media (min-width: 640px) { .hero-shell { padding: 48px 24px 64px; } }
+.hero-shell { position: relative; padding: 28px 16px 36px; max-width: 80rem; margin: 0 auto; }
+@media (min-width: 640px) { .hero-shell { padding: 32px 24px 40px; } }
 
 .calc-section-label { display: flex; align-items: center; gap: 10px; margin-bottom: 14px; }
 .calc-section-num {
@@ -321,7 +321,7 @@ p, li { color: var(--manuscript-brown); }
 .calc-section-sub { font-size: 0.75rem; color: var(--text-dim); }
 
 .text-decoration-none { text-decoration: none; }
-a { color: inherit; }
+a { color: inherit; text-decoration: none; }
 .border-3 { border-width: 3px; border-style: solid; }
 .animate-spin { animation: spin 0.9s linear infinite; }
 @keyframes spin { to { transform: rotate(360deg); } }

@@ -122,7 +122,7 @@ export default function Hero() {
       </div>
 
       {/* Main Headline & Philosophical Framing */}
-      <div className="text-center max-w-4xl mx-auto mb-10">
+      <div className="text-center max-w-4xl mx-auto mb-6">
         <motion.h1
           initial={{ opacity: 0, y: 12 }}
           animate={{ opacity: 1, y: 0 }}
@@ -166,7 +166,7 @@ export default function Hero() {
         initial={{ opacity: 0, y: 20 }}
         animate={{ opacity: 1, y: 0 }}
         transition={{ duration: 0.7, delay: 0.4 }}
-        className="max-w-4xl mx-auto parchment-card p-6 sm:p-8 border border-[#C49A45] bg-[#FFF9EF] shadow-[0_2px_12px_rgba(100,30,22,0.08)] mb-14"
+        className="max-w-4xl mx-auto parchment-card p-6 sm:p-8 border border-[#C49A45] bg-[#FFF9EF] shadow-[0_2px_12px_rgba(100,30,22,0.08)] mb-8"
       >
         <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-4 pb-4 border-b border-[#C49A45] mb-6">
           <div>

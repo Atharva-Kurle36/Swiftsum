@@ -63,7 +63,7 @@ export default function IksFactDeck() {
       />
 
       {/* Category filter pills */}
-      <div className="flex flex-wrap items-center justify-center gap-2 mb-10">
+      <div className="flex flex-wrap items-center justify-center gap-2 mb-6">
         {categories.map(cat => (
           <button
             key={cat}
@@ -83,7 +83,7 @@ export default function IksFactDeck() {
       </div>
 
       {/* Card Deck Wrapper */}
-      <div className="relative max-w-2xl mx-auto min-h-[440px] flex items-center justify-center">
+      <div className="relative max-w-2xl mx-auto min-h-[380px] flex items-center justify-center">
         
         {/* Layered visual shadow cards beneath to simulate tactile astronomical plaques */}
         <div

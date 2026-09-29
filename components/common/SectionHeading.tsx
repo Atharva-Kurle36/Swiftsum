@@ -25,7 +25,7 @@ export default function SectionHeading({
 }: SectionHeadingProps) {
   const alignCls = align === 'center' ? 'text-center items-center' : 'text-left items-start';
   return (
-    <div className={`flex flex-col ${alignCls} max-w-3xl ${align === 'center' ? 'mx-auto' : ''} mb-8`}>
+    <div className={`flex flex-col ${alignCls} max-w-3xl ${align === 'center' ? 'mx-auto' : ''} mb-6`}>
       {kicker && <span className="section-number mb-2">{kicker}</span>}
       <span className="vedic-badge gold mb-3">{eyebrow}</span>
       <h2 className="text-3xl sm:text-4xl">

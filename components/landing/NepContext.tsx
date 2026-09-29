@@ -17,7 +17,7 @@ export default function NepContext() {
         description="NEP 2020 mandates Indian Knowledge Systems in classrooms. SwiftSum turns that mandate into tactile, auditable, classroom-ready practice."
       />
       
-      <div className="grid grid-cols-1 lg:grid-cols-12 gap-12 items-center">
+      <div className="grid grid-cols-1 lg:grid-cols-12 gap-8 items-center">
         
         {/* Left narrative */}
         <div className="lg:col-span-7 space-y-5">
