@@ -1,9 +1,8 @@
 'use client';
 
 import React, { RefObject, useEffect } from 'react';
-import Link from 'next/link';
 import { motion, useReducedMotion, useTransform, MotionValue, useMotionValue } from 'framer-motion';
-import { ChevronDown, ArrowRight } from 'lucide-react';
+import { ChevronDown } from 'lucide-react';
 import BookLeaf from './BookLeaf';
 import { NalandaIllustration } from '@/components/common/Motifs';
 
@@ -108,12 +107,12 @@ function EducationFace() {
   );
 }
 
-/* Flip windows across hero scroll progress: cover first, then leaves. */
+/* Flip windows across pin scroll progress: cover first, then leaves. */
 const LEAF_RANGES: Array<[number, number]> = [
-  [0.02, 0.22], // cover
-  [0.19, 0.42],
-  [0.39, 0.62],
-  [0.59, 0.82],
+  [0.03, 0.16], // cover opens first
+  [0.15, 0.32],
+  [0.30, 0.50],
+  [0.48, 0.70],
 ];
 
 interface AncientBookProps {
@@ -146,8 +145,8 @@ export function BookHeadline() {
 }
 
 function LiveBook({ targetRef }: AncientBookProps) {
-  // Progress across the HERO only: 0 while the hero fills the viewport,
-  // 1 as it scrolls fully out. A pure function of scrollY → fully reversible.
+  // Progress across the PINNED hero track: 0 when the pin locks,
+  // 1 when the track releases. Pure function of scrollY → fully reversible.
   // (Manual rAF listener: deterministic across browsers.)
   const scrollYProgress = useMotionValue(0);
 
@@ -157,9 +156,8 @@ function LiveBook({ targetRef }: AncientBookProps) {
     let raf = 0;
     const update = () => {
       raf = 0;
-      const top = el.offsetTop;
-      const total = Math.max(1, el.offsetHeight);
-      scrollYProgress.set(Math.min(1, Math.max(0, (window.scrollY - top) / total)));
+      const travel = Math.max(1, el.offsetHeight - window.innerHeight);
+      scrollYProgress.set(Math.min(1, Math.max(0, (window.scrollY - el.offsetTop) / travel)));
     };
     const schedule = () => {
       if (!raf) raf = requestAnimationFrame(update);
@@ -188,15 +186,11 @@ function LiveBook({ targetRef }: AncientBookProps) {
             <p className="sanskrit-title" style={{ color: '#C49A45', fontSize: '0.95rem', marginTop: 8 }}>॥ समाप्तम् ॥</p>
           </div>
         </div>
-        {/* Static base: maroon back-cover (left) + parchment endpaper (right).
-            Closed book reads as front cover + back cover; landed leaves rest
-            on the left half, always inside the frame. */}
-        <div className="ab-leftbase" aria-hidden="true">
-          <div style={{ textAlign: 'center', padding: '0 14px' }}>
-            <LotusMini />
-            <p className="sanskrit-title" style={{ color: '#E4CFA0', fontSize: '0.9rem', marginTop: 8 }}>भारतीय ज्ञान परंपरा</p>
-            <p className="ab-cover-kicker" style={{ marginTop: 8 }}>SwiftSum · IKS</p>
-          </div>
+        {/* Static base: Introduction page (left) + parchment endpaper (right).
+            The closed cover fills the whole frame; first scroll folds it back
+            to reveal this spread. Landed leaves rest on the left, in frame. */}
+        <div className="ab-leftbase ab-introbase" aria-label="Introduction page">
+          <IntroFace />
         </div>
         <div className="ab-rightbase" aria-hidden="true">
           <p className="sanskrit-title" style={{ color: '#9A7730', fontSize: '0.85rem' }}>॥ शुभम् ॥</p>
@@ -222,10 +216,6 @@ function LiveBook({ targetRef }: AncientBookProps) {
               <Title>Ancient Wisdom. Timeless Knowledge.</Title>
               <Body>A future inspired by heritage.</Body>
               <div className="ab-rule" />
-              <Link href="/#sutras" className="btn-vedic-primary ab-cta">
-                <span>Explore the Complete Project</span>
-                <ArrowRight className="w-4 h-4" />
-              </Link>
               <PageNo>॥ ८ ॥</PageNo>
             </>
           }
@@ -276,22 +266,28 @@ function LiveBook({ targetRef }: AncientBookProps) {
           }
         />
 
+        {/* Cover: full-width closed book named SwiftSum. First scroll folds
+            it back to reveal the spread; it stays folded outside the frame. */}
         <FlipLeaf progress={scrollYProgress} range={LEAF_RANGES[0]} zTop={10} zRest={0}
-          label="Manuscript cover"
-          frontClass="ab-coverface" backClass="ab-page"
+          label="SwiftSum manuscript cover" leafClass="ab-coverleaf"
+          frontClass="ab-coverface ab-coverfull" backClass="ab-coverback"
           front={
             <div className="ab-cover-frame">
               <LotusMini />
               <p className="ab-cover-kicker">A Nalanda-Era Manuscript</p>
-              <p className="ab-cover-title">INDIAN<br />KNOWLEDGE<br />SYSTEMS</p>
-              <p className="sanskrit-title ab-cover-sub">The Timeless Wisdom of Bharat</p>
+              <p className="ab-cover-title">SWIFTSUM</p>
+              <p className="sanskrit-title ab-cover-sub">Indian Knowledge Systems</p>
               <div className="ab-cover-nalanda">
                 <NalandaIllustration />
               </div>
               <p className="ab-cover-foot">॥ विद्या ददाति विनयम् ॥</p>
             </div>
           }
-          back={<IntroFace />}
+          back={
+            <div className="ab-cover-frame ab-cover-frame-inner" aria-hidden="true">
+              <LotusMini />
+            </div>
+          }
         />
       </div>
     </div>
@@ -306,6 +302,7 @@ function FlipLeaf(props: {
   label: string;
   frontClass: string;
   backClass: string;
+  leafClass?: string;
   front: React.ReactNode;
   back: React.ReactNode;
 }) {
@@ -326,20 +323,14 @@ function StaticBook() {
   ];
   return (
     <div className="ab-static">
-      <div className="ab-book ab-static-book" aria-label="Ancient Indian manuscript cover">
+      <div className="ab-book ab-static-book" aria-label="SwiftSum manuscript cover">
         <div className="ab-spine" aria-hidden="true" />
-        <div className="ab-leftbase" aria-hidden="true">
-          <div style={{ textAlign: 'center', padding: '0 14px' }}>
-            <LotusMini />
-            <p className="sanskrit-title" style={{ color: '#E4CFA0', fontSize: '0.9rem', marginTop: 8 }}>भारतीय ज्ञान परंपरा</p>
-          </div>
-        </div>
-        <div className="ab-face ab-front ab-coverface ab-static-face">
+        <div className="ab-face ab-front ab-coverface ab-coverfull ab-static-face">
           <div className="ab-cover-frame">
             <LotusMini />
             <p className="ab-cover-kicker">A Nalanda-Era Manuscript</p>
-            <p className="ab-cover-title">INDIAN<br />KNOWLEDGE<br />SYSTEMS</p>
-            <p className="sanskrit-title ab-cover-sub">The Timeless Wisdom of Bharat</p>
+            <p className="ab-cover-title">SWIFTSUM</p>
+            <p className="sanskrit-title ab-cover-sub">Indian Knowledge Systems</p>
             <p className="ab-cover-foot">॥ विद्या ददाति विनयम् ॥</p>
           </div>
         </div>
@@ -349,10 +340,6 @@ function StaticBook() {
           <li key={t}><strong>{t}.</strong> {d}</li>
         ))}
       </ol>
-      <Link href="/#sutras" className="btn-vedic-primary ab-cta">
-        <span>Explore the Complete Project</span>
-        <ArrowRight className="w-4 h-4" />
-      </Link>
     </div>
   );
 }

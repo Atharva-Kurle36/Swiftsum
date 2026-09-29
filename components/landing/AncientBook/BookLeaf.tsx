@@ -12,13 +12,15 @@ interface BookLeafProps {
   back: React.ReactNode;
   frontClass?: string;
   backClass?: string;
+  leafClass?: string;
   label: string;
 }
 
-/** One double-sided leaf hinged at the left spine. Angle is a pure
- *  function of hero scroll progress, so flips are fully reversible. */
+/** One double-sided leaf. Content leaves hinge at the centre spine;
+ *  the full-width cover leaf hinges at the frame's left edge. Angle is a
+ *  pure function of pin scroll progress, so flips are fully reversible. */
 export default function BookLeaf({
-  progress, range, zTop, zRest, front, back, frontClass = '', backClass = '', label,
+  progress, range, zTop, zRest, front, back, frontClass = '', backClass = '', leafClass = '', label,
 }: BookLeafProps) {
   const [a, b] = range;
   const mid = a + (b - a) * 0.72;
@@ -33,7 +35,7 @@ export default function BookLeaf({
 
   return (
     <motion.div
-      className="ab-leaf"
+      className={`ab-leaf ${leafClass}`}
       aria-label={label}
       style={{ rotateY: angle, zIndex }}
     >

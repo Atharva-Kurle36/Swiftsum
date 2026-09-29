@@ -461,8 +461,44 @@ input[type="text"]:focus, input[type="number"]:focus { border-color: var(--royal
   .lg\:col-span-7 { grid-column: span 7 / span 7; } .lg\:col-span-8 { grid-column: span 8 / span 8; }
 }
 
-/* ===== Ancient 3D manuscript book (hero only, no sticky/fixed) ===== */
+/* ===== Ancient 3D manuscript book (pinned hero scroll) ===== */
 .ab-hero { min-height: 100vh; overflow-x: clip; }
+.ab-hero.hero-shell { padding: 0; margin: 0; max-width: none; }
+/* Tall scroll track: the pinned stage locks for ~2.4 viewports while the
+   book completes, then releases into the next section. */
+.ab-track { height: 340vh; }
+.ab-pin {
+  position: sticky; top: 0;
+  height: 100vh; height: 100svh;
+  display: flex; align-items: stretch; justify-content: stretch;
+  padding: 0;
+}
+.ab-pinsheet {
+  width: 100%;
+  max-width: none;
+  min-height: 100vh; min-height: 100svh;
+  max-height: 100vh; max-height: 100svh;
+  border-radius: 0;
+  outline: none;
+  overflow: clip;
+  display: flex; flex-direction: column; justify-content: center;
+  padding: clamp(12px, 2.4vw, 24px) clamp(16px, 4vw, 48px) !important;
+}
+.ab-pinsheet .gold-rule { margin: 8px auto; }
+.ab-pinsheet .manuscript-divider { margin: 8px 0; }
+.ab-pinsheet .ab-head { margin-bottom: 4px; }
+.ab-pinsheet .ab-stage { padding: 6px 0 2px; }
+
+/* Split panel: copy left, book right (stacked on small screens). */
+.ab-split { display: grid; gap: 20px; align-items: center; }
+.ab-split-book { min-width: 0; }
+@media (min-width: 1024px) {
+  .ab-split { grid-template-columns: 0.9fr 1.1fr; gap: 32px; }
+  .ab-split-copy, .ab-split-copy .ab-head { text-align: left; }
+  .ab-split-copy .text-center { text-align: left; }
+  .ab-split-copy .gold-rule { margin-left: 0; margin-right: 0; }
+  .ab-split-copy .mx-auto { margin-left: 0; margin-right: 0; }
+}
 .ab-hero .cover-sheet { padding: clamp(16px, 3vw, 32px); }
 .ab-hero .gold-rule { margin: 10px auto; }
 .ab-hero-grid { display: grid; gap: 20px; align-items: center; }
@@ -486,7 +522,7 @@ input[type="text"]:focus, input[type="number"]:focus { border-color: var(--royal
    left half receives landed pages — everything stays in frame. */
 .ab-book {
   position: relative;
-  width: min(720px, 96vw);
+  width: min(620px, 94vw);
   aspect-ratio: 20 / 12.6;
   transform-style: preserve-3d;
 }
@@ -541,6 +577,9 @@ input[type="text"]:focus, input[type="number"]:focus { border-color: var(--royal
 .ab-backboard-inner { text-align: center; }
 
 .ab-leaf { position: absolute; top: 0; bottom: 0; left: 50%; width: 50%; transform-origin: left center; transform-style: preserve-3d; }
+/* Full-width cover leaf: hinges at the frame's left edge and folds back. */
+.ab-leaf.ab-coverleaf { left: 0; width: 100%; }
+.ab-leaf.ab-coverleaf .ab-face { border-radius: 10px; }
 .ab-face {
   position: absolute; inset: 0; overflow: hidden;
   -webkit-backface-visibility: hidden; backface-visibility: hidden;
@@ -589,13 +628,33 @@ input[type="text"]:focus, input[type="number"]:focus { border-color: var(--royal
   border: 1px solid var(--antique-gold-deep);
   box-shadow: inset 0 0 0 5px rgba(196,154,69,0.35), inset 0 0 0 7px rgba(74,19,14,0.9), inset 12px 0 26px rgba(0,0,0,0.35);
 }
+/* Inside of the folded-back cover: plain maroon endpaper. */
+.ab-coverback {
+  background: linear-gradient(150deg, #4A130E 0%, #521712 100%);
+  border: 1px solid var(--antique-gold-deep);
+  box-shadow: inset 0 0 0 5px rgba(196,154,69,0.3), inset 0 0 0 7px rgba(74,19,14,0.9);
+}
+.ab-cover-frame-inner { justify-content: center; }
+/* Static introduction base on the left half (revealed when cover opens). */
+.ab-introbase {
+  background:
+    radial-gradient(ellipse at 30% 12%, rgba(196,154,69,0.10) 0%, transparent 55%),
+    #F7ECD2;
+  border: 1px solid var(--antique-gold);
+  border-radius: 10px 3px 3px 10px;
+  box-shadow: inset 0 0 0 4px #F7ECD2, inset 0 0 0 5px var(--antique-gold), inset -10px 0 22px rgba(69,53,43,0.14);
+  padding: clamp(16px, 4.5%, 30px) clamp(14px, 6%, 34px);
+  text-align: center;
+  display: flex; flex-direction: column; justify-content: flex-start;
+  overflow: hidden;
+}
 .ab-cover-frame {
   flex: 1; display: flex; flex-direction: column; align-items: center; justify-content: center;
   border: 1px solid rgba(196,154,69,0.85); outline: 1px solid rgba(196,154,69,0.4); outline-offset: 4px;
   padding: 14px 10px; gap: 6px;
 }
 .ab-cover-kicker { font-family: var(--font-title); font-size: clamp(0.58rem, 1.7vw, 0.7rem); letter-spacing: 0.3em; text-transform: uppercase; color: #D9B45F; }
-.ab-cover-title { font-family: var(--font-title); font-weight: 800; color: #F4E6C9; font-size: clamp(1.4rem, 5.4vw, 2.1rem); letter-spacing: 0.08em; line-height: 1.3; }
+.ab-cover-title { font-family: var(--font-title); font-weight: 800; color: #F4E6C9; font-size: clamp(1.25rem, 5vw, 1.85rem); letter-spacing: 0.08em; line-height: 1.3; }
 .ab-cover-sub { color: #E4CFA0; font-size: clamp(0.8rem, 2.4vw, 1rem); }
 .ab-cover-nalanda { width: 100%; max-width: 340px; opacity: 0.92; }
 .ab-cover-nalanda svg { width: 100%; height: auto; display: block; }
@@ -610,7 +669,8 @@ input[type="text"]:focus, input[type="number"]:focus { border-color: var(--royal
 
 .ab-static { display: flex; flex-direction: column; align-items: center; gap: 18px; padding: 12px 0; }
 .ab-static-book { aspect-ratio: 20 / 12.6; }
-.ab-static-book .ab-static-face { position: absolute; top: 0; bottom: 0; left: 50%; width: 50%; }
+.ab-static-book .ab-spine { display: none; }
+.ab-static-book .ab-static-face { position: absolute; top: 0; bottom: 0; left: 0; width: 100%; }
 .ab-static-list { list-style: none; padding: 0; margin: 0; width: min(560px, 94vw); text-align: left; }
 .ab-static-list li {
   background: var(--light-ivory); border: 1px solid var(--antique-gold); border-radius: 8px;
@@ -626,6 +686,13 @@ input[type="text"]:focus, input[type="number"]:focus { border-color: var(--royal
   .ab-cta { font-size: 0.72rem !important; padding: 9px 14px !important; }
 }
 
+/* Short viewports: compact the pinned book so it always fits. */
+@media (max-height: 720px) {
+  .ab-book { width: min(520px, 94vw); }
+  .ab-headline { font-size: clamp(1.2rem, 3vw, 1.6rem); }
+  .ab-hint { display: none; }
+}
+
 @media (prefers-reduced-motion: reduce) {
   .ab-hint-icon { animation: none; }
 }
@@ -633,6 +700,9 @@ input[type="text"]:focus, input[type="number"]:focus { border-color: var(--royal
 /* ===== Print: A4 academic submission ===== */
 @page { size: A4; margin: 18mm 15mm; }
 @media print {
+  .ab-track { height: auto; }
+  .ab-pin { position: static; height: auto; display: block; }
+  .ab-pinsheet { max-height: none; overflow: visible; }
   body::before { display: none; }
   body { background: #fff; }
   header.sticky, nav, .no-print { display: none !important; }
