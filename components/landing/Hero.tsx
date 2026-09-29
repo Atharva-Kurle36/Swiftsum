@@ -105,9 +105,6 @@ export default function Hero() {
       
       {/* Top Banner Tag */}
       <div className="text-center mb-6">
-        <p className="font-mono text-[11px] font-bold tracking-[0.22em] uppercase text-[#8C7763] mb-3">
-          Section 00 — Introduction · Vedic Ganita Observatory
-        </p>
         <motion.div
           initial={{ opacity: 0, y: -8 }}
           animate={{ opacity: 1, y: 0 }}

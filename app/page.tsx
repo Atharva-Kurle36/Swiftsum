@@ -8,7 +8,6 @@ import HowItWorks from '@/components/landing/HowItWorks';
 import SutraCatalog from '@/components/landing/SutraCatalog';
 import IksFactDeck from '@/components/landing/IksFactDeck';
 import NepContext from '@/components/landing/NepContext';
-import ReferencesSection from '@/components/landing/ReferencesSection';
 import FinalCta from '@/components/landing/FinalCta';
 
 export default function HomePage() {
@@ -28,8 +27,6 @@ export default function HomePage() {
       <IksFactDeck />
       {/* 04 — Pedagogy */}
       <NepContext />
-      {/* 05 — References */}
-      <ReferencesSection />
       {/* Colophon call to action */}
       <FinalCta />
     </div>
