@@ -1,40 +1,42 @@
 import './globals.css';
 import type { Metadata } from 'next';
-import { Plus_Jakarta_Sans, Outfit, JetBrains_Mono, Rozha_One } from 'next/font/google';
+import { Cinzel, Cormorant_Garamond, Noto_Serif, Noto_Serif_Devanagari } from 'next/font/google';
 import Navbar from '@/components/common/Navbar';
 import Footer from '@/components/common/Footer';
 
-const plusJakartaSans = Plus_Jakarta_Sans({
+const cinzel = Cinzel({
   subsets: ['latin'],
-  weight: ['600', '700', '800'],
-  variable: '--font-jakarta',
+  weight: ['500', '600', '700', '800'],
+  variable: '--font-cinzel',
   display: 'swap',
 });
 
-const outfit = Outfit({
+const cormorant = Cormorant_Garamond({
   subsets: ['latin'],
   weight: ['400', '500', '600', '700'],
-  variable: '--font-outfit',
+  style: ['normal', 'italic'],
+  variable: '--font-cormorant',
   display: 'swap',
 });
 
-const jetbrainsMono = JetBrains_Mono({
+const notoSerif = Noto_Serif({
   subsets: ['latin'],
   weight: ['400', '500', '600', '700'],
-  variable: '--font-jetbrains',
+  style: ['normal', 'italic'],
+  variable: '--font-noto',
   display: 'swap',
 });
 
-const rozhaOne = Rozha_One({
-  subsets: ['latin'],
-  weight: ['400'],
-  variable: '--font-rozha',
+const notoDevanagari = Noto_Serif_Devanagari({
+  subsets: ['latin', 'devanagari'],
+  weight: ['400', '500', '600', '700'],
+  variable: '--font-devanagari',
   display: 'swap',
 });
 
 export const metadata: Metadata = {
-  title: 'SwiftSum — Vedic Ganita & Indian Knowledge Systems (IKS)',
-  description: 'An interactive computational workspace demonstrating classical Vedic arithmetic algorithms with animated vector ray diagrams, parallel coordinate matrices, and verified proofs aligned with NEP 2020.',
+  title: 'Indian Knowledge Systems (IKS) — SwiftSum Vedic Ganita',
+  description: 'A premium academic presentation of Indian Knowledge Systems: Vedic mathematics, Nalanda scholarly heritage, and NEP 2020 aligned computation.',
 };
 
 export default function RootLayout({
@@ -45,7 +47,7 @@ export default function RootLayout({
   return (
     <html
       lang="en"
-      className={`${plusJakartaSans.variable} ${outfit.variable} ${jetbrainsMono.variable} ${rozhaOne.variable}`}
+      className={`${cinzel.variable} ${cormorant.variable} ${notoSerif.variable} ${notoDevanagari.variable}`}
     >
       <body className="min-h-screen flex flex-col justify-between">
         <Navbar />

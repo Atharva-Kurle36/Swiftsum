@@ -61,31 +61,31 @@ export default function StepPlayer({
   const progressPercent = totalSteps > 0 ? (currentStep / totalSteps) * 100 : 0;
 
   return (
-    <div className="w-full bg-[var(--bg-surface)] border border-[var(--border-subtle)] rounded-2xl p-5 shadow-lg space-y-4">
+    <div className="w-full bg-[#FFF9EF] border border-[#C49A45] rounded-2xl p-5 space-y-4">
       
       {/* Top row: Step Counter & Progress bar */}
       <div className="space-y-2.5">
         <div className="flex items-center justify-between text-xs">
           <div className="flex items-center gap-2">
-            <span className="vedic-badge gold text-[11px] font-mono font-bold">
+            <span className="vedic-badge text-[11px] font-mono font-bold bg-[#641E16] text-[#FFF9EF] border border-[#C49A45]">
               Step {currentStep} of {totalSteps}
             </span>
             {currentStep === totalSteps && (
-              <span className="vedic-badge emerald text-[11px] font-semibold">
+              <span className="vedic-badge text-[11px] font-semibold bg-[rgba(79,122,58,0.1)] text-[#4F7A3A] border border-[rgba(79,122,58,0.3)]">
                 Calculation Synthesized
               </span>
             )}
           </div>
-          <span className="font-mono text-xs text-[var(--accent-copper)] font-bold">
+          <span className="font-mono text-xs text-[#641E16] font-bold">
             {Math.round(progressPercent)}%
           </span>
         </div>
 
         {/* Visual Progress & Step Scrubber Bar */}
-        <div className="relative w-full h-3 rounded-full bg-[var(--bg-surface-elevated)] border border-[var(--border-subtle)] overflow-hidden cursor-pointer">
+        <div className="relative w-full h-3 rounded-full bg-[#EDDCB9] border border-[#C49A45] overflow-hidden cursor-pointer">
           <div
-            className="h-full bg-gradient-to-r from-[#F59E0B] via-[#FBBF24] to-[#38BDF8] transition-all duration-300 ease-out"
-            style={{ width: `${progressPercent}%` }}
+            className="h-full transition-all duration-300 ease-out"
+            style={{ width: `${progressPercent}%`, background: 'linear-gradient(90deg,#641E16,#C49A45)' }}
           />
         </div>
 
@@ -99,10 +99,10 @@ export default function StepPlayer({
                 title={`Jump directly to Step ${stepNum}`}
                 className={`w-6 h-6 rounded-md font-mono text-[10px] font-bold cursor-pointer transition-all flex items-center justify-center border ${
                   currentStep === stepNum
-                    ? 'bg-[var(--accent-copper)] text-[#090D16] border-[var(--accent-copper)] shadow-md shadow-[rgba(245,158,11,0.3)] scale-110'
+                    ? 'bg-[#641E16] text-[#FFF9EF] border-[#641E16] scale-110'
                     : stepNum < currentStep
-                    ? 'bg-[var(--bg-surface-elevated)] text-[var(--accent-copper)] border-[var(--border-copper)]'
-                    : 'bg-[var(--bg-surface-subtle)] text-[var(--text-dim)] border-[var(--border-subtle)] hover:text-[var(--text-pure)]'
+                    ? 'bg-[#FAF0DB] text-[#641E16] border-[#C49A45]'
+                    : 'bg-[#FFF9EF] text-[#8C7763] border-[#C49A45] hover:bg-[#FAF0DB]'
                 }`}
               >
                 {stepNum}
@@ -113,14 +113,14 @@ export default function StepPlayer({
       </div>
 
       {/* Control buttons bar */}
-      <div className="flex items-center justify-between gap-3 pt-2 border-t border-[var(--border-subtle)]">
+      <div className="flex items-center justify-between gap-3 pt-2 border-t border-[#C49A45]">
         
         {/* Reset / Beginning */}
         <button
           onClick={onReset}
           disabled={currentStep === 1}
           title="Reset to Step 1"
-          className="p-2.5 rounded-xl bg-[var(--bg-surface-elevated)] border border-[var(--border-subtle)] text-[var(--text-muted)] hover:text-[var(--text-pure)] hover:border-[var(--border-medium)] disabled:opacity-30 disabled:cursor-not-allowed cursor-pointer transition-all"
+          className="p-2.5 rounded-xl bg-[#FFF9EF] border border-[#C49A45] text-[#6B5847] hover:bg-[#FAF0DB] hover:text-[#641E16] disabled:opacity-30 disabled:cursor-not-allowed cursor-pointer transition-all"
         >
           <RotateCcw className="w-4 h-4" />
         </button>
@@ -131,7 +131,7 @@ export default function StepPlayer({
             onClick={handlePrev}
             disabled={currentStep <= 1}
             title="Previous Step"
-            className="px-3.5 py-2 rounded-xl bg-[var(--bg-surface-elevated)] border border-[var(--border-subtle)] text-[var(--text-pure)] hover:border-[var(--accent-copper)] disabled:opacity-30 disabled:cursor-not-allowed cursor-pointer transition-all flex items-center gap-1.5 text-xs font-semibold"
+            className="px-3.5 py-2 rounded-xl bg-[#FFF9EF] border border-[#C49A45] text-[#45352B] hover:bg-[#FAF0DB] disabled:opacity-30 disabled:cursor-not-allowed cursor-pointer transition-all flex items-center gap-1.5 text-xs font-semibold"
           >
             <ChevronLeft className="w-4 h-4" />
             <span className="hidden sm:inline">Previous</span>
@@ -141,9 +141,9 @@ export default function StepPlayer({
           <button
             onClick={onTogglePlay}
             title={isPlaying ? 'Pause Auto-Play' : `Start Auto-Play (${speedLabels[speedMs]})`}
-            className={`px-6 py-2 rounded-xl text-xs sm:text-sm font-bold flex items-center gap-2 cursor-pointer transition-all ${
+            className={`px-6 py-2 rounded-xl text-xs sm:text-sm font-bold flex items-center gap-2 cursor-pointer transition-all border ${
               isPlaying
-                ? 'bg-sky-500 hover:bg-sky-400 text-[#090D16] shadow-lg shadow-sky-500/30'
+                ? 'bg-[#4A1510] text-[#FFF9EF] border-[#4A1510]'
                 : 'btn-vedic-primary'
             }`}
           >
@@ -164,7 +164,7 @@ export default function StepPlayer({
             onClick={handleNext}
             disabled={currentStep >= totalSteps}
             title="Next Step"
-            className="px-3.5 py-2 rounded-xl bg-[var(--bg-surface-elevated)] border border-[var(--border-subtle)] text-[var(--text-pure)] hover:border-[var(--accent-copper)] disabled:opacity-30 disabled:cursor-not-allowed cursor-pointer transition-all flex items-center gap-1.5 text-xs font-semibold"
+            className="px-3.5 py-2 rounded-xl bg-[#FFF9EF] border border-[#C49A45] text-[#45352B] hover:bg-[#FAF0DB] disabled:opacity-30 disabled:cursor-not-allowed cursor-pointer transition-all flex items-center gap-1.5 text-xs font-semibold"
           >
             <span className="hidden sm:inline">Next</span>
             <ChevronRight className="w-4 h-4" />
@@ -175,7 +175,7 @@ export default function StepPlayer({
         <button
           onClick={cycleSpeed}
           title="Click to cycle playback tempo"
-          className="flex items-center gap-1.5 text-[11px] font-mono font-semibold text-[var(--accent-copper)] bg-[var(--bg-surface-elevated)] hover:bg-[var(--bg-surface-hover)] px-3 py-1.5 rounded-lg border border-[var(--border-copper)] cursor-pointer transition-all"
+          className="flex items-center gap-1.5 text-[11px] font-mono font-semibold text-[#641E16] bg-[#FFF9EF] hover:bg-[#FAF0DB] px-3 py-1.5 rounded-lg border border-[#C49A45] cursor-pointer transition-all"
         >
           <Gauge className="w-3.5 h-3.5" />
           <span>{speedLabels[speedMs]}</span>

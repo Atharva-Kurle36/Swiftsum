@@ -101,10 +101,13 @@ export default function Hero() {
   const [activeDemo, setActiveDemo] = useState<DemoCase>(DEMO_CASES[0]);
 
   return (
-    <section className="relative pt-12 pb-20 px-4 sm:px-6 lg:px-8 max-w-7xl mx-auto">
+    <section id="top" className="hero-shell">
       
       {/* Top Banner Tag */}
       <div className="text-center mb-6">
+        <p className="font-mono text-[11px] font-bold tracking-[0.22em] uppercase text-[#8C7763] mb-3">
+          Section 00 — Introduction · Vedic Ganita Observatory
+        </p>
         <motion.div
           initial={{ opacity: 0, y: -8 }}
           animate={{ opacity: 1, y: 0 }}
@@ -124,12 +127,12 @@ export default function Hero() {
           initial={{ opacity: 0, y: 12 }}
           animate={{ opacity: 1, y: 0 }}
           transition={{ duration: 0.6, delay: 0.1 }}
-          className="text-3xl sm:text-5xl md:text-6xl font-serif font-black tracking-tight leading-tight text-[var(--text-pure)]"
+          className="text-3xl sm:text-5xl md:text-6xl font-serif font-black tracking-tight leading-tight text-[#45352B]"
         >
           Ancient Mental Algorithms.{' '}
-          <span className="text-[var(--accent-copper)] relative inline-block">
+          <span className="text-[#641E16] relative inline-block">
             Calculated in Parallel.
-            <span className="absolute -bottom-1 left-0 right-0 h-0.5 bg-[var(--accent-copper)] opacity-70" />
+            <span className="absolute -bottom-1 left-0 right-0 h-0.5 bg-[#641E16] opacity-70" />
           </span>
         </motion.h1>
 
@@ -138,13 +141,13 @@ export default function Hero() {
           initial={{ opacity: 0 }}
           animate={{ opacity: 1 }}
           transition={{ duration: 0.7, delay: 0.2 }}
-          className="mt-6 mb-4 p-4 rounded-xl bg-[var(--bg-surface)] border border-[var(--border-subtle)] max-w-2xl mx-auto text-center"
+          className="mt-6 mb-4 p-4 rounded-xl bg-[#FFF9EF] border border-[#C49A45] max-w-2xl mx-auto text-center"
         >
-          <p className="sanskrit-title text-base sm:text-lg text-[var(--accent-copper)] font-bold tracking-wide">
+          <p className="sanskrit-title text-base sm:text-lg text-[#641E16] font-bold tracking-wide">
             यथा शिखा मयूराणां नागानां मणयो यथा । तद्वद् वेदाङ्गशास्त्राणां गणितं मूर्धनि स्थितम् ॥
           </p>
-          <p className="text-xs text-[var(--text-muted)] italic mt-1 font-sans">
-            "Like the crest on a peacock and the crown jewel on a serpent, mathematics sits supreme at the pinnacle of all Vedic sciences." — <span className="text-[var(--text-pure)] font-medium">Vedāṅga Jyotiṣa (v. 4)</span>
+          <p className="text-xs text-[#6B5847] italic mt-1 font-sans">
+            "Like the crest on a peacock and the crown jewel on a serpent, mathematics sits supreme at the pinnacle of all Vedic sciences." — <span className="text-[#45352B] font-medium">Vedāṅga Jyotiṣa (v. 4)</span>
           </p>
         </motion.div>
 
@@ -152,7 +155,7 @@ export default function Hero() {
           initial={{ opacity: 0, y: 8 }}
           animate={{ opacity: 1, y: 0 }}
           transition={{ duration: 0.6, delay: 0.3 }}
-          className="text-base sm:text-lg text-[var(--text-muted)] max-w-2xl mx-auto leading-relaxed"
+          className="text-base sm:text-lg text-[#45352B] max-w-2xl mx-auto leading-relaxed"
         >
           Vedic mathematics is not rote arithmetic or mystical shortcuts. It is an elegant, positional base-10 algebra designed for lightning-fast mental execution. Step through classical sutras with live vector cross-lines and ground-truth verification.
         </motion.p>
@@ -163,17 +166,17 @@ export default function Hero() {
         initial={{ opacity: 0, y: 20 }}
         animate={{ opacity: 1, y: 0 }}
         transition={{ duration: 0.7, delay: 0.4 }}
-        className="max-w-4xl mx-auto parchment-card p-6 sm:p-8 border border-[var(--border-medium)] bg-[var(--bg-surface)] shadow-2xl mb-14"
+        className="max-w-4xl mx-auto parchment-card p-6 sm:p-8 border border-[#C49A45] bg-[#FFF9EF] shadow-[0_2px_12px_rgba(100,30,22,0.08)] mb-14"
       >
-        <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-4 pb-4 border-b border-[var(--border-subtle)] mb-6">
+        <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-4 pb-4 border-b border-[#C49A45] mb-6">
           <div>
             <div className="flex items-center gap-2">
-              <Zap className="w-4 h-4 text-[var(--accent-copper)]" />
-              <h3 className="font-serif font-extrabold text-lg text-[var(--text-pure)]">
+              <Zap className="w-4 h-4 text-[#641E16]" />
+              <h3 className="font-serif font-extrabold text-lg text-[#641E16]">
                 The Speed of Sutra: Mental Micro-Demonstration
               </h3>
             </div>
-            <p className="text-xs text-[var(--text-muted)] mt-0.5">
+            <p className="text-xs text-[#6B5847] mt-0.5">
               Select an expression below to witness how Vedic principles compress multi-step scratchwork into a single parallel glance.
             </p>
           </div>
@@ -186,8 +189,8 @@ export default function Hero() {
                 onClick={() => setActiveDemo(tc)}
                 className={`px-3 py-1.5 rounded-lg text-xs font-mono font-bold cursor-pointer transition-all border ${
                   activeDemo.id === tc.id
-                    ? 'bg-[var(--accent-copper)] text-[#090D16] border-[var(--accent-copper)] shadow-md shadow-[rgba(245,158,11,0.25)]'
-                    : 'bg-[var(--bg-surface-elevated)] text-[var(--text-muted)] border-[var(--border-subtle)] hover:text-[var(--text-pure)] hover:border-[var(--border-medium)]'
+                    ? 'bg-[#641E16] text-[#FFF9EF] border-[#641E16]'
+                    : 'bg-[#FFF9EF] text-[#45352B] border-[#C49A45] hover:border-[#641E16] hover:text-[#641E16]'
                 }`}
               >
                 {tc.expression}
@@ -207,63 +210,62 @@ export default function Hero() {
             className="grid grid-cols-1 md:grid-cols-2 gap-6 items-stretch"
           >
             {/* Left: Conventional Long-Form Arithmetic */}
-            <div className="p-5 rounded-xl bg-[var(--bg-surface-subtle)] border border-[var(--border-subtle)] flex flex-col justify-between">
+            <div className="p-5 rounded-xl bg-[#FFF9EF] border border-[#C49A45] flex flex-col justify-between">
               <div>
                 <div className="flex items-center justify-between mb-3 text-xs">
-                  <span className="font-semibold uppercase tracking-wider text-[var(--text-dim)]">
+                  <span className="font-semibold uppercase tracking-wider text-[#8C7763]">
                     Conventional Scratchpad
                   </span>
-                  <span className="flex items-center gap-1 font-mono text-[11px] text-rose-400">
+                  <span className="flex items-center gap-1 font-mono text-[11px] text-[#8C2B1B]">
                     <Clock className="w-3.5 h-3.5" />
                     {activeDemo.conventionalTime}
                   </span>
                 </div>
-                <div className="text-2xl font-mono font-bold text-[var(--text-muted)] mb-3">
+                <div className="text-2xl font-mono font-bold text-[#6B5847] mb-3">
                   {activeDemo.expression}
                 </div>
-                <div className="space-y-2 text-xs font-mono text-[var(--text-muted)]">
+                <div className="space-y-2 text-xs font-mono text-[#45352B]">
                   {activeDemo.conventionalSteps.map((step, idx) => (
                     <div key={idx} className="flex items-start gap-2">
-                      <span className="text-[var(--text-dim)] select-none">[{idx + 1}]</span>
+                      <span className="text-[#8C7763] select-none">[{idx + 1}]</span>
                       <span>{step}</span>
                     </div>
                   ))}
                 </div>
               </div>
-              <div className="mt-4 pt-3 border-t border-[var(--border-subtle)] text-[11px] text-[var(--text-dim)]">
+              <div className="mt-4 pt-3 border-t border-[#C49A45] text-[11px] text-[#8C7763]">
                 Requires scratch paper, multiple lines of intermediate products, and sequential column addition.
               </div>
             </div>
 
             {/* Right: Vedic Ganita Mental Sutra */}
-            <div className="p-5 rounded-xl bg-[rgba(245,158,11,0.05)] border border-[var(--border-copper)] flex flex-col justify-between relative overflow-hidden">
-              <div className="absolute top-0 right-0 w-24 h-24 bg-gradient-to-bl from-amber-500/10 to-transparent pointer-events-none" />
+            <div className="p-5 rounded-xl bg-[#FFF9EF] border border-[#C49A45] flex flex-col justify-between relative overflow-hidden">
               <div>
                 <div className="flex items-center justify-between mb-3 text-xs">
-                  <span className="font-semibold uppercase tracking-wider text-[var(--accent-copper)] flex items-center gap-1">
+                  <span className="font-semibold uppercase tracking-wider text-[#641E16] flex items-center gap-1">
                     <Sparkles className="w-3.5 h-3.5" />
                     Vedic Sutra Shortcut
                   </span>
-                  <span className="flex items-center gap-1 font-mono text-[11px] text-emerald-400 font-bold bg-emerald-500/10 px-2 py-0.5 rounded">
+                  <span className="flex items-center gap-1 font-mono text-[11px] text-[#4F7A3A] font-bold bg-[rgba(79,122,58,0.1)] border border-[rgba(79,122,58,0.3)] px-2 py-0.5 rounded">
                     <Clock className="w-3.5 h-3.5" />
                     {activeDemo.vedicTime}
                   </span>
                 </div>
                 <div className="flex items-baseline justify-between mb-3">
-                  <div className="text-3xl font-mono font-black text-[var(--accent-copper)]">
+                  <div className="text-3xl font-mono font-black text-[#641E16]">
                     = {activeDemo.finalAnswer}
                   </div>
-                  <span className="sanskrit-title text-xs text-[var(--text-muted)] font-medium">
+                  <span className="sanskrit-title text-xs text-[#6B5847] font-medium">
                     {activeDemo.sanskrit}
                   </span>
                 </div>
-                <p className="text-xs text-[var(--text-pure)] font-medium mb-3 bg-[var(--bg-surface-elevated)] p-2.5 rounded-lg border border-[var(--border-subtle)]">
+                <p className="text-xs text-[#45352B] font-medium mb-3 bg-[#FAF0DB] p-2.5 rounded-lg border border-[#C49A45]">
                   {activeDemo.vedicInsight}
                 </p>
-                <div className="space-y-2 text-xs font-mono text-[var(--text-pure)]">
+                <div className="space-y-2 text-xs font-mono text-[#45352B]">
                   {activeDemo.vedicSteps.map((step, idx) => (
                     <div key={idx} className="flex items-start gap-2">
-                      <span className="text-[var(--accent-copper)] select-none">✓</span>
+                      <span className="text-[#4F7A3A] select-none">✓</span>
                       <span>{step}</span>
                     </div>
                   ))}
@@ -271,13 +273,13 @@ export default function Hero() {
               </div>
 
               {/* Direct Deep-link to Calculator */}
-              <div className="mt-5 pt-3 border-t border-[var(--border-copper)] flex items-center justify-between">
-                <span className="text-[11px] text-[var(--accent-copper)] font-medium">
+              <div className="mt-5 pt-3 border-t border-[#C49A45] flex items-center justify-between">
+                <span className="text-[11px] text-[#641E16] font-medium">
                   Verified in {activeDemo.name}
                 </span>
                 <Link
                   href={`/calculator?op=${activeDemo.op}&a=${activeDemo.a}${activeDemo.b ? `&b=${activeDemo.b}` : ''}`}
-                  className="text-xs font-bold text-[var(--text-pure)] bg-[var(--bg-surface-elevated)] hover:bg-[var(--accent-copper)] hover:text-[#090D16] px-3 py-1.5 rounded-lg border border-[var(--border-copper)] transition-all flex items-center gap-1 group"
+                  className="text-xs font-bold text-[#641E16] bg-[#FFF9EF] hover:bg-[#641E16] hover:text-[#FFF9EF] px-3 py-1.5 rounded-lg border border-[#C49A45] transition-all flex items-center gap-1 group"
                 >
                   <span>Step Through in Engine</span>
                   <ArrowRight className="w-3.5 h-3.5 group-hover:translate-x-1 transition-transform" />
@@ -288,9 +290,9 @@ export default function Hero() {
         </AnimatePresence>
 
         {/* Global Launch Bar below Demo */}
-        <div className="mt-6 pt-5 border-t border-[var(--border-subtle)] flex flex-col sm:flex-row items-center justify-between gap-4">
-          <div className="flex items-center gap-2 text-xs text-[var(--text-muted)]">
-            <CheckCircle2 className="w-4 h-4 text-emerald-400 flex-shrink-0" />
+        <div className="mt-6 pt-5 border-t border-[#C49A45] flex flex-col sm:flex-row items-center justify-between gap-4">
+          <div className="flex items-center gap-2 text-xs text-[#6B5847]">
+            <CheckCircle2 className="w-4 h-4 text-[#4F7A3A] flex-shrink-0" />
             <span>Full 5-Sutra Suite: Multiplication, Squaring, Subtraction, Division & Divisibility</span>
           </div>
           <Link

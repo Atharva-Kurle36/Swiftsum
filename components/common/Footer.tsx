@@ -3,99 +3,81 @@
 import React from 'react';
 import Link from 'next/link';
 import { BookMarked, Sparkles, Award } from 'lucide-react';
+import { PillarAccent } from '@/components/common/Motifs';
 
 export default function Footer() {
   return (
-    <footer className="mt-20 border-t border-[var(--border-subtle)] bg-[var(--bg-surface)] relative overflow-hidden">
-      <div className="absolute top-0 inset-x-0 h-0.5 bg-gradient-to-r from-transparent via-[var(--accent-copper)] to-transparent opacity-60" />
-      
+    <footer className="no-print" style={{ borderTop: '2px solid #C49A45', background: '#FFF9EF', position: 'relative' }}>
       <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-14">
-        <div className="grid grid-cols-1 md:grid-cols-4 gap-8">
-          
-          {/* Col 1: Overview */}
-          <div className="md:col-span-2 space-y-4">
+        <p className="section-number mb-8 text-center">Colophon · Explore · Treatises</p>
+        <div className="grid grid-cols-1 md:grid-cols-12 gap-8">
+          <div className="md:col-span-5 space-y-4">
             <div className="flex items-center gap-3">
-              <div className="w-8 h-8 rounded-lg bg-gradient-to-br from-[#F59E0B] to-[#B45309] text-[#090D16] flex items-center justify-center font-mono font-black text-xs shadow-md">
-                VG
+              <div className="w-8 h-8 rounded-lg flex items-center justify-center font-black text-xs"
+                style={{ background: '#641E16', color: '#FFF9EF', border: '1px solid #C49A45', fontFamily: 'Cinzel, serif' }}>
+                ॥
               </div>
-              <h3 className="font-serif font-black text-lg text-[var(--text-pure)] tracking-tight">
-                SwiftSum • Vedic Ganita Engine
-              </h3>
+              <h3 className="text-lg">SwiftSum · Vedic Ganita</h3>
             </div>
-            <p className="text-sm text-[var(--text-muted)] max-w-md leading-relaxed">
-              An interactive mathematical exploration system grounded in Indian Knowledge Systems (IKS).
-              Demonstrating the elegance, mental agility, and parallel algorithmic architecture of classical Indian mathematics
-              aligned with NEP 2020 initiatives.
+            <p className="text-sm max-w-md" style={{ lineHeight: 1.8 }}>
+              An academic presentation of Indian Knowledge Systems — five classical sūtras with
+              verifiable computation, prepared for college submission under NEP 2020, Section 4.27.
             </p>
             <div className="flex flex-wrap gap-2 pt-1">
-              <span className="vedic-badge gold text-[11px]">
-                <Award className="w-3.5 h-3.5" /> NEP 2020 Aligned
-              </span>
-              <span className="vedic-badge teal text-[11px]">
-                <Sparkles className="w-3.5 h-3.5" /> 100% Client-Side Engine
-              </span>
-              <span className="vedic-badge emerald text-[11px]">
-                <BookMarked className="w-3.5 h-3.5" /> 5 Classical Sutras
-              </span>
+              <span className="vedic-badge gold text-[11px]"><Award className="w-3.5 h-3.5" /> NEP 2020</span>
+              <span className="vedic-badge teal text-[11px]"><Sparkles className="w-3.5 h-3.5" /> Client-Side</span>
+              <span className="vedic-badge emerald text-[11px]"><BookMarked className="w-3.5 h-3.5" /> 5 Sūtras</span>
             </div>
           </div>
 
-          {/* Col 2: Core Sutras */}
-          <div>
-            <h4 className="font-serif font-bold text-sm text-[var(--text-pure)] mb-4 uppercase tracking-wider">
-              Featured Algorithms
-            </h4>
-            <ul className="space-y-2.5 text-xs text-[var(--text-muted)]">
-              <li>
-                <Link href="/calculator?op=multiplication" className="hover:text-[var(--accent-copper)] transition-colors">
-                  <span className="font-bold text-[var(--text-pure)] block">Ūrdhva-Tiryagbhyām</span>
-                  <span className="text-[11px] text-[var(--text-dim)]">Vertically & Crosswise Multiplication</span>
-                </Link>
-              </li>
-              <li>
-                <Link href="/calculator?op=multiplication&a=98&b=97" className="hover:text-[var(--accent-copper)] transition-colors">
-                  <span className="font-bold text-[var(--text-pure)] block">Nikhilam Navataścaramam</span>
-                  <span className="text-[11px] text-[var(--text-dim)]">Base Deficiency Multiplier</span>
-                </Link>
-              </li>
-              <li>
-                <Link href="/calculator?op=squaring" className="hover:text-[var(--accent-copper)] transition-colors">
-                  <span className="font-bold text-[var(--text-pure)] block">Ekādhikena Pūrveṇa</span>
-                  <span className="text-[11px] text-[var(--text-dim)]">By One More than the Previous</span>
-                </Link>
-              </li>
-              <li>
-                <Link href="/calculator?op=division" className="hover:text-[var(--accent-copper)] transition-colors">
-                  <span className="font-bold text-[var(--text-pure)] block">Nikhilam Vibhāgaḥ</span>
-                  <span className="text-[11px] text-[var(--text-dim)]">Base Deficiency Division</span>
-                </Link>
-              </li>
+          <div className="md:col-span-3">
+            <h4 className="text-sm mb-4 uppercase tracking-wider">Report Sections</h4>
+            <ul className="space-y-2.5 text-xs">
+              {[
+                { href: '/#cover', t: 'Cover Page', s: 'title & submission details' },
+                { href: '/#how-it-works', t: 'Method', s: 'three-stage study loop' },
+                { href: '/#sutras', t: 'Sūtra Chapters', s: 'five classical pillars' },
+                { href: '/#iks-facts', t: 'Archive', s: 'heritage records' },
+                { href: '/#references', t: 'References', s: 'treatises & NEP 2020' },
+                { href: '/calculator', t: 'Calculator', s: 'worked computation' },
+              ].map(l => (
+                <li key={l.href}>
+                  <Link href={l.href} className="transition-colors">
+                    <span className="font-bold block" style={{ color: '#641E16' }}>{l.t}</span>
+                    <span className="text-[11px]" style={{ color: '#8C7763' }}>{l.s}</span>
+                  </Link>
+                </li>
+              ))}
             </ul>
           </div>
 
-          {/* Col 3: Academic Treatises */}
-          <div>
-            <h4 className="font-serif font-bold text-sm text-[var(--text-pure)] mb-4 uppercase tracking-wider">
-              Primary Treatises
-            </h4>
-            <ul className="space-y-2 text-xs text-[var(--text-muted)] font-mono">
-              <li>• Baudhayana Śulba Sūtra (~800 BCE)</li>
-              <li>• Chandaḥ Śāstra by Piṅgala (~300 BCE)</li>
-              <li>• Āryabhaṭīya by Āryabhaṭa (499 CE)</li>
-              <li>• Brāhmasphuṭasiddhānta (628 CE)</li>
-              <li>• Līlāvatī by Bhāskara II (1150 CE)</li>
-              <li>• Vedic Mathematics (Tirthaji, 1965)</li>
+          <div className="md:col-span-2">
+            <h4 className="text-sm mb-4 uppercase tracking-wider">Sūtras</h4>
+            <ul className="space-y-2.5 text-xs">
+              <li><Link href="/calculator?op=multiplication"><span className="font-bold block" style={{ color: '#45352B' }}>Ūrdhva-Tiryagbhyām</span><span className="text-[11px]" style={{ color: '#8C7763' }}>Crosswise ×</span></Link></li>
+              <li><Link href="/calculator?op=multiplication&a=98&b=97"><span className="font-bold block" style={{ color: '#45352B' }}>Nikhilam</span><span className="text-[11px]" style={{ color: '#8C7763' }}>Base deficiency</span></Link></li>
+              <li><Link href="/calculator?op=squaring"><span className="font-bold block" style={{ color: '#45352B' }}>Ekādhikena</span><span className="text-[11px]" style={{ color: '#8C7763' }}>Squaring</span></Link></li>
+              <li><Link href="/calculator?op=division"><span className="font-bold block" style={{ color: '#45352B' }}>Nikhilam Vibhāgaḥ</span><span className="text-[11px]" style={{ color: '#8C7763' }}>Division</span></Link></li>
+            </ul>
+          </div>
+
+          <div className="md:col-span-2">
+            <h4 className="text-sm mb-4 uppercase tracking-wider">Treatises</h4>
+            <ul className="space-y-2 text-xs" style={{ color: '#6B5847' }}>
+              <li>• Śulba Sūtra (~800 BCE)</li>
+              <li>• Chandaḥ Śāstra (~300 BCE)</li>
+              <li>• Āryabhaṭīya (499 CE)</li>
+              <li>• Brāhmasphuṭa (628 CE)</li>
+              <li>• Līlāvatī (1150 CE)</li>
+              <li>• Vedic Maths (1965)</li>
             </ul>
           </div>
         </div>
 
-        <div className="mt-12 pt-6 border-t border-[var(--border-subtle)] flex flex-col sm:flex-row items-center justify-between text-xs text-[var(--text-dim)] gap-4">
-          <p>© 2026 SwiftSum • Indian Knowledge Systems Courseware Architecture</p>
-          <div className="flex items-center gap-6">
-            <Link href="/" className="hover:text-[var(--accent-copper)] transition-colors">Lore & Sutras</Link>
-            <Link href="/calculator" className="hover:text-[var(--accent-copper)] transition-colors">Calculator Workspace</Link>
-            <span className="sanskrit-title text-[var(--accent-copper)] text-sm tracking-wide font-bold">गणितं मूर्धनि स्थितम्</span>
-          </div>
+        <div className="mt-12 pt-6 flex flex-col sm:flex-row items-center justify-between text-xs gap-4" style={{ borderTop: '1px solid #C49A45', color: '#8C7763' }}>
+          <p>© 2026 SwiftSum · IKS Course Submission</p>
+          <PillarAccent />
+          <span className="sanskrit-title" style={{ color: '#641E16', fontWeight: 700 }}>गणितं मूर्धनि स्थितम्</span>
         </div>
       </div>
     </footer>

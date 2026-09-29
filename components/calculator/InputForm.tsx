@@ -77,26 +77,26 @@ export default function InputForm({
   };
 
   return (
-    <div className="parchment-card p-6 border border-[var(--border-medium)] bg-[var(--bg-surface)] shadow-lg space-y-6">
+    <div className="parchment-card p-6 border border-[#C49A45] bg-[#FFF9EF] space-y-6">
       
       {/* Header */}
-      <div className="flex items-center justify-between pb-3 border-b border-[var(--border-subtle)]">
+      <div className="flex items-center justify-between pb-3 border-b border-[#C49A45]">
         <div>
-          <h3 className="font-serif font-black text-base text-[var(--text-pure)] tracking-tight">
+          <h3 className="font-serif font-black text-base text-[#641E16] tracking-tight">
             Input Coordinate Parameters
           </h3>
-          <p className="text-xs text-[var(--text-muted)] mt-0.5">
+          <p className="text-xs text-[#6B5847] mt-0.5">
             Enter whole numbers or select an algorithmic textbook preset
           </p>
         </div>
-        <span className="vedic-badge gold text-[10px]">
+        <span className="vedic-badge text-[10px] bg-[#FAF0DB] text-[#641E16] border border-[#C49A45]">
           Live Mode
         </span>
       </div>
 
       {/* Preset Pills */}
       <div>
-        <span className="text-[10px] font-mono font-bold text-[var(--accent-copper)] uppercase tracking-wider block mb-2">
+        <span className="text-[10px] font-mono font-bold text-[#9A7730] uppercase tracking-wider block mb-2">
           Demonstration Presets:
         </span>
         <div className="flex flex-wrap gap-2">
@@ -110,8 +110,8 @@ export default function InputForm({
                 onClick={() => handleSelectPreset(preset)}
                 className={`px-3 py-1.5 rounded-lg text-xs font-mono font-bold cursor-pointer transition-all border ${
                   isSelected
-                    ? 'bg-[var(--accent-copper)] text-[#090D16] border-[var(--accent-copper)] shadow-sm'
-                    : 'bg-[var(--bg-surface-elevated)] text-[var(--text-pure)] border-[var(--border-subtle)] hover:border-[var(--accent-copper)]'
+                    ? 'bg-[#641E16] text-[#FFF9EF] border-[#641E16]'
+                    : 'bg-[#FFF9EF] text-[#45352B] border-[#C49A45] hover:bg-[#FAF0DB]'
                 }`}
               >
                 {preset.label || label}
@@ -125,38 +125,38 @@ export default function InputForm({
       <form onSubmit={validateAndSubmit} className="space-y-4">
         {/* Input A */}
         <div>
-          <label className="flex items-center justify-between text-xs font-semibold text-[var(--text-pure)] mb-1.5">
+          <label className="flex items-center justify-between text-xs font-semibold text-[#45352B] mb-1.5">
             <span>{config.labelA}</span>
-            <span className="text-[11px] text-[var(--text-dim)] font-mono">Digits only</span>
+            <span className="text-[11px] text-[#8C7763] font-mono">Digits only</span>
           </label>
           <input
             type="text"
             value={valA}
             onChange={e => setValA(e.target.value)}
             placeholder={config.placeholderA || "e.g. 98"}
-            className="w-full"
+            className="w-full bg-[#FFFEF9] border-[#C49A45] text-[#45352B]"
           />
           {errorA && (
-            <p className="text-xs text-rose-400 mt-1 font-medium">{errorA}</p>
+            <p className="text-xs text-[#8C2B1B] mt-1 font-medium">{errorA}</p>
           )}
         </div>
 
         {/* Input B (if required) */}
         {config.requiresSecondInput && config.labelB && (
           <div>
-            <label className="flex items-center justify-between text-xs font-semibold text-[var(--text-pure)] mb-1.5">
+            <label className="flex items-center justify-between text-xs font-semibold text-[#45352B] mb-1.5">
               <span>{config.labelB}</span>
-              <span className="text-[11px] text-[var(--text-dim)] font-mono">Digits only</span>
+              <span className="text-[11px] text-[#8C7763] font-mono">Digits only</span>
             </label>
             <input
               type="text"
               value={valB}
               onChange={e => setValB(e.target.value)}
               placeholder={config.placeholderB || "e.g. 97"}
-              className="w-full"
+              className="w-full bg-[#FFFEF9] border-[#C49A45] text-[#45352B]"
             />
             {errorB && (
-              <p className="text-xs text-rose-400 mt-1 font-medium">{errorB}</p>
+              <p className="text-xs text-[#8C2B1B] mt-1 font-medium">{errorB}</p>
             )}
           </div>
         )}
@@ -166,9 +166,9 @@ export default function InputForm({
           type="submit"
           className="btn-vedic-primary w-full !py-3 text-sm font-bold flex items-center justify-center gap-2 mt-2"
         >
-          <Calculator className="w-4 h-4 text-[#090D16]" />
+          <Calculator className="w-4 h-4" />
           <span>Execute Vedic Algorithm</span>
-          <ArrowRight className="w-4 h-4 text-[#090D16]" />
+          <ArrowRight className="w-4 h-4" />
         </button>
       </form>
     </div>

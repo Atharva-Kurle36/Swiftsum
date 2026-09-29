@@ -2,7 +2,8 @@
 
 import React from 'react';
 import Link from 'next/link';
-import { ArrowRight, Calculator, CheckCircle2, Cpu, Sparkles } from 'lucide-react';
+import { ArrowRight, Calculator } from 'lucide-react';
+import SectionHeading from '@/components/common/SectionHeading';
 
 interface SutraCardInfo {
   id: string;
@@ -82,64 +83,58 @@ const SUTRA_LIST: SutraCardInfo[] = [
 
 export default function SutraCatalog() {
   return (
-    <section id="sutras" className="py-20 px-4 sm:px-6 lg:px-8 max-w-7xl mx-auto">
-      
+    <section id="sutras" className="section-shell">
+      <div className="section-inner">
       {/* Section Header */}
-      <div className="text-center mb-14">
-        <div className="inline-flex items-center gap-2 mb-3">
-          <span className="vedic-badge teal">
-            <Cpu className="w-3.5 h-3.5" /> Core Algorithms
-          </span>
-        </div>
-        <h2 className="text-3xl sm:text-4xl font-serif font-black text-[var(--text-pure)] tracking-tight">
-          The Five Classical Computational Pillars
-        </h2>
-        <p className="text-sm sm:text-base text-[var(--text-muted)] max-w-2xl mx-auto mt-2.5">
-          Each technique demonstrates an algebraic shortcut derived from classical Sanskrit aphorisms, 
-          backed by complete proofs and animated digit-level visualizers.
-        </p>
-      </div>
+      <SectionHeading
+        kicker="Section 02 — Sūtra Library"
+        eyebrow="Core Algorithms · 5 Pillars"
+        eyebrowTone="teal"
+        title="The Five Classical"
+        highlight="Computational Pillars"
+        description="Each technique distills a Sanskrit aphorism into parallel digit geometry — backed by proofs, presets and animated visualizers."
+      />
 
       {/* Grid of 5 Sutras */}
       <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
         {SUTRA_LIST.map((sutra) => (
           <div
             key={sutra.id}
-            className="parchment-card p-6 flex flex-col justify-between border border-[var(--border-subtle)] hover:border-[var(--border-copper)] transition-all group"
+            className="parchment-card p-6 flex flex-col justify-between border border-[#C49A45] !bg-[#FFF9EF] hover:border-[#641E16] transition-all group"
           >
             <div>
               {/* Header Badges */}
               <div className="flex items-center justify-between gap-2 mb-4">
-                <span className="vedic-badge gold text-[10px]">
+                <span className="vedic-badge gold text-[10px] !bg-[#641E16] !text-[#FFF9EF] !border-[#641E16]">
                   {sutra.operation}
                 </span>
-                <span className="font-mono text-[10px] text-[var(--accent-lapis)] bg-[rgba(56,189,248,0.08)] px-2 py-0.5 rounded border border-[rgba(56,189,248,0.2)]">
+                <span className="font-mono text-[10px] text-[#45352B] bg-[rgba(196,154,69,0.12)] px-2 py-0.5 rounded border border-[#C49A45]">
                   {sutra.complexity}
                 </span>
               </div>
 
               {/* Title & Authentic Devanagari */}
-              <h3 className="font-serif font-bold text-lg text-[var(--text-pure)] mb-1 group-hover:text-[var(--accent-copper)] transition-colors">
+              <h3 className="font-serif font-bold text-lg text-[#641E16] mb-1 group-hover:text-[#641E16] transition-colors">
                 {sutra.name}
               </h3>
-              <p className="sanskrit-title text-sm text-[var(--accent-copper)] mb-1 font-bold">
+              <p className="sanskrit-title text-sm text-[#9A7730] mb-1 font-bold">
                 {sutra.sanskritDevanagari}
               </p>
-              <p className="text-xs text-[var(--text-dim)] italic mb-4">
+              <p className="text-xs text-[#8C7763] italic mb-4">
                 "{sutra.meaning}"
               </p>
 
               {/* Description */}
-              <p className="text-xs sm:text-sm text-[var(--text-muted)] leading-relaxed mb-5">
+              <p className="text-xs sm:text-sm text-[#45352B] leading-relaxed mb-5">
                 {sutra.description}
               </p>
 
               {/* Example box */}
-              <div className="p-3.5 rounded-xl bg-[var(--bg-surface-subtle)] border border-[var(--border-subtle)] mb-6">
-                <span className="text-[10px] font-semibold text-[var(--accent-copper)] uppercase tracking-wider block mb-1">
+              <div className="p-3.5 rounded-xl bg-[#FAF0DB] border border-[#C49A45] mb-6">
+                <span className="text-[10px] font-semibold text-[#641E16] uppercase tracking-wider block mb-1">
                   Demonstration Preset
                 </span>
-                <span className="font-mono text-xs sm:text-sm font-bold text-[var(--text-pure)]">
+                <span className="font-mono text-xs sm:text-sm font-bold text-[#45352B]">
                   {sutra.example}
                 </span>
               </div>
@@ -148,40 +143,41 @@ export default function SutraCatalog() {
             {/* Launch CTA */}
             <Link
               href={`/calculator?op=${sutra.id}&a=${sutra.defaultInputs.a}${sutra.defaultInputs.b ? `&b=${sutra.defaultInputs.b}` : ''}`}
-              className="btn-vedic-secondary !py-2.5 !px-4 text-xs font-semibold flex items-center justify-between w-full group/btn"
+              className="btn-vedic-secondary !py-2.5 !px-4 !bg-[#FFF9EF] !text-[#641E16] !border-[#C49A45] text-xs font-semibold flex items-center justify-between w-full group/btn"
             >
-              <span className="flex items-center gap-1.5 text-[var(--text-pure)]">
-                <Calculator className="w-3.5 h-3.5 text-[var(--accent-copper)]" />
+              <span className="flex items-center gap-1.5 text-[#641E16]">
+                <Calculator className="w-3.5 h-3.5 text-[#641E16]" />
                 <span>Open in Calculator</span>
               </span>
-              <ArrowRight className="w-3.5 h-3.5 group-hover/btn:translate-x-1 transition-transform text-[var(--accent-copper)]" />
+              <ArrowRight className="w-3.5 h-3.5 group-hover/btn:translate-x-1 transition-transform text-[#641E16]" />
             </Link>
           </div>
         ))}
 
         {/* 6th Tile: Systematic IKS Pedagogy Summary */}
-        <div className="parchment-card p-6 flex flex-col justify-between border border-dashed border-[var(--border-medium)] bg-[rgba(245,158,11,0.03)]">
+        <div className="parchment-card p-6 flex flex-col justify-between border border-dashed border-[#C49A45] bg-[#FAF0DB]">
           <div>
             <div className="flex items-center gap-2 mb-4">
-              <span className="vedic-badge text-[10px] text-emerald-400 border-emerald-500/30 bg-emerald-500/10">
+              <span className="vedic-badge text-[10px] text-[#4F7A3A] border-[rgba(79,122,58,0.3)] bg-[rgba(79,122,58,0.1)]">
                 NEP 2020 Aligned
               </span>
             </div>
-            <h3 className="font-serif font-bold text-lg text-[var(--text-pure)] mb-2">
+            <h3 className="font-serif font-bold text-lg text-[#641E16] mb-2">
               Why Vedic Math in Modern Curricula?
             </h3>
-            <p className="text-xs sm:text-sm text-[var(--text-muted)] leading-relaxed mb-4">
+            <p className="text-xs sm:text-sm text-[#45352B] leading-relaxed mb-4">
               NEP 2020 Section 4.27 highlights incorporating Indian Knowledge Systems into contemporary STEM. Vedic mathematics fosters mental flexibility, pattern recognition, and eliminates math phobia by turning arithmetic into visual geometry.
             </p>
           </div>
           <a
             href="#nep-context"
-            className="text-xs font-semibold text-[var(--accent-copper)] hover:text-amber-300 flex items-center gap-1.5"
+            className="text-xs font-semibold text-[#641E16] hover:text-[#9A7730] flex items-center gap-1.5"
           >
             <span>Read Curriculum Context</span>
             <ArrowRight className="w-3.5 h-3.5" />
           </a>
         </div>
+      </div>
       </div>
     </section>
   );
