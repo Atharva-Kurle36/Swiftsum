@@ -271,6 +271,7 @@ function LiveBook({ targetRef }: AncientBookProps) {
         <FlipLeaf progress={scrollYProgress} range={LEAF_RANGES[0]} zTop={10} zRest={0}
           label="SwiftSum manuscript cover" leafClass="ab-coverleaf"
           frontClass="ab-coverface ab-coverfull" backClass="ab-coverback"
+          hideWhenFlipped={true}
           front={
             <div className="ab-cover-frame">
               <LotusMini />
@@ -303,6 +304,7 @@ function FlipLeaf(props: {
   frontClass: string;
   backClass: string;
   leafClass?: string;
+  hideWhenFlipped?: boolean;
   front: React.ReactNode;
   back: React.ReactNode;
 }) {
