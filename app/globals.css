@@ -767,6 +767,154 @@ input[type="text"]:focus, input[type="number"]:focus { border-color: var(--royal
   background: radial-gradient(ellipse at center, rgba(255,249,239,0.94) 26%, rgba(255,249,239,0.62) 58%, rgba(255,249,239,0.12) 100%);
 }
 
+/* 3D Interactive Symbols & Headers in Palace Backdrop — 100% Glitch-Free */
+.ab-symbol-3d {
+  cursor: pointer;
+  pointer-events: auto;
+  transition: filter 0.3s ease, opacity 0.3s ease;
+}
+
+.ab-symbol-3d:hover {
+  filter: drop-shadow(0 0 16px rgba(233, 185, 78, 1)) drop-shadow(0 0 28px rgba(196, 154, 69, 0.75));
+  opacity: 1 !important;
+}
+
+/* Header Title Pop-up */
+.ab-header-popup {
+  cursor: pointer;
+  pointer-events: auto;
+  transition: filter 0.3s ease;
+}
+
+.ab-header-popup:hover {
+  filter: drop-shadow(0 0 16px rgba(233, 185, 78, 1)) drop-shadow(0 0 24px rgba(196, 154, 69, 0.8));
+}
+
+.ab-header-plate {
+  opacity: 0;
+  fill: #FFF9EF;
+  stroke: #C49A45;
+  stroke-width: 1.5;
+  filter: drop-shadow(0 4px 12px rgba(69, 53, 43, 0.25));
+  transition: opacity 0.25s ease;
+  pointer-events: none;
+}
+
+.ab-header-popup:hover .ab-header-plate {
+  opacity: 0.98;
+}
+
+.ab-header-popup text {
+  transition: fill 0.25s ease;
+}
+
+.ab-header-popup:hover text {
+  fill: #4A130E;
+}
+
+/* Individual Glyph Pop-up */
+.ab-glyph-popup {
+  cursor: pointer;
+  pointer-events: auto;
+  transition: filter 0.25s ease;
+}
+
+.ab-glyph-popup:hover {
+  filter: drop-shadow(0 0 14px rgba(233, 185, 78, 1)) drop-shadow(0 0 20px rgba(196, 154, 69, 0.85));
+}
+
+.ab-glyph-halo {
+  opacity: 0;
+  fill: #FFF9EF;
+  stroke: #C49A45;
+  stroke-width: 1.2;
+  filter: drop-shadow(0 2px 8px rgba(69, 53, 43, 0.2));
+  transition: opacity 0.2s ease;
+  pointer-events: none;
+}
+
+.ab-glyph-popup:hover .ab-glyph-halo {
+  opacity: 0.98;
+}
+
+.ab-glyph-popup text {
+  transition: fill 0.2s ease;
+}
+
+.ab-glyph-popup:hover text {
+  fill: #4A130E !important;
+}
+
+.ab-symbol-plate {
+  opacity: 0;
+  fill: #FFF9EF;
+  stroke: #C49A45;
+  stroke-width: 1.4;
+  filter: drop-shadow(0 6px 16px rgba(69, 53, 43, 0.25));
+  transition: opacity 0.3s ease;
+  pointer-events: none;
+}
+
+.ab-symbol-3d:hover .ab-symbol-plate {
+  opacity: 0.98;
+}
+
+
+
+/* Sacred Geometry Continuous In-Place Spins */
+@keyframes ab-rotate-cw {
+  from { transform: rotate(0deg); }
+  to { transform: rotate(360deg); }
+}
+
+@keyframes ab-rotate-ccw {
+  from { transform: rotate(0deg); }
+  to { transform: rotate(-360deg); }
+}
+
+@keyframes ab-celestial-pulse {
+  0%, 100% { transform: scale(1); opacity: 0.9; }
+  50% { transform: scale(1.08); opacity: 1; filter: drop-shadow(0 0 10px rgba(233,185,78,0.8)); }
+}
+
+.ab-spin-cw {
+  transform-origin: 0px 0px;
+  animation: ab-rotate-cw 22s linear infinite;
+}
+
+.ab-spin-ccw {
+  transform-origin: 0px 0px;
+  animation: ab-rotate-ccw 16s linear infinite;
+}
+
+.ab-spin-slow {
+  transform-origin: 0px 0px;
+  animation: ab-rotate-cw 34s linear infinite;
+}
+
+.ab-spin-celestial {
+  transform-origin: 0px -6px;
+  animation: ab-rotate-cw 28s linear infinite;
+}
+
+.ab-pulse-star {
+  transform-origin: 0px -6px;
+  animation: ab-celestial-pulse 3.5s ease-in-out infinite;
+}
+
+@keyframes ab-float-gentle {
+  0%, 100% { transform: translateY(0px); }
+  50% { transform: translateY(-5px); }
+}
+
+.ab-meru-float {
+  animation: ab-float-gentle 3.6s ease-in-out infinite;
+}
+
+
+
+
+
 /* ===== Chapter scrollytelling stack ===== */
 .ch-stack { display: flex; flex-direction: column; position: relative; }
 /* Step 3.3: panels overlay — the first defines the height, the rest stack

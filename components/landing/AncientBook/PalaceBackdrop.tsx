@@ -5,21 +5,17 @@ import React from 'react';
 /**
  * Rich backdrop for the pinned hero: geometric jaali lattice, cusped-arch frames,
  * hanging-lantern glows, and authentic Ancient Indian Mathematics (Gaṇita) &
- * Astrology/Astronomy (Jyotiṣa) manuscript diagrams.
+ * Astrology/Astronomy (Jyotiṣa) manuscript diagrams with continuous sacred celestial rotations.
  */
 export default function PalaceBackdrop() {
   return (
     <div className="ab-palace" aria-hidden="true">
       <div className="ab-palace-base" />
       <div className="ab-palace-lattice" />
-      <svg className="ab-palace-arches" viewBox="0 0 1200 760" preserveAspectRatio="xMidYMid slice">
-        <defs>
-          <radialGradient id="starGlow" cx="50%" cy="50%" r="50%">
-            <stop offset="0%" stopColor="#C49A45" stopOpacity="0.8" />
-            <stop offset="100%" stopColor="#9A7730" stopOpacity="0" />
-          </radialGradient>
-        </defs>
+      <div className="ab-palace-glow" />
+      <div className="ab-palace-scrim" />
 
+      <svg className="ab-palace-arches" viewBox="0 0 1200 760" preserveAspectRatio="xMidYMid slice" style={{ position: 'relative', zIndex: 2 }}>
         {/* ── Left cusped arch frame ── */}
         <g fill="none" stroke="#9A7730" strokeWidth="2.5" opacity="0.55">
           <path d="M60 720 L60 300 Q60 220 118 176 Q138 108 150 40 Q162 108 182 176 Q240 220 240 300 L240 720" />
@@ -37,93 +33,161 @@ export default function PalaceBackdrop() {
         {/* ══════════════════════════════════════════════════════════════════
             LEFT SIDE: GAṆITA (ANCIENT INDIAN MATHEMATICS & VEDIC GEOMETRY)
            ══════════════════════════════════════════════════════════════════ */}
-        <g opacity="0.75">
-          {/* Top Label */}
-          <text x="150" y="145" textAnchor="middle" fill="#9A7730" fontSize="10" letterSpacing="3" fontFamily="var(--font-title)" fontWeight="bold" opacity="0.85">
-            ॥ गणित शास्त्रम् ॥
-          </text>
-
-          {/* 1. Meru Prastāra (Pingala's Combinatorial Pyramid / Pascal's Triangle) */}
-          <g transform="translate(150, 215)">
-            <g fill="none" stroke="#9A7730" strokeWidth="1">
-              {/* Row 1 */}
-              <polygon points="0,-28 10,-16 0,-4 -10,-16" stroke="#641E16" strokeWidth="1.2" />
-              {/* Row 2 */}
-              <polygon points="-16,-10 -6,2 -16,14 -26,2" />
-              <polygon points="16,-10 26,2 16,14 6,2" />
-              {/* Row 3 */}
-              <polygon points="-32,8 -22,20 -32,32 -42,20" />
-              <polygon points="0,8 10,20 0,32 -10,20" stroke="#641E16" strokeWidth="1.2" />
-              <polygon points="32,8 42,20 32,32 22,20" />
-              {/* Connecting lines */}
-              <line x1="0" y1="-4" x2="-16" y2="8" strokeDasharray="2 2" />
-              <line x1="0" y1="-4" x2="16" y2="8" strokeDasharray="2 2" />
-              <line x1="-16" y1="14" x2="-32" y2="26" strokeDasharray="2 2" />
-              <line x1="-16" y1="14" x2="0" y2="26" strokeDasharray="2 2" />
-              <line x1="16" y1="14" x2="0" y2="26" strokeDasharray="2 2" />
-              <line x1="16" y1="14" x2="32" y2="26" strokeDasharray="2 2" />
-            </g>
-            {/* Pingala numerals */}
-            <text x="0" y="-13" textAnchor="middle" fill="#641E16" fontSize="8" fontFamily="var(--font-sanskrit)" fontWeight="bold">१</text>
-            <text x="-16" y="5" textAnchor="middle" fill="#9A7730" fontSize="7" fontFamily="var(--font-sanskrit)">१</text>
-            <text x="16" y="5" textAnchor="middle" fill="#9A7730" fontSize="7" fontFamily="var(--font-sanskrit)">१</text>
-            <text x="-32" y="23" textAnchor="middle" fill="#9A7730" fontSize="7" fontFamily="var(--font-sanskrit)">१</text>
-            <text x="0" y="23" textAnchor="middle" fill="#641E16" fontSize="8" fontFamily="var(--font-sanskrit)" fontWeight="bold">२</text>
-            <text x="32" y="23" textAnchor="middle" fill="#9A7730" fontSize="7" fontFamily="var(--font-sanskrit)">१</text>
-            <text x="0" y="44" textAnchor="middle" fill="#9A7730" fontSize="7" letterSpacing="1" fontFamily="var(--font-title)" opacity="0.8">मेरु प्रस्तार</text>
+        <g>
+          {/* Top Section Header */}
+          <g className="ab-header-popup" transform="translate(150, 120)">
+            <rect x="-84" y="-18" width="168" height="36" fill="transparent" />
+            <rect className="ab-header-plate" x="-78" y="-14" width="156" height="28" rx="6" />
+            <text x="0" y="4" textAnchor="middle" fill="#641E16" fontSize="11" letterSpacing="3" fontFamily="var(--font-title)" fontWeight="bold">
+              ॥ गणित शास्त्रम् ॥
+            </text>
           </g>
 
-          {/* 2. Aryabhata Trigonometric Quadrant (Jyā, Kotijyā, Utkrama-jyā / Sine Chord Arc) */}
-          <g transform="translate(150, 365)">
+          {/* 1. Meru Prastāra (Pingala's Combinatorial Pyramid) — ROTATING MANDALA & FLOATING PYRAMID */}
+          <g className="ab-symbol-3d" transform="translate(150, 245)">
+            <rect x="-60" y="-45" width="120" height="135" fill="transparent" />
+            <rect className="ab-symbol-plate" x="-58" y="-42" width="116" height="130" rx="8" />
+
+            {/* Outer rotating Meru Chakra mandala */}
+            <g className="ab-spin-slow" fill="none">
+              <circle cx="0" cy="0" r="38" stroke="#9A7730" strokeWidth="1" strokeDasharray="3 3" opacity="0.45" />
+              <polygon points="0,-38 27,-27 38,0 27,27 0,38 -27,27 -38,0 -27,-27" stroke="#C49A45" strokeWidth="0.8" opacity="0.6" />
+              <circle cx="0" cy="-38" r="1.8" fill="#641E16" />
+              <circle cx="38" cy="0" r="1.8" fill="#641E16" />
+              <circle cx="0" cy="38" r="1.8" fill="#641E16" />
+              <circle cx="-38" cy="0" r="1.8" fill="#641E16" />
+            </g>
+
+            {/* Inner counter-rotating harmonics */}
+            <g className="ab-spin-ccw" fill="none">
+              <circle cx="0" cy="0" r="22" stroke="#9A7730" strokeWidth="0.8" strokeDasharray="2 2" opacity="0.5" />
+              <line x1="-38" y1="0" x2="38" y2="0" stroke="#C49A45" strokeWidth="0.6" strokeDasharray="3 3" opacity="0.5" />
+              <line x1="0" y1="-38" x2="0" y2="38" stroke="#C49A45" strokeWidth="0.6" strokeDasharray="3 3" opacity="0.5" />
+            </g>
+
+            {/* Floating Diamond Pyramid with Pingala Numerals */}
+            <g className="ab-meru-float">
+              <g fill="none" stroke="#9A7730" strokeWidth="1">
+                <polygon points="0,-28 10,-16 0,-4 -10,-16" stroke="#641E16" strokeWidth="1.3" fill="rgba(247,236,210,0.4)" />
+                <polygon points="-16,-10 -6,2 -16,14 -26,2" fill="rgba(247,236,210,0.3)" />
+                <polygon points="16,-10 26,2 16,14 6,2" fill="rgba(247,236,210,0.3)" />
+                <polygon points="-32,8 -22,20 -32,32 -42,20" fill="rgba(247,236,210,0.2)" />
+                <polygon points="0,8 10,20 0,32 -10,20" stroke="#641E16" strokeWidth="1.3" fill="rgba(247,236,210,0.5)" />
+                <polygon points="32,8 42,20 32,32 22,20" fill="rgba(247,236,210,0.2)" />
+                <line x1="0" y1="-4" x2="-16" y2="8" strokeDasharray="2 2" stroke="#C49A45" />
+                <line x1="0" y1="-4" x2="16" y2="8" strokeDasharray="2 2" stroke="#C49A45" />
+                <line x1="-16" y1="14" x2="-32" y2="26" strokeDasharray="2 2" stroke="#C49A45" />
+                <line x1="-16" y1="14" x2="0" y2="26" strokeDasharray="2 2" stroke="#C49A45" />
+                <line x1="16" y1="14" x2="0" y2="26" strokeDasharray="2 2" stroke="#C49A45" />
+                <line x1="16" y1="14" x2="32" y2="26" strokeDasharray="2 2" stroke="#C49A45" />
+              </g>
+              <text x="0" y="-13" textAnchor="middle" fill="#641E16" fontSize="8.5" fontFamily="var(--font-sanskrit)" fontWeight="bold">१</text>
+              <text x="-16" y="5" textAnchor="middle" fill="#9A7730" fontSize="7.5" fontFamily="var(--font-sanskrit)">१</text>
+              <text x="16" y="5" textAnchor="middle" fill="#9A7730" fontSize="7.5" fontFamily="var(--font-sanskrit)">१</text>
+              <text x="-32" y="23" textAnchor="middle" fill="#9A7730" fontSize="7.5" fontFamily="var(--font-sanskrit)">१</text>
+              <text x="0" y="23" textAnchor="middle" fill="#641E16" fontSize="9" fontFamily="var(--font-sanskrit)" fontWeight="bold">२</text>
+              <text x="32" y="23" textAnchor="middle" fill="#9A7730" fontSize="7.5" fontFamily="var(--font-sanskrit)">१</text>
+            </g>
+
+            <text x="0" y="56" textAnchor="middle" fill="#641E16" fontSize="8" letterSpacing="1" fontFamily="var(--font-title)" fontWeight="bold">मेरु प्रस्तार</text>
+            <text x="0" y="72" textAnchor="middle" fill="#9A7730" fontSize="6.5" fontFamily="var(--font-sans)">पिङ्गल · Combinatorics</text>
+          </g>
+
+          {/* 2. Aryabhata Trigonometric Quadrant (Jyā, Kotijyā / Sine Chord Arc) */}
+          <g className="ab-symbol-3d" transform="translate(150, 415)">
+            <rect x="-60" y="-55" width="120" height="145" fill="transparent" />
+            <rect className="ab-symbol-plate" x="-58" y="-52" width="116" height="140" rx="8" />
+
+            {/* Rotating celestial circle & chords */}
+            <g className="ab-spin-slow" fill="none">
+              <circle cx="0" cy="0" r="40" stroke="#9A7730" strokeDasharray="3 3" opacity="0.4" />
+              <line x1="0" y1="0" x2="-34.6" y2="-20" stroke="#C49A45" strokeWidth="1.3" />
+              <line x1="0" y1="0" x2="-20" y2="-34.6" stroke="#C49A45" strokeWidth="1.3" />
+              <circle cx="-34.6" cy="-20" r="2.5" fill="#C49A45" />
+              <circle cx="-20" cy="-34.6" r="2.5" fill="#C49A45" />
+            </g>
+
             <g fill="none" stroke="#9A7730" strokeWidth="1.1">
-              {/* Quadrant arc and axes */}
-              <circle cx="0" cy="0" r="42" strokeDasharray="2 2" opacity="0.4" />
-              <path d="M-42 0 A42 42 0 0 1 0 -42" stroke="#641E16" strokeWidth="1.5" />
-              <line x1="-48" y1="0" x2="6" y2="0" stroke="#9A7730" strokeWidth="1.2" />
-              <line x1="0" y1="-48" x2="0" y2="6" stroke="#9A7730" strokeWidth="1.2" />
-              {/* Radius vector to 30 deg */}
-              <line x1="0" y1="0" x2="-36.37" y2="-21" stroke="#C49A45" strokeWidth="1.2" />
-              {/* Radius vector to 60 deg */}
-              <line x1="0" y1="0" x2="-21" y2="-36.37" stroke="#C49A45" strokeWidth="1.2" />
-              {/* Sine / Jyā vertical and horizontal dropped chords */}
-              <line x1="-36.37" y1="-21" x2="-36.37" y2="0" stroke="#641E16" strokeWidth="1" strokeDasharray="2 2" />
-              <line x1="-21" y1="-36.37" x2="0" y2="-36.37" stroke="#641E16" strokeWidth="1" strokeDasharray="2 2" />
-              <line x1="-36.37" y1="-21" x2="0" y2="-21" stroke="#9A7730" strokeWidth="0.8" strokeDasharray="2 2" />
-              {/* Center Bindu */}
-              <circle cx="0" cy="0" r="2.5" fill="#641E16" />
-              <circle cx="-36.37" cy="-21" r="2" fill="#C49A45" />
-              <circle cx="-21" cy="-36.37" r="2" fill="#C49A45" />
+              <path d="M-40 0 A40 40 0 0 1 0 -40" stroke="#641E16" strokeWidth="1.6" />
+              <line x1="-46" y1="0" x2="6" y2="0" stroke="#9A7730" strokeWidth="1.2" />
+              <line x1="0" y1="-46" x2="0" y2="6" stroke="#9A7730" strokeWidth="1.2" />
+              <line x1="-34.6" y1="-20" x2="-34.6" y2="0" stroke="#641E16" strokeWidth="1.2" strokeDasharray="2 2" />
+              <line x1="-20" y1="-34.6" x2="0" y2="-34.6" stroke="#641E16" strokeWidth="1.2" strokeDasharray="2 2" />
+              <line x1="-34.6" y1="-20" x2="0" y2="-20" stroke="#9A7730" strokeWidth="0.8" strokeDasharray="2 2" />
+              <circle cx="0" cy="0" r="3" fill="#641E16" stroke="#C49A45" strokeWidth="1" />
             </g>
-            <text x="0" y="20" textAnchor="middle" fill="#9A7730" fontSize="7" letterSpacing="1" fontFamily="var(--font-title)" opacity="0.8">ज्या · कोटिज्या (आर्यभट)</text>
+
+            <text x="0" y="56" textAnchor="middle" fill="#641E16" fontSize="8" letterSpacing="1" fontFamily="var(--font-title)" fontWeight="bold">ज्या · कोटिज्या</text>
+            <text x="0" y="72" textAnchor="middle" fill="#9A7730" fontSize="6.5" fontFamily="var(--font-sans)">आर्यभट (499 CE) · Sine Arc</text>
           </g>
 
-          {/* 3. Śulba Sūtra Geometric Altar Construction (Squaring the Circle / Śūnya & Chakravala) */}
-          <g transform="translate(150, 505)">
+          {/* 3. Śulba Sūtra Geometric Altar Construction — IN-PLACE SACRED ROTATION */}
+          <g className="ab-symbol-3d" transform="translate(150, 580)">
+            <rect x="-60" y="-55" width="120" height="145" fill="transparent" />
+            <rect className="ab-symbol-plate" x="-58" y="-52" width="116" height="140" rx="8" />
+
             <g fill="none" stroke="#9A7730" strokeWidth="1">
-              {/* Outer circle and rotated Vedic altar squares */}
-              <circle cx="0" cy="0" r="38" stroke="#9A7730" strokeWidth="1.2" />
-              <rect x="-27" y="-27" width="54" height="54" stroke="#641E16" strokeWidth="1.3" />
-              <rect x="-27" y="-27" width="54" height="54" transform="rotate(45)" stroke="#C49A45" strokeWidth="1" />
-              <circle cx="0" cy="0" r="19" stroke="#9A7730" strokeDasharray="2 2" />
-              {/* Diagonals & Cord lines (Rajju) */}
-              <line x1="-38" y1="0" x2="38" y2="0" strokeDasharray="2 2" opacity="0.6" />
-              <line x1="0" y1="-38" x2="0" y2="38" strokeDasharray="2 2" opacity="0.6" />
-              {/* Central Bindu (Brahmagupta's Śūnya Zero) */}
-              <circle cx="0" cy="0" r="3" fill="#641E16" stroke="#9A7730" strokeWidth="1" />
+              <g className="ab-spin-cw">
+                <circle cx="0" cy="0" r="36" stroke="#9A7730" strokeWidth="1.4" />
+                <rect x="-25" y="-25" width="50" height="50" stroke="#641E16" strokeWidth="1.4" fill="rgba(247,236,210,0.3)" />
+                <rect x="-25" y="-25" width="50" height="50" transform="rotate(45)" stroke="#C49A45" strokeWidth="1.2" />
+              </g>
+
+              <g className="ab-spin-ccw">
+                <circle cx="0" cy="0" r="18" stroke="#9A7730" strokeWidth="1.1" strokeDasharray="3 2" />
+                <line x1="-36" y1="0" x2="36" y2="0" strokeDasharray="2 2" stroke="#C49A45" />
+                <line x1="0" y1="-36" x2="0" y2="36" strokeDasharray="2 2" stroke="#C49A45" />
+              </g>
+
+              <circle cx="0" cy="0" r="3.5" fill="#641E16" stroke="#C49A45" strokeWidth="1.2" />
             </g>
-            <text x="0" y="48" textAnchor="middle" fill="#9A7730" fontSize="7" letterSpacing="1" fontFamily="var(--font-title)" opacity="0.8">शुल्ब सूत्र (वेदी रचना)</text>
+
+            <text x="0" y="56" textAnchor="middle" fill="#641E16" fontSize="8" letterSpacing="1" fontFamily="var(--font-title)" fontWeight="bold">शुल्ब सूत्र (वेदी रचना)</text>
+            <text x="0" y="72" textAnchor="middle" fill="#9A7730" fontSize="6.5" fontFamily="var(--font-sans)">बौधायन (800 BCE) · Vedic Geometry</text>
           </g>
 
-          {/* 4. Floating Ancient Mathematical Glyphs (Śūnya, Ananta, Pi, Vedic numerals) */}
-          <g fill="#9A7730" opacity="0.65" fontFamily="var(--font-sanskrit)" fontSize="10">
-            <text x="96" y="175" fill="#641E16" fontWeight="bold">०</text>
-            <text x="202" y="180">∞</text>
-            <text x="90" y="305">π</text>
-            <text x="208" y="325">√२</text>
-            <text x="92" y="445">५</text>
-            <text x="206" y="460">७</text>
-            <text x="94" y="585">९</text>
-            <text x="204" y="600">॥ ॐ ॥</text>
+          {/* 4. Floating 3D Ancient Mathematical Glyphs */}
+          <g fontFamily="var(--font-sanskrit)" fontSize="11">
+            <g className="ab-glyph-popup" transform="translate(94, 180)">
+              <circle cx="0" cy="0" r="16" fill="transparent" />
+              <circle className="ab-glyph-halo" cx="0" cy="0" r="13" />
+              <text x="0" y="4" textAnchor="middle" fill="#641E16" fontWeight="bold">०</text>
+            </g>
+            <g className="ab-glyph-popup" transform="translate(206, 180)">
+              <circle cx="0" cy="0" r="16" fill="transparent" />
+              <circle className="ab-glyph-halo" cx="0" cy="0" r="13" />
+              <text x="0" y="4" textAnchor="middle" fill="#9A7730">∞</text>
+            </g>
+            <g className="ab-glyph-popup" transform="translate(94, 345)">
+              <circle cx="0" cy="0" r="16" fill="transparent" />
+              <circle className="ab-glyph-halo" cx="0" cy="0" r="13" />
+              <text x="0" y="4" textAnchor="middle" fill="#9A7730">π</text>
+            </g>
+            <g className="ab-glyph-popup" transform="translate(206, 345)">
+              <circle cx="0" cy="0" r="16" fill="transparent" />
+              <circle className="ab-glyph-halo" cx="0" cy="0" r="13" />
+              <text x="0" y="4" textAnchor="middle" fill="#9A7730">√२</text>
+            </g>
+            <g className="ab-glyph-popup" transform="translate(94, 510)">
+              <circle cx="0" cy="0" r="16" fill="transparent" />
+              <circle className="ab-glyph-halo" cx="0" cy="0" r="13" />
+              <text x="0" y="4" textAnchor="middle" fill="#9A7730">५</text>
+            </g>
+            <g className="ab-glyph-popup" transform="translate(206, 510)">
+              <circle cx="0" cy="0" r="16" fill="transparent" />
+              <circle className="ab-glyph-halo" cx="0" cy="0" r="13" />
+              <text x="0" y="4" textAnchor="middle" fill="#9A7730">७</text>
+            </g>
+            <g className="ab-glyph-popup" transform="translate(94, 675)">
+              <circle cx="0" cy="0" r="16" fill="transparent" />
+              <circle className="ab-glyph-halo" cx="0" cy="0" r="13" />
+              <text x="0" y="4" textAnchor="middle" fill="#9A7730">९</text>
+            </g>
+            <g className="ab-glyph-popup" transform="translate(206, 675)">
+              <rect x="-24" y="-12" width="48" height="24" fill="transparent" />
+              <rect className="ab-glyph-halo" x="-20" y="-10" width="40" height="20" rx="4" />
+              <text x="0" y="4" textAnchor="middle" fill="#641E16" fontWeight="bold">॥ ॐ ॥</text>
+            </g>
           </g>
         </g>
 
@@ -131,116 +195,177 @@ export default function PalaceBackdrop() {
         {/* ══════════════════════════════════════════════════════════════════
             RIGHT SIDE: JYOTIṢA (ANCIENT INDIAN ASTRONOMY & ASTROLOGY)
            ══════════════════════════════════════════════════════════════════ */}
-        <g opacity="0.75">
-          {/* Top Label */}
-          <text x="1050" y="145" textAnchor="middle" fill="#9A7730" fontSize="10" letterSpacing="3" fontFamily="var(--font-title)" fontWeight="bold" opacity="0.85">
-            ॥ ज्योतिष शास्त्रम् ॥
-          </text>
+        <g>
+          {/* Top Section Header */}
+          <g className="ab-header-popup" transform="translate(1050, 120)">
+            <rect x="-84" y="-18" width="168" height="36" fill="transparent" />
+            <rect className="ab-header-plate" x="-78" y="-14" width="156" height="28" rx="6" />
+            <text x="0" y="4" textAnchor="middle" fill="#641E16" fontSize="11" letterSpacing="3" fontFamily="var(--font-title)" fontWeight="bold">
+              ॥ ज्योतिष शास्त्रम् ॥
+            </text>
+          </g>
 
-          {/* 1. Rāśi Kundali (12-House Vedic Horoscope & Astrological Matrix) */}
-          <g transform="translate(1050, 215)">
+          {/* 1. Rāśi Kundali (12-House Vedic Horoscope) — ROTATING INNER DIAMOND */}
+          <g className="ab-symbol-3d" transform="translate(1050, 245)">
+            <rect x="-60" y="-45" width="120" height="135" fill="transparent" />
+            <rect className="ab-symbol-plate" x="-58" y="-42" width="116" height="130" rx="8" />
+
             <g fill="none" stroke="#9A7730" strokeWidth="1.1">
-              {/* Outer square */}
-              <rect x="-34" y="-34" width="68" height="68" stroke="#641E16" strokeWidth="1.4" />
-              {/* Diagonals */}
-              <line x1="-34" y1="-34" x2="34" y2="34" stroke="#9A7730" strokeWidth="1" />
-              <line x1="34" y1="-34" x2="-34" y2="34" stroke="#9A7730" strokeWidth="1" />
-              {/* Inscribed diamond */}
-              <polygon points="0,-34 34,0 0,34 -34,0" stroke="#C49A45" strokeWidth="1.2" />
-              {/* Central Tanu / 1st house mark */}
-              <circle cx="0" cy="-14" r="2.5" fill="#641E16" />
-              <circle cx="-14" cy="0" r="1.8" fill="#9A7730" />
-              <circle cx="14" cy="0" r="1.8" fill="#9A7730" />
-              <circle cx="0" cy="14" r="1.8" fill="#9A7730" />
+              <rect x="-32" y="-32" width="64" height="64" stroke="#641E16" strokeWidth="1.5" fill="rgba(247,236,210,0.3)" />
+              <line x1="-32" y1="-32" x2="32" y2="32" stroke="#9A7730" strokeWidth="1" />
+              <line x1="32" y1="-32" x2="-32" y2="32" stroke="#9A7730" strokeWidth="1" />
+
+              {/* Rotating Diamond Mandala */}
+              <g className="ab-spin-slow">
+                <polygon points="0,-32 32,0 0,32 -32,0" stroke="#C49A45" strokeWidth="1.3" fill="rgba(247,236,210,0.4)" />
+              </g>
+
+              {/* Counter-spinning house bindu markers */}
+              <g className="ab-spin-ccw">
+                <circle cx="0" cy="-14" r="2.5" fill="#641E16" />
+                <circle cx="-14" cy="0" r="1.8" fill="#9A7730" />
+                <circle cx="14" cy="0" r="1.8" fill="#9A7730" />
+                <circle cx="0" cy="14" r="1.8" fill="#9A7730" />
+              </g>
             </g>
-            <text x="0" y="-10" textAnchor="middle" fill="#641E16" fontSize="6.5" fontFamily="var(--font-title)">तनु</text>
-            <text x="0" y="44" textAnchor="middle" fill="#9A7730" fontSize="7" letterSpacing="1" fontFamily="var(--font-title)" opacity="0.8">द्वादश भाव (कुण्डली)</text>
+            <text x="0" y="-10" textAnchor="middle" fill="#641E16" fontSize="7" fontFamily="var(--font-title)" fontWeight="bold">तनु</text>
+
+            <text x="0" y="56" textAnchor="middle" fill="#641E16" fontSize="8" letterSpacing="1" fontFamily="var(--font-title)" fontWeight="bold">द्वादश भाव (कुण्डली)</text>
+            <text x="0" y="72" textAnchor="middle" fill="#9A7730" fontSize="6.5" fontFamily="var(--font-sans)">12 Bhavas Horoscope Chart</text>
           </g>
 
-          {/* 2. Navagraha & 27 Nakshatra Celestial Astrolabe (Golayantra) */}
-          <g transform="translate(1050, 365)">
+          {/* 2. Navagraha & 27 Nakshatra Celestial Astrolabe (Golayantra) — IN-PLACE SACRED ROTATION */}
+          <g className="ab-symbol-3d" transform="translate(1050, 415)">
+            <rect x="-60" y="-55" width="120" height="145" fill="transparent" />
+            <rect className="ab-symbol-plate" x="-58" y="-52" width="116" height="140" rx="8" />
+
             <g fill="none" stroke="#9A7730" strokeWidth="1">
-              {/* Multi-tier armillary rings */}
-              <circle cx="0" cy="0" r="42" stroke="#641E16" strokeWidth="1.3" />
-              <circle cx="0" cy="0" r="34" stroke="#9A7730" strokeWidth="0.8" strokeDasharray="3 2" />
-              <circle cx="0" cy="0" r="25" stroke="#C49A45" strokeWidth="1" />
-              <circle cx="0" cy="0" r="14" stroke="#9A7730" strokeWidth="0.8" />
-              {/* Sūrya Central Sun */}
-              <circle cx="0" cy="0" r="5" fill="#C49A45" stroke="#641E16" strokeWidth="1" />
-              {/* 12 Zodiac spokes (Rāśi divisions) */}
-              {[0, 30, 60, 90, 120, 150, 180, 210, 240, 270, 300, 330].map(deg => {
-                const rad = (deg * Math.PI) / 180;
-                return (
-                  <line
-                    key={deg}
-                    x1={14 * Math.cos(rad)}
-                    y1={14 * Math.sin(rad)}
-                    x2={42 * Math.cos(rad)}
-                    y2={42 * Math.sin(rad)}
-                    stroke="#9A7730"
-                    strokeWidth={deg % 90 === 0 ? 1.2 : 0.6}
-                    strokeDasharray={deg % 90 === 0 ? undefined : '2 2'}
-                  />
-                );
-              })}
-              {/* Planetary node markers (Navagraha: Chandra, Mangala, Budha, Guru, Shukra, Shani, Rahu, Ketu) */}
-              <circle cx="20" cy="-15" r="2" fill="#641E16" />
-              <circle cx="-25" cy="12" r="2.2" fill="#C49A45" />
-              <circle cx="15" cy="24" r="1.8" fill="#9A7730" />
-              <circle cx="-12" cy="-28" r="2" fill="#641E16" />
+              <circle cx="0" cy="0" r="38" stroke="#641E16" strokeWidth="1.4" />
+              <g className="ab-spin-cw">
+                <circle cx="0" cy="0" r="30" stroke="#9A7730" strokeWidth="0.8" strokeDasharray="3 2" />
+                <circle cx="0" cy="0" r="22" stroke="#C49A45" strokeWidth="1.2" />
+                {[0, 30, 60, 90, 120, 150, 180, 210, 240, 270, 300, 330].map(deg => {
+                  const rad = (deg * Math.PI) / 180;
+                  return (
+                    <line
+                      key={deg}
+                      x1={12 * Math.cos(rad)}
+                      y1={12 * Math.sin(rad)}
+                      x2={38 * Math.cos(rad)}
+                      y2={38 * Math.sin(rad)}
+                      stroke="#9A7730"
+                      strokeWidth={deg % 90 === 0 ? 1.2 : 0.6}
+                      strokeDasharray={deg % 90 === 0 ? undefined : '2 2'}
+                    />
+                  );
+                })}
+              </g>
+
+              <g className="ab-spin-ccw">
+                <circle cx="18" cy="-14" r="2.2" fill="#641E16" />
+                <circle cx="-22" cy="10" r="2.5" fill="#C49A45" />
+                <circle cx="14" cy="22" r="2" fill="#9A7730" />
+                <circle cx="-10" cy="-25" r="2.2" fill="#641E16" />
+              </g>
+
+              <circle cx="0" cy="0" r="5" fill="#C49A45" stroke="#641E16" strokeWidth="1.2" />
+              <circle cx="0" cy="0" r="12" stroke="#9A7730" strokeWidth="0.8" />
             </g>
-            <text x="0" y="20" textAnchor="middle" fill="#9A7730" fontSize="7" letterSpacing="1" fontFamily="var(--font-title)" opacity="0.8">नवग्रह · नक्षत्र चक्र</text>
+
+            <text x="0" y="56" textAnchor="middle" fill="#641E16" fontSize="8" letterSpacing="1" fontFamily="var(--font-title)" fontWeight="bold">नवग्रह · नक्षत्र चक्र</text>
+            <text x="0" y="72" textAnchor="middle" fill="#9A7730" fontSize="6.5" fontFamily="var(--font-sans)">गोलयन्त्र · Celestial Sphere</text>
           </g>
 
-          {/* 3. Saptarshi Mandala (Ursa Major 7 Rṣis) & Dhruva (North Star) */}
-          <g transform="translate(1050, 505)">
+          {/* 3. Saptarshi Mandala & Dhruva (Polaris) — REVOLVES AROUND DHRUVA */}
+          <g className="ab-symbol-3d" transform="translate(1050, 580)">
+            <rect x="-60" y="-55" width="120" height="145" fill="transparent" />
+            <rect className="ab-symbol-plate" x="-58" y="-52" width="116" height="140" rx="8" />
+
             <g fill="none" stroke="#9A7730" strokeWidth="1">
-              {/* Dhruva (Polaris) with brilliant starburst */}
-              <circle cx="18" cy="-38" r="3" fill="#C49A45" />
-              <line x1="18" y1="-44" x2="18" y2="-32" stroke="#641E16" strokeWidth="1" />
-              <line x1="12" y1="-38" x2="24" y2="-38" stroke="#641E16" strokeWidth="1" />
-              <text x="24" y="-40" fill="#641E16" fontSize="6.5" fontFamily="var(--font-sanskrit)" fontWeight="bold">ध्रुव</text>
+              {/* Central fixed Pole Star: Dhruva with pulsing radiance */}
+              <g className="ab-pulse-star">
+                <circle cx="0" cy="-6" r="3.5" fill="#C49A45" stroke="#641E16" strokeWidth="1.2" />
+                <line x1="0" y1="-14" x2="0" y2="2" stroke="#641E16" strokeWidth="1.2" />
+                <line x1="-8" y1="-6" x2="8" y2="-6" stroke="#641E16" strokeWidth="1.2" />
+              </g>
+              <text x="10" y="-8" fill="#641E16" fontSize="7" fontFamily="var(--font-sanskrit)" fontWeight="bold">ध्रुव</text>
 
-              {/* Saptarshi constellation path (Kratu, Pulaha, Pulastya, Atri, Angiras, Vashistha, Marichi) */}
-              <polyline
-                points="-32,18 -16,22 4,14 -12,-4 -32,18 -12,-4 8,-18 24,-24 38,-20"
-                stroke="#C49A45"
-                strokeWidth="1.2"
-                strokeDasharray="2 2"
-              />
-              {/* Star nodes */}
-              {[
-                { x: -32, y: 18, name: 'ऋ' },
-                { x: -16, y: 22, name: 'तु' },
-                { x: 4, y: 14, name: 'पु' },
-                { x: -12, y: -4, name: 'अ' },
-                { x: 8, y: -18, name: 'अं' },
-                { x: 24, y: -24, name: 'व' },
-                { x: 38, y: -20, name: 'म' },
-              ].map((star, i) => (
-                <g key={i}>
-                  <circle cx={star.x} cy={star.y} r="2.4" fill="#641E16" stroke="#9A7730" strokeWidth="0.8" />
-                </g>
-              ))}
-              {/* Pointer line to Dhruva */}
-              <line x1="-12" y1="-4" x2="18" y2="-38" stroke="#9A7730" strokeWidth="0.8" strokeDasharray="3 3" opacity="0.6" />
+              {/* Saptarshi constellation revolving continuously around Dhruva */}
+              <g className="ab-spin-celestial">
+                <polyline
+                  points="-28,24 -12,28 8,20 -8,2 -28,24 -8,2 12,-12 28,-18 42,-14"
+                  stroke="#C49A45"
+                  strokeWidth="1.3"
+                  strokeDasharray="2 2"
+                />
+                {[
+                  { x: -28, y: 24, name: 'ऋ' },
+                  { x: -12, y: 28, name: 'तु' },
+                  { x: 8, y: 20, name: 'पु' },
+                  { x: -8, y: 2, name: 'अ' },
+                  { x: 12, y: -12, name: 'अं' },
+                  { x: 28, y: -18, name: 'व' },
+                  { x: 42, y: -14, name: 'म' },
+                ].map((star, i) => (
+                  <g key={i}>
+                    <circle cx={star.x} cy={star.y} r="2.8" fill="#641E16" stroke="#C49A45" strokeWidth="1" />
+                  </g>
+                ))}
+                <line x1="-8" y1="2" x2="0" y2="-6" stroke="#C49A45" strokeWidth="1" strokeDasharray="3 3" opacity="0.85" />
+              </g>
 
-              {/* Chandra Kalā (Crescent Moon) */}
-              <path d="M-36 -28 A 12 12 0 0 0 -22 -14 A 9 9 0 0 1 -36 -28 Z" fill="#C49A45" opacity="0.8" />
+              {/* Orbiting Crescent Moon (Chandra Kalā) */}
+              <g className="ab-spin-ccw">
+                <path d="M-36 -28 A 12 12 0 0 0 -22 -14 A 9 9 0 0 1 -36 -28 Z" fill="#C49A45" opacity="0.9" />
+              </g>
             </g>
-            <text x="0" y="48" textAnchor="middle" fill="#9A7730" fontSize="7" letterSpacing="1" fontFamily="var(--font-title)" opacity="0.8">सप्तर्षि मण्डल · ध्रुव तारा</text>
+
+            <text x="0" y="56" textAnchor="middle" fill="#641E16" fontSize="8" letterSpacing="1" fontFamily="var(--font-title)" fontWeight="bold">सप्तर्षि मण्डल · ध्रुव</text>
+            <text x="0" y="72" textAnchor="middle" fill="#9A7730" fontSize="6.5" fontFamily="var(--font-sans)">7 Great Rṣis &amp; Polaris</text>
           </g>
 
-          {/* 4. Floating Astrological & Astronomical symbols (Zodiac & Graha signs) */}
-          <g fill="#9A7730" opacity="0.65" fontFamily="var(--font-sanskrit)" fontSize="10">
-            <text x="990" y="175" fill="#641E16" fontWeight="bold">सूर्य</text>
-            <text x="1102" y="180">चन्द्र</text>
-            <text x="986" y="305">मेष</text>
-            <text x="1106" y="325">वृषभ</text>
-            <text x="988" y="445">बुध</text>
-            <text x="1104" y="460">गुरु</text>
-            <text x="990" y="585">शुक्र</text>
-            <text x="1100" y="600">शनि</text>
+          {/* 4. Floating 3D Astrological Glyphs */}
+          <g fontFamily="var(--font-sanskrit)" fontSize="11">
+            <g className="ab-glyph-popup" transform="translate(994, 180)">
+              <rect x="-20" y="-12" width="40" height="24" fill="transparent" />
+              <rect className="ab-glyph-halo" x="-18" y="-10" width="36" height="20" rx="4" />
+              <text x="0" y="4" textAnchor="middle" fill="#641E16" fontWeight="bold">सूर्य</text>
+            </g>
+            <g className="ab-glyph-popup" transform="translate(1106, 180)">
+              <rect x="-20" y="-12" width="40" height="24" fill="transparent" />
+              <rect className="ab-glyph-halo" x="-18" y="-10" width="36" height="20" rx="4" />
+              <text x="0" y="4" textAnchor="middle" fill="#9A7730">चन्द्र</text>
+            </g>
+            <g className="ab-glyph-popup" transform="translate(994, 345)">
+              <rect x="-20" y="-12" width="40" height="24" fill="transparent" />
+              <rect className="ab-glyph-halo" x="-18" y="-10" width="36" height="20" rx="4" />
+              <text x="0" y="4" textAnchor="middle" fill="#9A7730">मेष</text>
+            </g>
+            <g className="ab-glyph-popup" transform="translate(1106, 345)">
+              <rect x="-20" y="-12" width="40" height="24" fill="transparent" />
+              <rect className="ab-glyph-halo" x="-18" y="-10" width="36" height="20" rx="4" />
+              <text x="0" y="4" textAnchor="middle" fill="#9A7730">वृषभ</text>
+            </g>
+            <g className="ab-glyph-popup" transform="translate(994, 510)">
+              <rect x="-20" y="-12" width="40" height="24" fill="transparent" />
+              <rect className="ab-glyph-halo" x="-18" y="-10" width="36" height="20" rx="4" />
+              <text x="0" y="4" textAnchor="middle" fill="#9A7730">बुध</text>
+            </g>
+            <g className="ab-glyph-popup" transform="translate(1106, 510)">
+              <rect x="-20" y="-12" width="40" height="24" fill="transparent" />
+              <rect className="ab-glyph-halo" x="-18" y="-10" width="36" height="20" rx="4" />
+              <text x="0" y="4" textAnchor="middle" fill="#9A7730">गुरु</text>
+            </g>
+            <g className="ab-glyph-popup" transform="translate(994, 675)">
+              <rect x="-20" y="-12" width="40" height="24" fill="transparent" />
+              <rect className="ab-glyph-halo" x="-18" y="-10" width="36" height="20" rx="4" />
+              <text x="0" y="4" textAnchor="middle" fill="#9A7730">शुक्र</text>
+            </g>
+            <g className="ab-glyph-popup" transform="translate(1106, 675)">
+              <rect x="-20" y="-12" width="40" height="24" fill="transparent" />
+              <rect className="ab-glyph-halo" x="-18" y="-10" width="36" height="20" rx="4" />
+              <text x="0" y="4" textAnchor="middle" fill="#641E16" fontWeight="bold">शनि</text>
+            </g>
           </g>
         </g>
 
@@ -256,14 +381,12 @@ export default function PalaceBackdrop() {
 
         {/* ── Floor medallions ── */}
         <g fill="none" stroke="#9A7730" strokeWidth="1.5" opacity="0.45">
-          <circle cx="150" cy="700" r="26" />
-          <circle cx="150" cy="700" r="14" />
-          <circle cx="1050" cy="700" r="26" />
-          <circle cx="1050" cy="700" r="14" />
+          <circle cx="150" cy="710" r="24" />
+          <circle cx="150" cy="710" r="12" />
+          <circle cx="1050" cy="710" r="24" />
+          <circle cx="1050" cy="710" r="12" />
         </g>
       </svg>
-      <div className="ab-palace-glow" />
-      <div className="ab-palace-scrim" />
     </div>
   );
 }
