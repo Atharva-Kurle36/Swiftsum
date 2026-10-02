@@ -2,6 +2,7 @@ import './globals.css';
 import type { Metadata } from 'next';
 import Navbar from '@/components/common/Navbar';
 import Footer from '@/components/common/Footer';
+import SmoothScroll from '@/components/common/SmoothScroll';
 
 // Fonts load via the Google Fonts @import in globals.css with local serif
 // fallbacks, so production builds never depend on font-network access.
@@ -18,6 +19,8 @@ export default function RootLayout({
   return (
     <html lang="en">
       <body className="min-h-screen flex flex-col justify-between">
+        {/* Step 3.2: Lenis smooth scroll + GSAP ScrollTrigger wiring (renders null). */}
+        <SmoothScroll />
         <Navbar />
         <main className="flex-grow z-10 relative">
           {children}

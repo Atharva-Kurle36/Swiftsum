@@ -101,7 +101,8 @@ html, body {
   font-family: var(--font-sans);
   -webkit-font-smoothing: antialiased;
   line-height: 1.8;
-  scroll-behavior: smooth;
+  /* NOTE (Step 3.2): no `scroll-behavior: smooth` — it fights Lenis, which
+     now owns scroll smoothing. Native instant scroll remains as fallback. */
 }
 
 /* Subtle aged-paper texture — light, even, print-safe */
@@ -724,6 +725,94 @@ input[type="text"]:focus, input[type="number"]:focus { border-color: var(--royal
   background: radial-gradient(ellipse at center, rgba(255,249,239,0.94) 26%, rgba(255,249,239,0.62) 58%, rgba(255,249,239,0.12) 100%);
 }
 
+/* ===== Chapter scrollytelling stack ===== */
+.ch-stack { display: flex; flex-direction: column; position: relative; }
+/* Step 3.3: panels overlay — the first defines the height, the rest stack
+   on top with only the active one visible. Slide/fade motion lands in 3.4. */
+.ch-stack > .ch-panel + .ch-panel {
+  position: absolute;
+  inset: 0;
+  visibility: hidden;
+}
+.ch-stack > .ch-panel + .ch-panel[data-active="true"] {
+  visibility: visible;
+}
+/* Step 3.4: outgoing panel stays visible while its crossfade plays. */
+.ch-stack > .ch-panel[data-leaving="true"] {
+  visibility: visible;
+}
+/* Chapter typography — existing tokens only (Cinzel / Cormorant / Noto). */
+.ch-kicker {
+  font-family: var(--font-title); font-size: 0.72rem; font-weight: 700;
+  letter-spacing: 0.24em; text-transform: uppercase; color: var(--antique-gold-deep);
+  margin-bottom: 6px;
+}
+.ch-title {
+  font-family: var(--font-serif); font-weight: 700; color: var(--royal-maroon);
+  font-size: clamp(1.4rem, 3.6vw, 2rem); line-height: 1.25; letter-spacing: 0.01em;
+  margin-bottom: 4px;
+}
+.ch-stack .ab-rule { margin: 10px 0; }
+.ch-body {
+  font-family: var(--font-sans); color: var(--manuscript-brown);
+  font-size: clamp(0.85rem, 2.2vw, 1rem); line-height: 1.75; margin: 6px 0;
+}
+.ch-source {
+  font-family: var(--font-serif); font-style: italic; color: var(--text-dim);
+  font-size: 0.8rem; margin-top: 10px;
+}
+/* Step 3.5: fixed chapter-progress indicator (transform/opacity only). */
+.ch-progress {
+  position: fixed;
+  right: 18px;
+  top: 50%;
+  transform: translateY(-50%) translateX(14px);
+  opacity: 0;
+  pointer-events: none;
+  transition: opacity 0.3s ease, transform 0.3s ease;
+  z-index: 40;
+  display: flex;
+  flex-direction: column;
+  gap: 10px;
+}
+.ch-progress[data-visible="true"] {
+  opacity: 1;
+  transform: translateY(-50%) translateX(0);
+  pointer-events: auto;
+}
+.ch-progress-dot {
+  width: 38px;
+  height: 38px;
+  border-radius: 999px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-family: var(--font-title);
+  font-size: 0.72rem;
+  font-weight: 700;
+  letter-spacing: 0.04em;
+  background: var(--light-ivory);
+  color: var(--manuscript-brown);
+  border: 1px solid var(--antique-gold);
+  box-shadow: var(--shadow-subtle);
+  cursor: pointer;
+}
+.ch-progress-dot[data-active="true"] {
+  background: var(--royal-maroon);
+  color: var(--light-ivory);
+  border-color: var(--antique-gold-deep);
+  transform: scale(1.08);
+}
+@media (max-width: 1023px) {
+  .ch-progress { right: 10px; gap: 8px; }
+  .ch-progress-dot { width: 32px; height: 32px; font-size: 0.65rem; }
+}
+
+/* Reduced motion + print: show every chapter statically, no overlay. */
+@media (prefers-reduced-motion: reduce) {
+  .ch-stack > .ch-panel + .ch-panel { position: static; visibility: visible; }
+}
+
 @media print {
   .ab-palace { display: none; }
 }
@@ -732,6 +821,8 @@ input[type="text"]:focus, input[type="number"]:focus { border-color: var(--royal
   .ab-track { height: auto; }
   .ab-pin { position: static; height: auto; display: block; }
   .ab-pinsheet { max-height: none; overflow: visible; }
+  /* Print shows every chapter statically (same as reduced-motion). */
+  .ch-stack > .ch-panel + .ch-panel { position: static; visibility: visible; }
   body::before { display: none; }
   body { background: #fff; }
   header.sticky, nav, .no-print { display: none !important; }

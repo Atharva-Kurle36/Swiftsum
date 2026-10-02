@@ -2,8 +2,8 @@
 
 import React, { useRef } from 'react';
 import { useReducedMotion } from 'framer-motion';
-import { LotusDivider } from '@/components/common/Motifs';
-import AncientBook, { BookHeadline } from '@/components/landing/AncientBook/AncientBook';
+import AncientBook from '@/components/landing/AncientBook/AncientBook';
+import ChapterStack from '@/components/landing/Chapters/ChapterStack';
 import PalaceBackdrop from '@/components/landing/AncientBook/PalaceBackdrop';
 
 export default function CoverPage() {
@@ -20,18 +20,9 @@ export default function CoverPage() {
 
       <div className="ab-split">
         <div className="ab-split-copy">
-          <p className="sanskrit-title text-center" style={{ color: '#9A7730', fontSize: '0.95rem', fontWeight: 600 }}>
-            ॥ विद्या ददाति विनयम् ॥
-          </p>
-          <p className="text-center italic font-serif" style={{ color: '#6B5847', fontSize: '0.78rem' }}>
-            “Knowledge bestows humility” — a guiding ideal of the ancient Nalanda tradition
-          </p>
-
-          <div className="gold-rule" />
-
-          <LotusDivider />
-
-          <BookHeadline />
+          {/* Step 3.2: chapter stack lives in the existing pin panel beside
+              the book. Chapter I holds the previous hero copy verbatim. */}
+          <ChapterStack targetRef={heroRef} />
         </div>
 
         <div className="ab-split-book">
