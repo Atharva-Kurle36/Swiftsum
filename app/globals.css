@@ -490,23 +490,63 @@ input[type="text"]:focus, input[type="number"]:focus { border-color: var(--royal
 .ab-pinsheet .ab-head { margin-bottom: 4px; }
 .ab-pinsheet .ab-stage { padding: 4px 0 2px; }
 
-/* Split panel: copy left, book right (stacked on small screens). */
-.ab-split { display: grid; gap: 16px; align-items: center; }
-.ab-split-book { min-width: 0; }
-@media (min-width: 1024px) {
-  .ab-split { grid-template-columns: 0.9fr 1.1fr; gap: 32px; }
-  .ab-split-copy, .ab-split-copy .ab-head { text-align: left; }
-  .ab-split-copy .text-center { text-align: left; }
-  .ab-split-copy .gold-rule { margin-left: 0; margin-right: 0; }
-  .ab-split-copy .mx-auto { margin-left: 0; margin-right: 0; }
+/* Book+cover split: cover panel on the left, pages on the right. */
+.ab-book-split {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 0;
+  width: 100%;
+  max-width: min(900px, 96vw);
+  margin: 0 auto;
 }
-.ab-hero .cover-sheet { padding: clamp(16px, 3vw, 32px); }
-.ab-hero .gold-rule { margin: 10px auto; }
-.ab-hero-grid { display: grid; gap: 20px; align-items: center; }
-@media (min-width: 1024px) {
-  .ab-hero-grid { grid-template-columns: 1fr 1.05fr; gap: 28px; }
+.ab-book-split-cover {
+  flex: 0 0 auto;
+  display: flex;
+  align-items: stretch;
 }
-.ab-wrap { max-width: 880px; margin: 0 auto; padding: 2px 0; }
+.ab-book-split-pages {
+  flex: 1 1 0;
+  min-width: 0;
+  display: flex;
+  align-items: center;
+  justify-content: flex-start;
+}
+
+/* Static book cover panel */
+.ab-cover-panel {
+  position: relative;
+  width: clamp(150px, 22vw, 260px);
+  height: clamp(220px, 50vh, 480px);
+  display: flex;
+  align-items: stretch;
+  border-radius: 8px 0 0 8px;
+  box-shadow: -4px 0 24px rgba(0,0,0,0.35), 4px 0 12px rgba(0,0,0,0.18);
+}
+.ab-cover-spine {
+  width: 18px;
+  flex-shrink: 0;
+  background: linear-gradient(90deg, #3A0E0A 0%, #6B2219 40%, #3A0E0A 100%);
+  border-right: 1px solid var(--antique-gold-deep);
+  border-radius: 8px 0 0 8px;
+}
+.ab-cover-face {
+  flex: 1;
+  background: linear-gradient(150deg, #521712 0%, #641E16 55%, #4A130E 100%);
+  border: 1px solid var(--antique-gold-deep);
+  border-left: none;
+  box-shadow: inset 0 0 0 5px rgba(196,154,69,0.35), inset 0 0 0 7px rgba(74,19,14,0.9), inset 6px 0 20px rgba(0,0,0,0.3);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  padding: 14px 10px;
+  border-radius: 0 4px 4px 0;
+}
+
+/* Pages-only book wrapper */
+.ab-pages-wrap { width: 100%; display: flex; flex-direction: column; align-items: center; }
+.ab-pages-wrap .ab-hint { margin-top: 6px; }
+.ab-wrap { max-width: min(800px, 98vw); margin: 0 auto; padding: 2px 0; }
 .ab-head { text-align: center; margin-bottom: 6px; }
 .ab-eyebrow {
   font-family: var(--font-title); font-size: 0.72rem; font-weight: 700;
@@ -518,13 +558,17 @@ input[type="text"]:focus, input[type="number"]:focus { border-color: var(--royal
 }
 .ab-sub { font-family: var(--font-serif); font-style: italic; color: var(--text-muted); font-size: clamp(0.9rem, 2vw, 1.05rem); }
 
+.ab-hero .cover-sheet { padding: clamp(10px, 2vw, 24px); }
+.ab-hero .gold-rule { margin: 10px auto; }
+
 .ab-stage { perspective: 2200px; display: flex; justify-content: center; padding: 18px 0 8px; overflow-x: clip; }
-/* Spread frame: hinge at centre. Right half holds the flipping stack,
-   left half receives landed pages — everything stays in frame. */
+/* Landscape two-page spread — hinge at centre spine.
+   RIGHT half = unread pages (current leaf on top).
+   LEFT  half = flipped pages land here, visibly stacked. */
 .ab-book {
   position: relative;
-  width: min(560px, 94vw);
-  aspect-ratio: 20 / 12.6;
+  width: min(820px, 98vw);
+  aspect-ratio: 20 / 12;
   transform-style: preserve-3d;
 }
 .ab-floor {
@@ -532,74 +576,80 @@ input[type="text"]:focus, input[type="number"]:focus { border-color: var(--royal
   background: radial-gradient(ellipse at center, rgba(69,53,43,0.28) 0%, transparent 68%);
   pointer-events: none;
 }
-.ab-spine {
-  position: absolute; left: 50%; top: -1%; bottom: -1%; width: 24px;
-  transform: translateX(-50%) translateZ(-4px);
-  background: linear-gradient(90deg, #4A130E 0%, #7d2a20 50%, #4A130E 100%);
-  border-left: 1px solid var(--antique-gold-deep);
-  border-right: 1px solid var(--antique-gold-deep);
-  border-radius: 3px;
-}
-.ab-spine::after {
-  content: ""; position: absolute; top: 6%; bottom: 6%; left: 7px; right: 7px;
-  border-left: 1px solid rgba(196,154,69,0.7); border-right: 1px solid rgba(196,154,69,0.7);
-}
-/* Static base panels: maroon back-cover (left) + parchment endpaper (right). */
-.ab-leftbase, .ab-rightbase {
-  position: absolute; top: 0; bottom: 0; width: 50%;
+/* Spine hidden — clean, unpartitioned look. */
+.ab-spine { display: none; }
+.ab-spine::after { display: none; }
+/* LEFT HALF: dark maroon backing where flipped pages stack up. */
+.ab-leftbase {
+  position: absolute; top: 0; bottom: 0; left: 0; width: 50%;
+  border-radius: 10px 3px 3px 10px;
+  background: linear-gradient(150deg, #3A0E0A 0%, #521712 60%, #4A130E 100%);
+  border: 1px solid var(--antique-gold-deep);
+  box-shadow: inset 0 0 0 5px rgba(196,154,69,0.22), inset 0 0 0 6px rgba(58,14,10,0.9);
   display: flex; align-items: center; justify-content: center;
 }
-.ab-leftbase {
-  left: 0; border-radius: 10px 3px 3px 10px;
-  background: linear-gradient(135deg, #4A130E 0%, #641E16 60%, #521712 100%);
-  border: 1px solid var(--antique-gold-deep);
-  box-shadow: inset 0 0 0 5px rgba(196,154,69,0.28), inset 0 0 0 6px rgba(74,19,14,0.9);
-}
+/* RIGHT HALF: parchment endpaper — only visible when ALL leaves have flipped. */
 .ab-rightbase {
-  right: 0; border-radius: 3px 10px 10px 3px;
-  background: #EFDDB4;
+  position: absolute; top: 0; bottom: 0; right: 0; width: 50%;
+  border-radius: 3px 10px 10px 3px;
+  background:
+    radial-gradient(ellipse at 60% 20%, rgba(196,154,69,0.12) 0%, transparent 55%),
+    #F0DFB0;
   border: 1px solid var(--antique-gold);
-  box-shadow: inset 0 0 0 5px #EFDDB4, inset 0 0 0 6px var(--antique-gold), inset -12px 0 24px rgba(69,53,43,0.12);
+  box-shadow: inset 0 0 0 4px #F0DFB0, inset 0 0 0 5px var(--antique-gold), inset -8px 0 18px rgba(69,53,43,0.1);
+  display: flex; align-items: center; justify-content: center;
 }
 .ab-foreedge {
-  position: absolute; top: 1.2%; bottom: 1.2%; right: 0; width: 14px;
+  position: absolute; top: 1%; bottom: 1%; right: 0; width: 12px;
   background: repeating-linear-gradient(90deg, #E9D6AC 0 2px, #CBB27F 2px 3px);
   border-left: 1px solid #B89B5E; border-radius: 0 3px 3px 0;
-  transform: translateZ(-3px);
+  transform: translateZ(-2px);
 }
 .ab-backboard {
-  position: absolute; inset: 0; border-radius: 4px 10px 10px 4px;
-  background: linear-gradient(135deg, #4A130E 0%, #641E16 60%, #521712 100%);
+  position: absolute; inset: 0; border-radius: 10px;
+  background: linear-gradient(135deg, #3A0E0A 0%, #521712 60%, #4A130E 100%);
   border: 1px solid var(--antique-gold-deep);
-  box-shadow: inset 0 0 0 5px rgba(196,154,69,0.28), inset 0 0 0 6px rgba(74,19,14,0.9);
+  box-shadow: inset 0 0 0 5px rgba(196,154,69,0.22), inset 0 0 0 6px rgba(58,14,10,0.9);
   transform: translateZ(-9px);
   display: flex; align-items: center; justify-content: center;
 }
 .ab-backboard-inner { text-align: center; }
 
-.ab-leaf { position: absolute; top: 0; bottom: 0; left: 50%; width: 50%; transform-origin: left center; transform-style: preserve-3d; }
-/* Full-width cover leaf: hinges at the frame's left edge and folds back. */
+/* Content leaves: RIGHT HALF ONLY, hinge at spine (left edge of leaf = spine). */
+.ab-leaf {
+  position: absolute; top: 0; bottom: 0;
+  left: 50%; width: 50%;
+  transform-origin: left center;
+  transform-style: preserve-3d;
+}
+/* Cover leaf: full-width, hinges at left book-edge. Folds back over left half. */
 .ab-leaf.ab-coverleaf { left: 0; width: 100%; }
-.ab-leaf.ab-coverleaf .ab-face { border-radius: 10px; }
+
+/* Faces: right-half pages rounded on the right only. */
 .ab-face {
   position: absolute; inset: 0; overflow: hidden;
   -webkit-backface-visibility: hidden; backface-visibility: hidden;
-  border-radius: 3px 10px 10px 3px;
+  border-radius: 2px 10px 10px 2px;
   display: flex; flex-direction: column; align-items: stretch; justify-content: flex-start;
-  text-align: center; padding: clamp(16px, 4.5%, 30px) clamp(14px, 6%, 34px);
+  text-align: center; padding: clamp(14px, 4%, 28px) clamp(16px, 5%, 36px);
 }
+/* The back face shows on the LEFT half after flipping. */
+.ab-back { transform: rotateY(180deg); border-radius: 10px 2px 2px 10px; }
+/* Cover faces span the full width. */
+.ab-leaf.ab-coverleaf .ab-face { border-radius: 10px; }
+.ab-leaf.ab-coverleaf .ab-back { border-radius: 10px; }
+
 .ab-front { border: 1px solid var(--antique-gold); }
-.ab-back { transform: rotateY(180deg); border: 1px solid var(--antique-gold); border-radius: 10px 3px 3px 10px; }
+.ab-back { border: 1px solid var(--antique-gold); }
 .ab-back.ab-page {
-  box-shadow: inset 0 0 0 4px #F7ECD2, inset 0 0 0 5px var(--antique-gold), inset -10px 0 22px rgba(69,53,43,0.14);
+  box-shadow: inset 0 0 0 4px #F7ECD2, inset 0 0 0 5px var(--antique-gold), inset -8px 0 18px rgba(69,53,43,0.12);
 }
 .ab-page {
   background:
     radial-gradient(ellipse at 30% 12%, rgba(196,154,69,0.10) 0%, transparent 55%),
     radial-gradient(ellipse at 80% 90%, rgba(100,30,22,0.05) 0%, transparent 50%),
-    linear-gradient(105deg, rgba(69,53,43,0.10) 0%, transparent 12%),
     #F7ECD2;
-  box-shadow: inset 0 0 0 4px #F7ECD2, inset 0 0 0 5px var(--antique-gold), inset 10px 0 22px rgba(69,53,43,0.14);
+  box-shadow: inset 0 0 0 4px #F7ECD2, inset 0 0 0 5px var(--antique-gold);
 }
 .ab-shade { position: absolute; inset: 0; background: #3A2410; opacity: 0; pointer-events: none; }
 
@@ -636,19 +686,11 @@ input[type="text"]:focus, input[type="number"]:focus { border-color: var(--royal
   box-shadow: inset 0 0 0 5px rgba(196,154,69,0.3), inset 0 0 0 7px rgba(74,19,14,0.9);
 }
 .ab-cover-frame-inner { justify-content: center; }
-/* Static introduction base on the left half (revealed when cover opens). */
+/* Static introduction base — left-half dark maroon (pages stack here). */
 .ab-introbase {
-  background:
-    radial-gradient(ellipse at 30% 12%, rgba(196,154,69,0.10) 0%, transparent 55%),
-    #F7ECD2;
-  border: 1px solid var(--antique-gold);
-  border-radius: 10px 3px 3px 10px;
-  box-shadow: inset 0 0 0 4px #F7ECD2, inset 0 0 0 5px var(--antique-gold), inset -10px 0 22px rgba(69,53,43,0.14);
-  padding: clamp(16px, 4.5%, 30px) clamp(14px, 6%, 34px);
-  text-align: center;
-  display: flex; flex-direction: column; justify-content: flex-start;
-  overflow: hidden;
+  /* no extra style needed — ab-leftbase already applies the dark maroon */
 }
+
 .ab-cover-frame {
   flex: 1; display: flex; flex-direction: column; align-items: center; justify-content: center;
   border: 1px solid rgba(196,154,69,0.85); outline: 1px solid rgba(196,154,69,0.4); outline-offset: 4px;
