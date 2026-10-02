@@ -1,6 +1,7 @@
 import React from 'react';
 import { LotusDivider } from '@/components/common/Motifs';
 import { BookHeadline } from '@/components/landing/AncientBook/AncientBook';
+import { ShulbaMotif, ZeroMotif, SeriesMotif, SquareMotif } from './ChapterMotifs';
 
 export interface Chapter {
   /** Stable id, also used for the progress indicator + data attributes. */
@@ -31,6 +32,9 @@ export const CHAPTERS: Chapter[] = [
         <LotusDivider />
 
         <BookHeadline />
+
+        {/* Step 4 (scrub), Chapter I motif: courses draw, then altar reveals. */}
+        <ShulbaMotif />
       </>
     ),
   },
@@ -57,6 +61,7 @@ export const CHAPTERS: Chapter[] = [
           “Asanna” (approximated), and posited the Earth&apos;s axial rotation.
         </p>
         <p className="ch-source">Brāhmasphuṭasiddhānta (628 CE) · Āryabhaṭīya (499 CE)</p>
+        <ZeroMotif />
       </>
     ),
   },
@@ -77,6 +82,7 @@ export const CHAPTERS: Chapter[] = [
           The birth of mathematical analysis, power series expansions, and early differential calculus.
         </p>
         <p className="ch-source">Yuktibhāṣā / Karaṇapaddhati · c. 1350–1425 CE</p>
+        <SeriesMotif />
       </>
     ),
   },
@@ -99,6 +105,8 @@ export const CHAPTERS: Chapter[] = [
           carrying the paramparā forward.
         </p>
         <p className="ch-source">NEP 2020 · Ministry of Education, Govt. of India</p>
+        <p className="ch-caption">Srinivasa Ramanujan&apos;s 4×4 magic square — the tradition&apos;s modern flowering.</p>
+        <SquareMotif />
       </>
     ),
   },

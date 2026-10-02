@@ -7,6 +7,7 @@ import { useReducedMotion } from 'framer-motion';
 import { CHAPTERS } from './ChapterData';
 import ChapterPanel from './ChapterPanel';
 import ChapterProgress from './ChapterProgress';
+import { buildChapterScrub } from './ChapterScrub';
 
 // Step 3.2: renders the chapter stack inside the existing pinned hero panel
 // and tracks which chapter owns the current scroll position via ScrollTrigger.
@@ -45,8 +46,12 @@ export default function ChapterStack({ targetRef }: { targetRef: RefObject<HTMLE
     }, rootRef);
     // Refresh after fonts/layout settle so trigger positions are exact.
     const t = window.setTimeout(() => ScrollTrigger.refresh(), 500);
+    // Step 4 (scrub): master scrubbed timeline for chapter SVG motifs.
+    // Skipped automatically with everything else when reduce is true.
+    const killScrub = buildChapterScrub(track, rootRef);
     return () => {
       window.clearTimeout(t);
+      killScrub();
       ctx.revert();
     };
   }, [reduce, targetRef]);
@@ -61,10 +66,11 @@ export default function ChapterStack({ targetRef }: { targetRef: RefObject<HTMLE
     const incoming = panels[active];
     const prev = prevRef.current;
     prevRef.current = active;
-    // Clear any stranded leaving state from an interrupted switch.
-    panels.forEach((p, i) => {
-      if (i !== active) p.removeAttribute('data-leaving');
-    });
+    // Clear every leaving flag first — including on the incoming panel, which
+    // may carry a stranded flag from an interrupted fade while IT was outgoing.
+    // (Killed tweens never run onComplete, so without this the flag — and a
+    // ghost-visible panel — survives until some later chapter change.)
+    panels.forEach((p) => p.removeAttribute('data-leaving'));
     const incomingKids = incoming
       ? incoming.querySelectorAll<HTMLElement>(':scope > *')
       : [];

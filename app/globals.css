@@ -483,15 +483,15 @@ input[type="text"]:focus, input[type="number"]:focus { border-color: var(--royal
   outline: none;
   overflow: clip;
   display: flex; flex-direction: column; justify-content: center;
-  padding: clamp(12px, 2.4vw, 24px) clamp(16px, 4vw, 48px) !important;
+  padding: clamp(10px, 1.6vw, 20px) clamp(16px, 4vw, 48px) !important;
 }
-.ab-pinsheet .gold-rule { margin: 8px auto; }
-.ab-pinsheet .manuscript-divider { margin: 8px 0; }
+.ab-pinsheet .gold-rule { margin: 6px auto; }
+.ab-pinsheet .manuscript-divider { margin: 6px 0; }
 .ab-pinsheet .ab-head { margin-bottom: 4px; }
-.ab-pinsheet .ab-stage { padding: 6px 0 2px; }
+.ab-pinsheet .ab-stage { padding: 4px 0 2px; }
 
 /* Split panel: copy left, book right (stacked on small screens). */
-.ab-split { display: grid; gap: 20px; align-items: center; }
+.ab-split { display: grid; gap: 16px; align-items: center; }
 .ab-split-book { min-width: 0; }
 @media (min-width: 1024px) {
   .ab-split { grid-template-columns: 0.9fr 1.1fr; gap: 32px; }
@@ -523,12 +523,12 @@ input[type="text"]:focus, input[type="number"]:focus { border-color: var(--royal
    left half receives landed pages — everything stays in frame. */
 .ab-book {
   position: relative;
-  width: min(620px, 94vw);
+  width: min(560px, 94vw);
   aspect-ratio: 20 / 12.6;
   transform-style: preserve-3d;
 }
 .ab-floor {
-  position: absolute; left: 0; right: 0; bottom: -24px; height: 40px;
+  position: absolute; left: 0; right: 0; bottom: -20px; height: 32px;
   background: radial-gradient(ellipse at center, rgba(69,53,43,0.28) 0%, transparent 68%);
   pointer-events: none;
 }
@@ -741,6 +741,11 @@ input[type="text"]:focus, input[type="number"]:focus { border-color: var(--royal
 .ch-stack > .ch-panel[data-leaving="true"] {
   visibility: visible;
 }
+/* The in-flow first panel would otherwise ghost through the transparent
+   incoming panels — hide it whenever it is neither active nor fading. */
+.ch-stack > .ch-panel:first-child:not([data-active="true"]):not([data-leaving="true"]) {
+  visibility: hidden;
+}
 /* Chapter typography — existing tokens only (Cinzel / Cormorant / Noto). */
 .ch-kicker {
   font-family: var(--font-title); font-size: 0.72rem; font-weight: 700;
@@ -760,6 +765,10 @@ input[type="text"]:focus, input[type="number"]:focus { border-color: var(--royal
 .ch-source {
   font-family: var(--font-serif); font-style: italic; color: var(--text-dim);
   font-size: 0.8rem; margin-top: 10px;
+}
+.ch-caption {
+  font-family: var(--font-serif); color: var(--antique-gold-deep);
+  font-size: 0.78rem; font-weight: 600; margin-top: 6px;
 }
 /* Step 3.5: fixed chapter-progress indicator (transform/opacity only). */
 .ch-progress {
@@ -806,6 +815,14 @@ input[type="text"]:focus, input[type="number"]:focus { border-color: var(--royal
 @media (max-width: 1023px) {
   .ch-progress { right: 10px; gap: 8px; }
   .ch-progress-dot { width: 32px; height: 32px; font-size: 0.65rem; }
+}
+
+/* Step 4 (scrub): small inline SVG motifs. Sizing only — all hidden/
+   shown states are GSAP-driven so reduced-motion shows final states. */
+.scr-motif { display: flex; justify-content: center; margin-top: 0; }
+.scr-motif svg { height: 48px; width: auto; max-width: 100%; }
+@media (max-width: 1023px) {
+  .ab-split-copy .scr-motif { justify-content: center; }
 }
 
 /* Reduced motion + print: show every chapter statically, no overlay. */
