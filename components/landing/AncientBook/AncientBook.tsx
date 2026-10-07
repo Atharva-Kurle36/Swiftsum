@@ -1,8 +1,8 @@
 'use client';
 
-import React, { RefObject, useEffect } from 'react';
-import { motion, useReducedMotion, useTransform, MotionValue, useMotionValue } from 'framer-motion';
-import { ChevronDown } from 'lucide-react';
+import React, { RefObject, useEffect, useState } from 'react';
+import { motion, useReducedMotion, useTransform, MotionValue, useMotionValue, useSpring } from 'framer-motion';
+import { ChevronDown, ChevronLeft, ChevronRight } from 'lucide-react';
 import BookLeaf from './BookLeaf';
 import { NalandaIllustration } from '@/components/common/Motifs';
 
@@ -107,58 +107,83 @@ function EducationFace() {
   );
 }
 
-/* 5 flip windows — cover first, then 3 content leaves. */
+/* 4 flip windows — cover first, then 3 content leaves. */
 const LEAF_RANGES: Array<[number, number]> = [
-  [0.02, 0.18], // cover opens
-  [0.16, 0.36], // Intro leaf
-  [0.34, 0.54], // Education leaf
-  [0.52, 0.72], // Science leaf
-  [0.70, 0.88], // Modern Relevance leaf
+  [0.02, 0.25], // cover opens
+  [0.23, 0.50], // Education & Vedas leaf
+  [0.48, 0.75], // Science & Philosophy leaf
+  [0.72, 0.96], // Modern Relevance & Closing leaf
 ];
-
-interface AncientBookProps {
-  targetRef: RefObject<HTMLElement | null>;
-}
-
-export default function AncientBook({ targetRef }: AncientBookProps) {
-  const reduce = useReducedMotion();
-
-  return (
-    <div className="ab-wrap">
-      {reduce ? <StaticBook /> : <LiveBook targetRef={targetRef} />}
-      <div className="ab-hint" aria-hidden="true">
-        <ChevronDown className="ab-hint-icon" />
-        <span>Scroll to turn the pages and explore</span>
-      </div>
-    </div>
-  );
-}
 
 export function BookHeadline() {
   return (
-    <div className="ab-head">
-      <p className="ab-eyebrow">An Interactive Manuscript</p>
-      <h2 className="ab-headline">Discover the Wisdom of Ancient India</h2>
-      <p className="ab-sub">Explore the timeless knowledge, philosophy, science, and heritage of Bharat.</p>
+    <div className="ab-head text-center my-4">
+      <p className="ab-eyebrow font-mono text-xs uppercase tracking-widest text-[#9A7730]">An Interactive Manuscript</p>
+      <h2 className="ab-headline font-display text-2xl text-[#641E16]">Discover the Wisdom of Ancient India</h2>
+      <p className="ab-sub text-xs text-[#6B5847] italic">Explore the timeless knowledge, philosophy, science, and heritage of Bharat.</p>
     </div>
   );
 }
 
-function LiveBook({ targetRef }: AncientBookProps) {
-  const scrollYProgress = useMotionValue(0);
+interface AncientBookProps {
+  targetRef?: RefObject<HTMLElement | null>;
+  scrollProgress?: MotionValue<number>;
+  className?: string;
+}
 
+export default function AncientBook({ targetRef, scrollProgress, className = '' }: AncientBookProps) {
+  const reduce = useReducedMotion();
+
+  return (
+    <div className={`ab-wrap w-full flex flex-col items-center select-none ${className}`}>
+      {reduce ? <StaticBook /> : <LiveBook targetRef={targetRef} scrollProgress={scrollProgress} />}
+    </div>
+  );
+}
+
+function LiveBook({ targetRef, scrollProgress }: AncientBookProps) {
+  const rawProgress = useMotionValue(0);
+  const internalSpring = useSpring(rawProgress, { stiffness: 90, damping: 20 });
+  const scrollYProgress = scrollProgress ?? internalSpring;
+  const [currentPage, setCurrentPage] = useState(0);
+
+  // Sync scroll progress to active page dots
   useEffect(() => {
-    const el = targetRef.current;
-    if (!el) return;
+    return scrollYProgress.on('change', (v) => {
+      let page = 0;
+      if (v >= 0.72) page = 4;
+      else if (v >= 0.48) page = 3;
+      else if (v >= 0.22) page = 2;
+      else if (v >= 0.03) page = 1;
+      setCurrentPage(page);
+    });
+  }, [scrollYProgress]);
+
+  // Fallback scroll listener if external scrollProgress is not passed
+  useEffect(() => {
+    if (scrollProgress) return;
     let raf = 0;
     const update = () => {
       raf = 0;
-      const travel = Math.max(1, el.offsetHeight - window.innerHeight);
-      scrollYProgress.set(Math.min(1, Math.max(0, (window.scrollY - el.offsetTop) / travel)));
+      const el = targetRef?.current;
+      if (el) {
+        const rect = el.getBoundingClientRect();
+        const scrolled = -rect.top;
+        const totalDistance = Math.max(350, rect.height - window.innerHeight);
+        if (scrolled > 5) {
+          const p = Math.min(1, Math.max(0, scrolled / totalDistance));
+          rawProgress.set(p);
+        }
+      } else {
+        const p = Math.min(1, Math.max(0, window.scrollY / 500));
+        rawProgress.set(p);
+      }
     };
+
     const schedule = () => {
       if (!raf) raf = requestAnimationFrame(update);
     };
+
     update();
     window.addEventListener('scroll', schedule, { passive: true });
     window.addEventListener('resize', schedule);
@@ -167,138 +192,222 @@ function LiveBook({ targetRef }: AncientBookProps) {
       window.removeEventListener('resize', schedule);
       if (raf) cancelAnimationFrame(raf);
     };
-  }, [targetRef, scrollYProgress]);
+  }, [targetRef, rawProgress, scrollProgress]);
+
+  const goToPage = (pageIdx: number) => {
+    const targets = [0, 0.22, 0.48, 0.72, 0.96];
+    const targetVal = targets[pageIdx] ?? 0;
+    setCurrentPage(pageIdx);
+    rawProgress.set(targetVal);
+
+    if (targetRef?.current) {
+      const rect = targetRef.current.getBoundingClientRect();
+      const trackTop = window.scrollY + rect.top;
+      const scrollableDist = targetRef.current.offsetHeight - window.innerHeight;
+      if (scrollableDist > 100) {
+        const destY = trackTop + targetVal * scrollableDist;
+        window.scrollTo({ top: destY, behavior: 'smooth' });
+      }
+    }
+  };
+
+  const nextPage = () => {
+    const next = Math.min(currentPage + 1, 4);
+    goToPage(next);
+  };
+
+  const prevPage = () => {
+    const prev = Math.max(currentPage - 1, 0);
+    goToPage(prev);
+  };
 
   // Fore-edge page block fades as leaves leave the right stack.
   const edgeOpacity = useTransform(scrollYProgress, [0.05, 0.8], [1, 0.15]);
 
   return (
-    <div className="ab-stage">
-      <div className="ab-floor" aria-hidden="true" />
-      <div className="ab-book" role="img" aria-label="Ancient Indian manuscript whose pages turn as you scroll">
-        {/* Centre spine visible between left (read) and right (unread) halves */}
-        <div className="ab-spine" aria-hidden="true" />
-        {/* Right-edge page block — fades as pages are turned */}
-        <motion.div className="ab-foreedge" aria-hidden="true" style={{ opacity: edgeOpacity }} />
+    <div className="flex flex-col items-center w-full">
+      <div className="ab-stage">
+        <div className="ab-floor" aria-hidden="true" />
+        <div
+          className="ab-book cursor-pointer"
+          role="img"
+          aria-label="Ancient Indian manuscript whose pages turn as you scroll"
+          onClick={nextPage}
+        >
+          {/* Centre spine visible between left (read) and right (unread) halves */}
+          <div className="ab-spine" aria-hidden="true" />
+          {/* Right-edge page block — fades as pages are turned */}
+          <motion.div className="ab-foreedge" aria-hidden="true" style={{ opacity: edgeOpacity }} />
 
-        {/* Back cover — visible at the very end when all pages are flipped */}
-        <div className="ab-backboard" aria-hidden="true">
-          <div className="ab-backboard-inner">
-            <LotusMini />
-            <p className="sanskrit-title" style={{ color: '#C49A45', fontSize: '0.95rem', marginTop: 8 }}>॥ समाप्तम् ॥</p>
+          {/* Back cover — visible at the very end when all pages are flipped */}
+          <div className="ab-backboard" aria-hidden="true">
+            <div className="ab-backboard-inner">
+              <LotusMini />
+              <p className="sanskrit-title" style={{ color: '#C49A45', fontSize: '0.95rem', marginTop: 8 }}>॥ समाप्तम् ॥</p>
+            </div>
           </div>
-        </div>
 
-        {/* LEFT HALF base: dark maroon backing — flipped pages land on top of this */}
-        <div className="ab-leftbase" aria-hidden="true" />
+          {/* Static base: Introduction page (left) + parchment endpaper (right). */}
+          <div className="ab-leftbase ab-introbase" aria-label="Introduction page">
+            <IntroFace />
+          </div>
+          <div className="ab-rightbase" aria-hidden="true">
+            <p className="sanskrit-title" style={{ color: '#9A7730', fontSize: '0.85rem' }}>॥ शुभम् ॥</p>
+          </div>
 
-        {/* RIGHT HALF base: parchment endpaper — only visible after ALL pages have flipped */}
-        <div className="ab-rightbase" aria-hidden="true">
-          <p className="sanskrit-title" style={{ color: '#9A7730', fontSize: '0.9rem' }}>॥ शुभम् ॥</p>
-        </div>
+          {/* Leaves render back-to-front so cover is on top. */}
 
-        {/* ── Leaves render back-to-front so cover is on top.
-            Flip order: Cover → Intro (p2) → Education (p3) → Science (p5) → base ── */}
+          {/* Leaf 3 (z=7, flip 4th) */}
+          <FlipLeaf progress={scrollYProgress} range={LEAF_RANGES[3]} zTop={7} zRest={3}
+            label="Modern relevance and closing leaves"
+            frontClass="ab-page" backClass="ab-page ab-closing"
+            front={
+              <>
+                <Kicker>Page 7 · Present Day</Kicker>
+                <Title>Modern Relevance</Title>
+                <div className="ab-rule" />
+                <Body>Traditional Indian knowledge speaks to contemporary education — NEP 2020 (§4.27) brings Indian Knowledge Systems into modern curricula.</Body>
+                <Body>Ancient methods sharpen mental agility, pattern recognition and numerical intuition in today&apos;s classrooms.</Body>
+                <PageNo>॥ ७ ॥</PageNo>
+              </>
+            }
+            back={
+              <>
+                <LotusMini />
+                <Title>Ancient Wisdom. Timeless Knowledge.</Title>
+                <Body>A future inspired by heritage.</Body>
+                <div className="ab-rule" />
+                <p className="sanskrit-title" style={{ color: '#641E16', fontSize: '0.9rem' }}>॥ शुभम् ॥</p>
+                <PageNo>॥ ८ ॥</PageNo>
+              </>
+            }
+          />
 
+          {/* Leaf 2 (z=8, flip 3rd) */}
+          <FlipLeaf progress={scrollYProgress} range={LEAF_RANGES[2]} zTop={8} zRest={2}
+            label="Science and philosophy leaves"
+            frontClass="ab-page" backClass="ab-page"
+            front={
+              <>
+                <Kicker>Page 5 · Gaṇita &amp; Jyotiṣa</Kicker>
+                <Title>Science &amp; Mathematics</Title>
+                <div className="ab-rule" />
+                <ChakraMini />
+                <Body>Zero and the decimal place-value system, precise astronomy, Ayurvedic medicine and scientific thought — India&apos;s enduring gifts to world knowledge.</Body>
+                <PageNo>॥ ५ ॥</PageNo>
+              </>
+            }
+            back={
+              <>
+                <Kicker>Page 6 · Darśana</Kicker>
+                <Title>Philosophy &amp; Wisdom</Title>
+                <div className="ab-rule" />
+                <YantraMini />
+                <Body>Six schools of thought explore knowledge, ethics and the examined life — values of dharma, inquiry and compassion that guide conduct.</Body>
+                <PageNo>॥ ६ ॥</PageNo>
+              </>
+            }
+          />
 
-        <FlipLeaf progress={scrollYProgress} range={LEAF_RANGES[4]} zTop={7} zRest={4}
-          label="Modern Relevance page"
-          frontClass="ab-page" backClass="ab-page ab-closing"
-          front={
-            <>
-              <Kicker>Page 4 · Present Day</Kicker>
-              <Title>Modern Relevance</Title>
-              <div className="ab-rule" />
-              <Body>Traditional Indian knowledge speaks to contemporary education — NEP 2020 (§4.27) brings Indian Knowledge Systems into modern curricula.</Body>
-              <Body>Ancient methods sharpen mental agility, pattern recognition and numerical intuition in today&apos;s classrooms.</Body>
-              <PageNo>॥ ४ ॥</PageNo>
-            </>
-          }
-          back={
-            <>
-              <YantraMini />
-              <Title>Philosophy &amp; Wisdom</Title>
-              <Body>Dharma, inquiry and compassion — values that guide conduct across generations.</Body>
-            </>
-          }
-        />
+          {/* Leaf 1 (z=9, flip 2nd) */}
+          <FlipLeaf progress={scrollYProgress} range={LEAF_RANGES[1]} zTop={9} zRest={1}
+            label="Education and Vedas leaves"
+            frontClass="ab-page" backClass="ab-page"
+            front={<EducationFace />}
+            back={
+              <>
+                <Kicker>Page 4 · The Four Vedas</Kicker>
+                <Title>Ṛg · Sāma · Yajur · Atharva</Title>
+                <div className="ab-rule" />
+                <ul className="ab-list">
+                  <li><strong>Ṛgveda</strong> — hymns of cosmic order</li>
+                  <li><strong>Sāmaveda</strong> — the science of melody</li>
+                  <li><strong>Yajurveda</strong> — ritual and procedure</li>
+                  <li><strong>Atharvaveda</strong> — life and healing lore</li>
+                </ul>
+                <PageNo>॥ ४ ॥</PageNo>
+              </>
+            }
+          />
 
-        {/* Leaf 3 — (z=8), flip 3rd → reveals Modern Relevance */}
-        <FlipLeaf progress={scrollYProgress} range={LEAF_RANGES[3]} zTop={8} zRest={3}
-          label="Science and Mathematics page"
-          frontClass="ab-page" backClass="ab-page"
-          front={
-            <>
-              <Kicker>Page 3 · Gaṇita &amp; Jyotiṣa</Kicker>
-              <Title>Science &amp; Mathematics</Title>
-              <div className="ab-rule" />
-              <ChakraMini />
-              <Body>Zero and the decimal place-value system, precise astronomy, Ayurvedic medicine — India&apos;s enduring gifts to world knowledge.</Body>
-              <PageNo>॥ ३ ॥</PageNo>
-            </>
-          }
-          back={
-            <>
-              <Kicker>The Four Vedas</Kicker>
-              <Title>Ṛg · Sāma · Yajur · Atharva</Title>
-              <div className="ab-rule" />
-              <ul className="ab-list">
-                <li><strong>Ṛgveda</strong> — hymns of cosmic order</li>
-                <li><strong>Sāmaveda</strong> — the science of melody</li>
-                <li><strong>Yajurveda</strong> — ritual and procedure</li>
-                <li><strong>Atharvaveda</strong> — life and healing lore</li>
-              </ul>
-            </>
-          }
-        />
-
-        {/* Leaf 2 — (z=9), flip 2nd → reveals Science */}
-        <FlipLeaf progress={scrollYProgress} range={LEAF_RANGES[2]} zTop={9} zRest={2}
-          label="Ancient Indian Education page"
-          frontClass="ab-page" backClass="ab-page"
-          front={<EducationFace />}
-          back={
-            <>
-              <ArchMini />
-              <Body>Nalanda and Takshashila stood as the world&apos;s first universities, attracting scholars from across Asia.</Body>
-            </>
-          }
-        />
-
-        {/* Leaf 1 — (z=10), flip 1st after cover → reveals Education */}
-        <FlipLeaf progress={scrollYProgress} range={LEAF_RANGES[1]} zTop={10} zRest={1}
-          label="Introduction page"
-          frontClass="ab-page" backClass="ab-page"
-          front={<IntroFace />}
-          back={
-            <>
-              <LotusMini />
-            </>
-          }
-        />
-
-        {/* Cover (z=11) — very first flip → reveals Introduction (Leaf 1) */}
-        <FlipLeaf progress={scrollYProgress} range={LEAF_RANGES[0]} zTop={11} zRest={0}
-          label="SwiftSum manuscript cover" leafClass="ab-coverleaf"
-          frontClass="ab-coverface ab-coverfull" backClass="ab-coverback"
-          front={
-            <div className="ab-cover-frame">
-              <LotusMini />
-              <p className="ab-cover-kicker">A Nalanda-Era Manuscript</p>
-              <p className="ab-cover-title">SWIFTSUM</p>
-              <p className="sanskrit-title ab-cover-sub">Indian Knowledge Systems</p>
-              <div className="ab-cover-nalanda">
-                <NalandaIllustration />
+          {/* Cover Leaf (z=10, flip 1st) */}
+          <FlipLeaf progress={scrollYProgress} range={LEAF_RANGES[0]} zTop={10} zRest={0}
+            label="SwiftSum manuscript cover" leafClass="ab-coverleaf"
+            frontClass="ab-coverface ab-coverfull" backClass="ab-coverback"
+            hideWhenFlipped={true}
+            front={
+              <div className="ab-cover-frame">
+                <LotusMini />
+                <p className="ab-cover-kicker">A Nalanda-Era Manuscript</p>
+                <p className="ab-cover-title">SWIFTSUM</p>
+                <p className="sanskrit-title ab-cover-sub">Indian Knowledge Systems</p>
+                <div className="ab-cover-nalanda">
+                  <NalandaIllustration />
+                </div>
+                <p className="ab-cover-foot">॥ विद्या ददाति विनयम् ॥</p>
               </div>
-              <p className="ab-cover-foot">॥ विद्या ददाति विनयम् ॥</p>
-            </div>
-          }
-          back={
-            <div className="ab-cover-frame ab-cover-frame-inner" aria-hidden="true">
-              <LotusMini />
-            </div>
-          }
-        />
+            }
+            back={
+              <div className="ab-cover-frame ab-cover-frame-inner" aria-hidden="true">
+                <LotusMini />
+              </div>
+            }
+          />
+        </div>
+      </div>
+
+      {/* Interactive Controls & Hints */}
+      <div className="flex items-center justify-between w-full max-w-[560px] px-4 mt-3">
+        {/* Previous Page Button */}
+        <button
+          onClick={(e) => {
+            e.stopPropagation();
+            prevPage();
+          }}
+          className="flex items-center gap-1 text-[11px] font-serif uppercase tracking-wider text-[#A8A090] hover:text-[#C49A45] transition-colors py-1 px-3 rounded-full border border-[#C49A45]/30 hover:border-[#C49A45] bg-[#1A1712]/80"
+          aria-label="Previous Page"
+        >
+          <ChevronLeft className="w-3.5 h-3.5 text-[#C49A45]" />
+          <span>Prev</span>
+        </button>
+
+        {/* Page Dots Navigation */}
+        <div className="flex items-center gap-2">
+          {[0, 1, 2, 3, 4].map((idx) => (
+            <button
+              key={idx}
+              onClick={(e) => {
+                e.stopPropagation();
+                goToPage(idx);
+              }}
+              className={`w-2 h-2 rounded-full transition-all duration-300 ${
+                currentPage === idx
+                  ? 'bg-[#C49A45] w-5 shadow-[0_0_8px_rgba(196,154,69,0.8)]'
+                  : 'bg-[#C49A45]/30 hover:bg-[#C49A45]/70'
+              }`}
+              aria-label={`Go to page ${idx === 0 ? 'Cover' : idx}`}
+            />
+          ))}
+        </div>
+
+        {/* Next Page Button */}
+        <button
+          onClick={(e) => {
+            e.stopPropagation();
+            nextPage();
+          }}
+          className="flex items-center gap-1 text-[11px] font-serif uppercase tracking-wider text-[#A8A090] hover:text-[#C49A45] transition-colors py-1 px-3 rounded-full border border-[#C49A45]/30 hover:border-[#C49A45] bg-[#1A1712]/80"
+          aria-label="Next Page"
+        >
+          <span>Next</span>
+          <ChevronRight className="w-3.5 h-3.5 text-[#C49A45]" />
+        </button>
+      </div>
+
+      {/* Scroll Hint */}
+      <div className="ab-hint mt-2" aria-hidden="true">
+        <ChevronDown className="ab-hint-icon" />
+        <span>Click or scroll to turn pages</span>
       </div>
     </div>
   );
@@ -320,10 +429,10 @@ function FlipLeaf(props: {
   return <BookLeaf {...props} />;
 }
 
-/** Non-animated fallback for reduced-motion users. */
+/** Non-animated fallback for reduced-motion users */
 function StaticBook() {
   const pages: Array<[string, string]> = [
-    ['Cover', 'INDIAN KNOWLEDGE SYSTEMS — The Timeless Wisdom of Bharat.'],
+    ['Cover', 'SWIFTSUM — Indian Knowledge Systems manuscript.'],
     ['Introduction', 'Indian Knowledge Systems preserve millennia of inquiry into mathematics, astronomy, medicine, philosophy and the arts.'],
     ['Ancient Indian Education', 'The Gurukul system and guru–śiṣya tradition, flowering in Nalanda and Takshashila.'],
     ['The Four Vedas', 'Ṛgveda, Sāmaveda, Yajurveda and Atharvaveda — hymns, melody, ritual and healing lore.'],

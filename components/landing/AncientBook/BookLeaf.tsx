@@ -34,12 +34,13 @@ export default function BookLeaf({
   const frontShade = useTransform(angle, [0, -90], [0, 0.42]);
   const backShade = useTransform(angle, [-168, -90], [0, 0.42]);
 
-  // Leaf opacity: if hideWhenFlipped is true, fade out as angle turns past -70 to -140 deg
+  // Leaf opacity: if hideWhenFlipped is true, fade out as angle turns past -30 to -75 deg
+  // so the flap never extends over adjacent text on the left.
   const leafOpacity = useTransform(angle, (v) => {
     if (!hideWhenFlipped) return 1;
-    if (v >= -70) return 1;
-    if (v <= -140) return 0;
-    return (v - (-140)) / (-70 - (-140));
+    if (v >= -30) return 1;
+    if (v <= -75) return 0;
+    return (v - (-75)) / (-30 - (-75));
   });
 
   const pointerEvents = useTransform(leafOpacity, (o) => (o === 0 ? 'none' : 'auto'));
