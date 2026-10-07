@@ -298,27 +298,7 @@ html.lenis, html.lenis body {
   pointer-events: none;
 }
 .ab-spine {
-  position: absolute;
-  left: 50%;
-  top: -1%;
-  bottom: -1%;
-  width: 24px;
-  transform: translateX(-50%) translateZ(-4px);
-  background: linear-gradient(90deg, #4A130E 0%, #7d2a20 50%, #4A130E 100%);
-  border-left: 1px solid #9A7730;
-  border-right: 1px solid #9A7730;
-  border-radius: 3px;
-  z-index: 25;
-}
-.ab-spine::after {
-  content: "";
-  position: absolute;
-  top: 6%;
-  bottom: 6%;
-  left: 7px;
-  right: 7px;
-  border-left: 1px solid rgba(196, 154, 69, 0.7);
-  border-right: 1px solid rgba(196, 154, 69, 0.7);
+  display: none !important;
 }
 .ab-leftbase, .ab-rightbase {
   position: absolute;

@@ -2,7 +2,6 @@
 
 import React, { RefObject, useEffect, useState } from 'react';
 import { motion, useReducedMotion, useTransform, MotionValue, useMotionValue, useSpring, transform } from 'framer-motion';
-import { ChevronDown, ChevronLeft, ChevronRight } from 'lucide-react';
 import BookLeaf from './BookLeaf';
 import { NalandaIllustration } from '@/components/common/Motifs';
 
@@ -238,8 +237,6 @@ function LiveBook({ targetRef, scrollProgress }: AncientBookProps) {
           aria-label="Ancient Indian manuscript whose pages turn as you scroll"
           onClick={nextPage}
         >
-          {/* Centre spine visible between left (read) and right (unread) halves */}
-          <div className="ab-spine" aria-hidden="true" />
           {/* Right-edge page block — fades as pages are turned */}
           <motion.div className="ab-foreedge" aria-hidden="true" style={{ opacity: edgeOpacity }} />
 
@@ -360,58 +357,23 @@ function LiveBook({ targetRef, scrollProgress }: AncientBookProps) {
         </div>
       </div>
 
-      {/* Interactive Controls & Hints */}
-      <div className="flex items-center justify-between w-full max-w-[560px] px-4 mt-3">
-        {/* Previous Page Button */}
-        <button
-          onClick={(e) => {
-            e.stopPropagation();
-            prevPage();
-          }}
-          className="flex items-center gap-1 text-[11px] font-serif uppercase tracking-wider text-[#A8A090] hover:text-[#C49A45] transition-colors py-1 px-3 rounded-full border border-[#C49A45]/30 hover:border-[#C49A45] bg-[#1A1712]/80"
-          aria-label="Previous Page"
-        >
-          <ChevronLeft className="w-3.5 h-3.5 text-[#C49A45]" />
-          <span>Prev</span>
-        </button>
-
-        {/* Page Dots Navigation */}
-        <div className="flex items-center gap-2">
-          {[0, 1, 2, 3, 4].map((idx) => (
-            <button
-              key={idx}
-              onClick={(e) => {
-                e.stopPropagation();
-                goToPage(idx);
-              }}
-              className={`w-2 h-2 rounded-full transition-all duration-300 ${
-                currentPage === idx
-                  ? 'bg-[#C49A45] w-5 shadow-[0_0_8px_rgba(196,154,69,0.8)]'
-                  : 'bg-[#C49A45]/30 hover:bg-[#C49A45]/70'
-              }`}
-              aria-label={`Go to page ${idx === 0 ? 'Cover' : idx}`}
-            />
-          ))}
-        </div>
-
-        {/* Next Page Button */}
-        <button
-          onClick={(e) => {
-            e.stopPropagation();
-            nextPage();
-          }}
-          className="flex items-center gap-1 text-[11px] font-serif uppercase tracking-wider text-[#A8A090] hover:text-[#C49A45] transition-colors py-1 px-3 rounded-full border border-[#C49A45]/30 hover:border-[#C49A45] bg-[#1A1712]/80"
-          aria-label="Next Page"
-        >
-          <span>Next</span>
-          <ChevronRight className="w-3.5 h-3.5 text-[#C49A45]" />
-        </button>
-      </div>
-
-      {/* Scroll Hint */}
-      <div className="ab-hint mt-2" aria-hidden="true">
-        <ChevronDown className="ab-hint-icon" />
-        <span>Click or scroll to turn pages</span>
+      {/* Page Progress Indicator (no previous/next instructions) */}
+      <div className="flex items-center justify-center gap-2 mt-4" aria-label="Page indicator">
+        {[0, 1, 2, 3, 4].map((idx) => (
+          <button
+            key={idx}
+            onClick={(e) => {
+              e.stopPropagation();
+              goToPage(idx);
+            }}
+            className={`w-2 h-2 rounded-full transition-all duration-300 ${
+              currentPage === idx
+                ? 'bg-[#C49A45] w-5 shadow-[0_0_8px_rgba(196,154,69,0.8)]'
+                : 'bg-[#C49A45]/30 hover:bg-[#C49A45]/70'
+            }`}
+            aria-label={`Page ${idx === 0 ? 'Cover' : idx}`}
+          />
+        ))}
       </div>
     </div>
   );
@@ -448,7 +410,6 @@ function StaticBook() {
   return (
     <div className="ab-static">
       <div className="ab-book ab-static-book" aria-label="SwiftSum manuscript cover">
-        <div className="ab-spine" aria-hidden="true" />
         <div className="ab-face ab-front ab-coverface ab-coverfull ab-static-face">
           <div className="ab-cover-frame">
             <LotusMini />
