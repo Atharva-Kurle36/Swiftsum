@@ -24,8 +24,6 @@ export default function Hero() {
   // Towards the very end of the pinned track (0.92 to 1.0), gentle fade as it transitions to next section
   const heroOpacityMap = transform([0, 0.9, 1], [1, 1, 0.85]);
   const heroOpacity = useTransform(scrollYProgress, (v) => heroOpacityMap(v));
-  const watermarkYMap = transform([0, 1], ['0%', '20%']);
-  const watermarkY = useTransform(scrollYProgress, (v) => watermarkYMap(v));
 
   // Mouse 3D tilt
   const mouseX = useMotionValue(0);
@@ -73,31 +71,37 @@ export default function Hero() {
     >
       {/* Pinned Sticky Viewport: locks for 170vh while book pages flip, then releases into next section */}
       <div className="sticky top-0 h-screen w-full overflow-hidden flex flex-col justify-between pt-20 pb-4 sm:pt-24 sm:pb-6 z-10">
-        {/* Celestial Shooting Stars (Landing Page Hero only - White) */}
+        {/* Starry Night Sky Background (Matching Demo: Central radial ellipse + twinkling star field) */}
+        <div className="absolute inset-0 pointer-events-none z-0 overflow-hidden">
+          <div className="absolute inset-0 bg-[radial-gradient(ellipse_at_center,rgba(255,255,255,0.15)_0%,rgba(0,0,0,0)_80%)]" />
+          <div className="hero-star-field absolute inset-0" />
+        </div>
+
+        {/* Celestial Blue Shooting Stars (Landing Page Hero only) */}
         <div className="absolute inset-0 pointer-events-none z-0 overflow-hidden">
           <ShootingStars
-            starColor="#FFFFFF"
-            trailColor="#FFFFFF"
+            starColor="#38BDF8"
+            trailColor="#0284C7"
             minSpeed={14}
             maxSpeed={32}
             minDelay={1000}
             maxDelay={3000}
-            starWidth={14}
-            starHeight={1.5}
+            starWidth={15}
+            starHeight={1.6}
           />
           <ShootingStars
-            starColor="#FFFFFF"
-            trailColor="#FFFFFF"
+            starColor="#60A5FA"
+            trailColor="#2563EB"
             minSpeed={10}
             maxSpeed={24}
             minDelay={1800}
             maxDelay={4500}
-            starWidth={10}
-            starHeight={1.2}
+            starWidth={12}
+            starHeight={1.4}
           />
           <ShootingStars
-            starColor="#FFFFFF"
-            trailColor="#FFFFFF"
+            starColor="#00E5FF"
+            trailColor="#0072F5"
             minSpeed={18}
             maxSpeed={40}
             minDelay={2200}
@@ -106,20 +110,6 @@ export default function Hero() {
             starHeight={2}
           />
         </div>
-
-        {/* Background Giant Devanagari Watermark "गणित" */}
-        <motion.div
-          style={{ y: watermarkY, opacity: heroOpacity }}
-          aria-hidden="true"
-          className="absolute right-[-5vw] top-1/2 -translate-y-1/2 pointer-events-none select-none z-0"
-        >
-          <span
-            className="font-dev text-outline-faint text-[38vw] lg:text-[28vw] leading-none block"
-            style={{ letterSpacing: '-0.05em' }}
-          >
-            गणित
-          </span>
-        </motion.div>
 
         {/* Main Grid Content */}
         <motion.div

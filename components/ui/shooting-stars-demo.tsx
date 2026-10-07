@@ -21,26 +21,26 @@ export function ShootingStarsDemo() {
         </p>
       </div>
 
-      {/* Multiple shooting star layers with white stars and different speeds */}
+      {/* Multiple shooting star layers with blue stars and different speeds */}
       <ShootingStars
-        starColor="#FFFFFF"
-        trailColor="#FFFFFF"
+        starColor="#38BDF8"
+        trailColor="#0284C7"
         minSpeed={15}
         maxSpeed={35}
         minDelay={1000}
         maxDelay={3000}
       />
       <ShootingStars
-        starColor="#FFFFFF"
-        trailColor="#FFFFFF"
+        starColor="#60A5FA"
+        trailColor="#2563EB"
         minSpeed={10}
         maxSpeed={25}
         minDelay={2000}
         maxDelay={4000}
       />
       <ShootingStars
-        starColor="#FFFFFF"
-        trailColor="#FFFFFF"
+        starColor="#00E5FF"
+        trailColor="#0072F5"
         minSpeed={20}
         maxSpeed={40}
         minDelay={1500}
