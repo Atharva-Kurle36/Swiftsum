@@ -13,7 +13,7 @@ export const metadata: Metadata = {
 };
 
 export const viewport: Viewport = {
-  themeColor: '#0B0A08',
+  themeColor: '#000000',
 };
 
 export default function RootLayout({
@@ -26,7 +26,7 @@ export default function RootLayout({
       <head>
         <link rel="icon" href="/favicon.svg" type="image/svg+xml" />
       </head>
-      <body className="min-h-screen bg-[#0B0A08] text-[#F5F0E6] antialiased selection:bg-[#E5A93C] selection:text-[#0B0A08]">
+      <body className="min-h-screen bg-black text-[#F5F0E6] antialiased selection:bg-[#E5A93C] selection:text-black">
         <MotionInit />
         <SmoothScroll />
         {children}

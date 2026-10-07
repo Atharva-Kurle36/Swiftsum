@@ -73,23 +73,20 @@ export default function DigitCrossGrid({
     return () => clearTimeout(timer);
   }, [activeConnections]);
 
-  // Compute column power names (e.g. 10^0, 10^1) for place value grounding
-  const maxLen = Math.max(topDigits.length, bottomDigits.length);
-
   return (
     <div
       ref={containerRef}
-      className="parchment-card p-6 sm:p-8 relative border border-[#C49A45] bg-[#FFF9EF] overflow-hidden"
+      className="rounded-2xl border border-[#E5A93C]/20 bg-[#14120D]/90 backdrop-blur-md p-6 sm:p-8 relative shadow-xl overflow-hidden"
     >
       {/* Visual Header */}
-      <div className="flex items-center justify-between mb-8 pb-3 border-b border-[#C49A45] text-xs">
-        <div className="flex items-center gap-2">
-          <span className="w-2 h-2 rounded-full bg-[#641E16] animate-pulse" />
-          <span className="font-serif font-bold text-sm tracking-wide text-[#641E16] uppercase">
+      <div className="flex items-center justify-between mb-8 pb-4 border-b border-[#E5A93C]/15 text-xs">
+        <div className="flex items-center gap-2.5">
+          <span className="w-2.5 h-2.5 rounded-full bg-[#E5A93C] animate-pulse shadow-[0_0_8px_#E5A93C]" />
+          <span className="font-display font-medium text-base text-[#F5F0E6] tracking-wide uppercase">
             Ūrdhva-Tiryagbhyām Vector Ray Visualizer
           </span>
         </div>
-        <span className="font-mono text-[11px] text-[#641E16] bg-[#FAF0DB] px-2.5 py-1 rounded-md border border-[#C49A45]">
+        <span className="font-mono text-xs text-[#E5A93C] bg-[#1A1712] px-3 py-1 rounded-full border border-[#E5A93C]/30">
           Parallel Ray Matrix
         </span>
       </div>
@@ -103,7 +100,7 @@ export default function DigitCrossGrid({
             return (
               <div
                 key={`col-${idx}`}
-                className="w-12 sm:w-14 text-center font-mono text-[10px] text-[#8C7763] uppercase tracking-wider"
+                className="w-12 sm:w-14 text-center font-mono text-[11px] text-[#A8A090] uppercase tracking-wider"
               >
                 10<sup>{power}</sup>
               </div>
@@ -117,7 +114,7 @@ export default function DigitCrossGrid({
         
         {/* Top Row: Number A */}
         <div className="flex items-center justify-center gap-3 sm:gap-4 relative z-10">
-          <span className="text-xs font-mono font-bold text-[#641E16] w-8 text-right hidden sm:inline select-none">
+          <span className="text-xs font-mono font-bold text-[#E5A93C] w-8 text-right hidden sm:inline select-none">
             A:
           </span>
           {topDigits.map((digit, idx) => {
@@ -127,8 +124,8 @@ export default function DigitCrossGrid({
                 key={`top-${idx}`}
                 className={`digit-top w-12 h-14 sm:w-14 sm:h-16 rounded-xl flex items-center justify-center font-mono text-2xl sm:text-3xl font-extrabold transition-all duration-300 select-none border ${
                   isActive
-                    ? 'bg-[#641E16] text-[#FFF9EF] border-[#C49A45] scale-110'
-                    : 'bg-[#FFF9EF] text-[#45352B] border-[#C49A45]'
+                    ? 'bg-[#E5A93C] text-[#0B0A08] border-[#FFD700] scale-110 shadow-[0_0_25px_rgba(229,169,60,0.6)]'
+                    : 'bg-[#1A1712] text-[#F5F0E6] border-[#E5A93C]/25 shadow-md'
                 }`}
               >
                 {digit}
@@ -144,11 +141,11 @@ export default function DigitCrossGrid({
         >
           <defs>
             <linearGradient id="laserBeamGrad" x1="0%" y1="0%" x2="100%" y2="100%">
-              <stop offset="0%" stopColor="#641E16" stopOpacity="0.95" />
-              <stop offset="100%" stopColor="#C49A45" stopOpacity="0.95" />
+              <stop offset="0%" stopColor="#FF9F1C" stopOpacity="0.95" />
+              <stop offset="100%" stopColor="#E5A93C" stopOpacity="0.95" />
             </linearGradient>
             <filter id="laserGlow" x="-20%" y="-20%" width="140%" height="140%">
-              <feDropShadow dx="0" dy="0" stdDeviation="4" floodColor="#C49A45" floodOpacity="0.35" />
+              <feDropShadow dx="0" dy="0" stdDeviation="5" floodColor="#E5A93C" floodOpacity="0.5" />
             </filter>
           </defs>
 
@@ -168,7 +165,7 @@ export default function DigitCrossGrid({
                   y1={p1.y}
                   x2={p2.x}
                   y2={p2.y}
-                  stroke="rgba(196,154,69,0.25)"
+                  stroke="rgba(229,169,60,0.2)"
                   strokeWidth="10"
                   strokeLinecap="round"
                 />
@@ -187,10 +184,10 @@ export default function DigitCrossGrid({
                 <circle
                   cx={midX}
                   cy={midY}
-                  r="4"
-                  fill="#FFF9EF"
-                  stroke="#641E16"
-                  strokeWidth="2"
+                  r="4.5"
+                  fill="#0B0A08"
+                  stroke="#E5A93C"
+                  strokeWidth="2.5"
                 />
               </g>
             );
@@ -199,7 +196,7 @@ export default function DigitCrossGrid({
 
         {/* Bottom Row: Number B */}
         <div className="flex items-center justify-center gap-3 sm:gap-4 relative z-10">
-          <span className="text-xs font-mono font-bold text-[#9A7730] w-8 text-right hidden sm:inline select-none">
+          <span className="text-xs font-mono font-bold text-[#FF9F1C] w-8 text-right hidden sm:inline select-none">
             B:
           </span>
           {bottomDigits.map((digit, idx) => {
@@ -209,8 +206,8 @@ export default function DigitCrossGrid({
                 key={`bot-${idx}`}
                 className={`digit-bottom w-12 h-14 sm:w-14 sm:h-16 rounded-xl flex items-center justify-center font-mono text-2xl sm:text-3xl font-extrabold transition-all duration-300 select-none border ${
                   isActive
-                    ? 'bg-[#C49A45] text-[#641E16] border-[#9A7730] scale-110'
-                    : 'bg-[#FFF9EF] text-[#45352B] border-[#C49A45]'
+                    ? 'bg-[#E5A93C] text-[#0B0A08] border-[#FFD700] scale-110 shadow-[0_0_25px_rgba(229,169,60,0.6)]'
+                    : 'bg-[#1A1712] text-[#F5F0E6] border-[#E5A93C]/25 shadow-md'
                 }`}
               >
                 {digit}
@@ -222,23 +219,23 @@ export default function DigitCrossGrid({
 
       {/* Live Step Equation Banner below Grid */}
       {currentFormula && (
-        <div className="mt-8 pt-5 border-t border-[#C49A45] bg-[#FFFEF9] p-4 rounded-xl text-center border border-[#C49A45]">
-          <span className="text-[10px] font-mono font-semibold text-[#9A7730] uppercase tracking-wider block mb-1">
+        <div className="mt-8 pt-5 border-t border-[#E5A93C]/20 bg-[#1A1712] p-4 sm:p-5 rounded-xl text-center border border-[#E5A93C]/25">
+          <span className="text-[11px] font-mono font-semibold text-[#A8A090] uppercase tracking-wider block mb-1">
             Active Coordinate Equation
           </span>
-          <p className="font-mono text-base sm:text-lg font-bold text-[#45352B]">
+          <p className="font-mono text-lg sm:text-xl font-bold text-[#E5A93C]">
             {currentFormula}
           </p>
           {(placedDigit !== undefined || carryOut !== undefined) && (
             <div className="flex items-center justify-center gap-6 mt-3 text-xs">
               {placedDigit !== undefined && (
-                <span className="flex items-center gap-1.5 text-[#4F7A3A] font-semibold bg-[rgba(79,122,58,0.1)] px-3 py-1 rounded-lg border border-[rgba(79,122,58,0.3)]">
-                  Placed Digit: <strong className="font-mono text-sm text-[#45352B]">{placedDigit}</strong>
+                <span className="flex items-center gap-1.5 text-emerald-400 font-mono font-semibold bg-emerald-500/10 px-3.5 py-1.5 rounded-lg border border-emerald-500/30">
+                  Placed Digit: <strong className="font-mono text-sm text-[#F5F0E6]">{placedDigit}</strong>
                 </span>
               )}
               {carryOut !== undefined && carryOut > 0 && (
-                <span className="flex items-center gap-1.5 text-[#641E16] font-semibold bg-[#FAF0DB] px-3 py-1 rounded-lg border border-[#C49A45]">
-                  Carry to Next: <strong className="font-mono text-sm text-[#641E16]">{carryOut}</strong>
+                <span className="flex items-center gap-1.5 text-[#E5A93C] font-mono font-semibold bg-[#0B0A08] px-3.5 py-1.5 rounded-lg border border-[#E5A93C]/40">
+                  Carry to Next: <strong className="font-mono text-sm text-[#E5A93C]">{carryOut}</strong>
                 </span>
               )}
             </div>

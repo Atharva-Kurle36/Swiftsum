@@ -92,9 +92,9 @@ export function Header({
 			className={cn(
 				'sticky top-0 z-50 mx-auto w-full max-w-7xl border-b border-transparent transition-all duration-300 ease-out',
 				{
-					'bg-[#13110D]/90 supports-[backdrop-filter]:bg-[#13110D]/75 border-[#E5A93C]/20 backdrop-blur-xl md:top-4 md:max-w-5xl md:rounded-full md:border md:shadow-[0_10px_35px_rgba(0,0,0,0.8),0_0_20px_rgba(229,169,60,0.1)]':
+					'bg-black/90 supports-[backdrop-filter]:bg-black/75 border-[#E5A93C]/25 backdrop-blur-xl md:top-4 md:max-w-5xl md:rounded-full md:border md:shadow-[0_10px_35px_rgba(0,0,0,0.9),0_0_20px_rgba(229,169,60,0.12)]':
 						scrolled && !open,
-					'bg-[#13110D]/95': open,
+					'bg-black/95': open,
 				},
 				className,
 			)}
@@ -148,7 +148,7 @@ export function Header({
 					<Button
 						size="sm"
 						onClick={(e) => scrollToSection(e as unknown as React.MouseEvent<HTMLAnchorElement>, 'journey')}
-						className="ml-1 rounded-full bg-[#E5A93C] text-[#0B0A08] font-mono text-xs uppercase tracking-wider font-semibold hover:bg-[#D4AF37] shadow-[0_0_15px_rgba(229,169,60,0.3)] transition-all transform hover:scale-[1.02]"
+						className="ml-1 rounded-full bg-[#E5A93C] text-black font-mono text-xs uppercase tracking-wider font-semibold hover:bg-[#D4AF37] shadow-[0_0_15px_rgba(229,169,60,0.3)] transition-all transform hover:scale-[1.02]"
 					>
 						<Sparkles className="w-3.5 h-3.5 mr-1" />
 						Explore
@@ -236,7 +236,7 @@ export function Header({
 
 						<Button
 							onClick={(e) => scrollToSection(e as unknown as React.MouseEvent<HTMLAnchorElement>, 'journey')}
-							className="w-full rounded-full bg-[#E5A93C] text-[#0B0A08] font-mono text-xs uppercase tracking-wider font-bold py-3 hover:bg-[#D4AF37]"
+							className="w-full rounded-full bg-[#E5A93C] text-black font-mono text-xs uppercase tracking-wider font-bold py-3 hover:bg-[#D4AF37]"
 						>
 							<Sparkles className="w-4 h-4 mr-1.5" />
 							Begin the Journey

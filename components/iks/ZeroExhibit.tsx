@@ -50,7 +50,7 @@ export default function ZeroExhibit() {
     <section
       id="zero"
       ref={sectionRef}
-      className="relative bg-[#13110D] border-y border-[#E5A93C]/10 py-24 sm:py-36 overflow-hidden"
+      className="relative bg-black border-y border-[#E5A93C]/10 py-24 sm:py-36 overflow-hidden"
     >
       {/* Background Radial Gold Glow Behind Monument */}
       <motion.div

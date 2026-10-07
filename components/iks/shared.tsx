@@ -187,7 +187,7 @@ export class ErrorBoundary extends Component<ErrorBoundaryProps, ErrorBoundarySt
     if (this.state.hasError) {
       return (
         this.props.fallback || (
-          <div className="min-h-[40vh] flex items-center justify-center p-6 text-center bg-[#0B0A08] text-[#F5F0E6]">
+          <div className="min-h-[40vh] flex items-center justify-center p-6 text-center bg-black text-[#F5F0E6]">
             <div className="max-w-xl mx-auto">
               <h2 className="font-cinzel text-xl text-[#E5A93C] mb-2">Something went wrong</h2>
               <p className="text-[#A8A090] text-sm mb-4">

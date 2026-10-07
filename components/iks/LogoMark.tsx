@@ -17,7 +17,7 @@ export function BinduMark({ size = 42, className = '' }: { size?: number; classN
         width="48"
         height="48"
         rx="14"
-        fill="#0B0A08"
+        fill="#000000"
         stroke="#E5A93C"
         strokeWidth="1.2"
         strokeOpacity="0.4"

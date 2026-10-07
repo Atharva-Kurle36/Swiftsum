@@ -75,7 +75,7 @@ export default function VedicMathPlayground() {
   return (
     <section
       id="vedic-math"
-      className="relative bg-[#13110D] border-y border-[#E5A93C]/10 py-24 sm:py-36 overflow-hidden"
+      className="relative bg-black border-y border-[#E5A93C]/10 py-24 sm:py-36 overflow-hidden"
     >
       {/* Background Watermark "गणना" 24vw bottom-left */}
       <div
@@ -110,7 +110,7 @@ export default function VedicMathPlayground() {
                     data-testid={`vedic-calc-base-${b}`}
                     className={`px-5 py-2 rounded-full font-mono text-xs uppercase tracking-wider font-semibold transition-all duration-300 ${
                       base === b
-                        ? 'bg-[#E5A93C] text-[#0B0A08] shadow-[0_0_15px_rgba(229,169,60,0.3)]'
+                        ? 'bg-[#E5A93C] text-black shadow-[0_0_15px_rgba(229,169,60,0.3)]'
                         : 'bg-transparent text-[#F5F0E6] border border-[#E5A93C]/30 hover:border-[#E5A93C] hover:text-[#E5A93C]'
                     }`}
                   >
@@ -149,7 +149,7 @@ export default function VedicMathPlayground() {
                       value={numA}
                       onChange={(e) => setNumA(e.target.value)}
                       data-testid="vedic-calc-input-a"
-                      className="w-full bg-[#0B0A08] border border-[#E5A93C]/25 rounded-xl px-5 py-3 font-mono text-2xl text-[#F5F0E6] focus:outline-none focus:border-[#E5A93C] focus:ring-1 focus:ring-[#E5A93C] transition-all"
+                      className="w-full bg-black border border-[#E5A93C]/25 rounded-xl px-5 py-3 font-mono text-2xl text-[#F5F0E6] focus:outline-none focus:border-[#E5A93C] focus:ring-1 focus:ring-[#E5A93C] transition-all"
                     />
                   </div>
 
@@ -168,7 +168,7 @@ export default function VedicMathPlayground() {
                       value={numB}
                       onChange={(e) => setNumB(e.target.value)}
                       data-testid="vedic-calc-input-b"
-                      className="w-full bg-[#0B0A08] border border-[#E5A93C]/25 rounded-xl px-5 py-3 font-mono text-2xl text-[#F5F0E6] focus:outline-none focus:border-[#E5A93C] focus:ring-1 focus:ring-[#E5A93C] transition-all"
+                      className="w-full bg-black border border-[#E5A93C]/25 rounded-xl px-5 py-3 font-mono text-2xl text-[#F5F0E6] focus:outline-none focus:border-[#E5A93C] focus:ring-1 focus:ring-[#E5A93C] transition-all"
                     />
                   </div>
                 </div>
@@ -176,12 +176,12 @@ export default function VedicMathPlayground() {
                 {/* Live Steps Breakdown */}
                 {calcState.isValid ? (
                   <div data-testid="vedic-calc-steps" className="space-y-3.5 mb-8">
-                    <div className="flex items-start gap-3 text-xs sm:text-sm font-mono text-[#F5F0E6]/90 bg-[#0B0A08]/60 p-3 rounded-lg border border-[#E5A93C]/10">
+                    <div className="flex items-start gap-3 text-xs sm:text-sm font-mono text-[#F5F0E6]/90 bg-black/60 p-3 rounded-lg border border-[#E5A93C]/10">
                       <span className="text-[#E5A93C] font-bold">01</span>
                       <span>Both numbers sit close to the base {base}.</span>
                     </div>
 
-                    <div className="flex items-start gap-3 text-xs sm:text-sm font-mono text-[#F5F0E6]/90 bg-[#0B0A08]/60 p-3 rounded-lg border border-[#E5A93C]/10">
+                    <div className="flex items-start gap-3 text-xs sm:text-sm font-mono text-[#F5F0E6]/90 bg-black/60 p-3 rounded-lg border border-[#E5A93C]/10">
                       <span className="text-[#E5A93C] font-bold">02</span>
                       <span>
                         Deficits: {calcState.a} − {base} ={' '}
@@ -191,7 +191,7 @@ export default function VedicMathPlayground() {
                       </span>
                     </div>
 
-                    <div className="flex items-start gap-3 text-xs sm:text-sm font-mono text-[#F5F0E6]/90 bg-[#0B0A08]/60 p-3 rounded-lg border border-[#E5A93C]/10">
+                    <div className="flex items-start gap-3 text-xs sm:text-sm font-mono text-[#F5F0E6]/90 bg-black/60 p-3 rounded-lg border border-[#E5A93C]/10">
                       <span className="text-[#E5A93C] font-bold">03</span>
                       <span>
                         Cross-add: {calcState.a} + ({calcState.db}) ={' '}
@@ -199,7 +199,7 @@ export default function VedicMathPlayground() {
                       </span>
                     </div>
 
-                    <div className="flex items-start gap-3 text-xs sm:text-sm font-mono text-[#F5F0E6]/90 bg-[#0B0A08]/60 p-3 rounded-lg border border-[#E5A93C]/10">
+                    <div className="flex items-start gap-3 text-xs sm:text-sm font-mono text-[#F5F0E6]/90 bg-black/60 p-3 rounded-lg border border-[#E5A93C]/10">
                       <span className="text-[#E5A93C] font-bold">04</span>
                       <span>
                         Multiply the deficits: ({calcState.da}) × ({calcState.db}) ={' '}

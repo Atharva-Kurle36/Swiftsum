@@ -5,7 +5,7 @@ import { FadeUp, SectionHeading, Diamond } from './shared';
 
 export default function PioneersBento() {
   return (
-    <section id="pioneers" className="relative bg-[#0B0A08] py-24 sm:py-36 overflow-hidden">
+    <section id="pioneers" className="relative bg-black py-24 sm:py-36 overflow-hidden">
       <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
         {/* Heading Row */}
         <div className="flex flex-col lg:flex-row lg:items-end justify-between mb-16 sm:mb-20 gap-8">

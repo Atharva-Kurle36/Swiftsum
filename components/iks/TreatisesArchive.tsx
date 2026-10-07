@@ -57,7 +57,7 @@ const TREATISES: Treatise[] = [
 
 export default function TreatisesArchive() {
   return (
-    <section id="treatises" className="relative bg-[#0B0A08] py-24 sm:py-36 overflow-hidden">
+    <section id="treatises" className="relative bg-black py-24 sm:py-36 overflow-hidden">
       <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
         {/* Section Heading */}
         <div className="mb-20 sm:mb-28">
@@ -91,7 +91,7 @@ export default function TreatisesArchive() {
                         className="w-full h-full object-cover transition-transform duration-[1200ms] ease-out group-hover:scale-105"
                       />
                       {/* Bottom vignette */}
-                      <div className="absolute inset-0 bg-gradient-to-t from-[#0B0A08] via-transparent to-transparent opacity-80" />
+                      <div className="absolute inset-0 bg-gradient-to-t from-black via-transparent to-transparent opacity-80" />
                     </div>
                   </div>
 

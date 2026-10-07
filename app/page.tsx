@@ -13,7 +13,7 @@ import { ScrollProgress, FilmGrain, ErrorBoundary } from '@/components/iks/share
 
 export default function HomePage() {
   return (
-    <div className="relative min-h-screen bg-[#0B0A08] text-[#F5F0E6] selection:bg-[#E5A93C] selection:text-[#0B0A08]">
+    <div className="relative min-h-screen bg-black text-[#F5F0E6] selection:bg-[#E5A93C] selection:text-black">
       {/* Fixed Film Grain Overlay */}
       <FilmGrain />
 

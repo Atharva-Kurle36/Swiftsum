@@ -44,7 +44,7 @@ export default function Footer() {
   };
 
   return (
-    <footer className="relative bg-[#0B0A08] border-t border-[#E5A93C]/10 pt-20 pb-12 overflow-hidden">
+    <footer className="relative bg-black border-t border-[#E5A93C]/10 pt-20 pb-12 overflow-hidden">
       {/* Background Watermark "ॐ तत् सत्" 26vw Centered Bottom */}
       <div
         aria-hidden="true"
@@ -139,7 +139,7 @@ export default function Footer() {
                 <button
                   type="submit"
                   data-testid="footer-newsletter-submit-btn"
-                  className="absolute right-1.5 px-5 py-2 rounded-full bg-[#E5A93C] text-[#0B0A08] font-mono text-xs uppercase tracking-wider font-bold hover:bg-[#D4AF37] transition-all shadow-md"
+                  className="absolute right-1.5 px-5 py-2 rounded-full bg-[#E5A93C] text-black font-mono text-xs uppercase tracking-wider font-bold hover:bg-[#D4AF37] transition-all shadow-md"
                 >
                   JOIN
                 </button>

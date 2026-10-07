@@ -246,8 +246,8 @@ function ChapterImageItem({
         className="w-full h-full object-cover object-center"
       />
       {/* Cinematic vignettes for high readability */}
-      <div className="absolute inset-0 bg-gradient-to-t from-[#0B0A08]/95 via-[#0B0A08]/25 to-transparent" />
-      <div className="absolute inset-0 bg-gradient-to-r from-transparent via-transparent to-[#0B0A08]/50" />
+      <div className="absolute inset-0 bg-gradient-to-t from-black/95 via-black/25 to-transparent" />
+      <div className="absolute inset-0 bg-gradient-to-r from-transparent via-transparent to-black/50" />
     </motion.div>
   );
 }
@@ -353,7 +353,7 @@ export default function JourneyScrollytelling() {
   };
 
   return (
-    <section id="journey" className="relative bg-[#0B0A08] overflow-x-clip">
+    <section id="journey" className="relative bg-black overflow-x-clip">
       {/* 01 Scrollytelling Section Introduction Heading */}
       <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 pt-24 pb-14 sm:pt-32 sm:pb-18">
         <div className="max-w-3xl">
@@ -378,14 +378,14 @@ export default function JourneyScrollytelling() {
       {/* Pinned Scrollytelling Track (500vh) */}
       <div
         ref={containerRef}
-        className="relative h-[500vh] bg-[#0B0A08]"
+        className="relative h-[500vh] bg-black"
       >
         {/* Pinned 100vh Full-Bleed Scrollytelling Viewport */}
-        <div className="sticky top-0 h-screen w-full overflow-hidden flex flex-col lg:flex-row bg-[#0B0A08]">
+        <div className="sticky top-0 h-screen w-full overflow-hidden flex flex-col lg:flex-row bg-black">
           {/* LEFT HALF (Full-bleed image stack with overlays) */}
           <div
             data-testid="journey-sticky-visual"
-            className="w-full lg:w-1/2 h-[44vh] lg:h-full relative overflow-hidden bg-[#0B0A08]"
+            className="w-full lg:w-1/2 h-[44vh] lg:h-full relative overflow-hidden bg-black"
           >
             {/* Stack of crossfading and parallax drifting high-res images */}
             {CHAPTERS.map((chapter, idx) => (
@@ -443,7 +443,7 @@ export default function JourneyScrollytelling() {
           </div>
 
           {/* RIGHT HALF (Vertically centered text content with continuous scroll-linked motion) */}
-          <div className="w-full lg:w-1/2 h-[56vh] lg:h-full relative flex flex-col justify-center bg-[#0B0A08] z-20">
+          <div className="w-full lg:w-1/2 h-[56vh] lg:h-full relative flex flex-col justify-center bg-black z-20">
             {CHAPTERS.map((chapter, idx) => (
               <ChapterTextItem
                 key={`journey-text-${idx}`}

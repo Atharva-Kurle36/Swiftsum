@@ -6,6 +6,7 @@ import { motion, useScroll, useTransform, useSpring, useMotionValue, transform }
 import { ArrowDown } from 'lucide-react';
 import { EASE } from './shared';
 import AncientBook from '@/components/landing/AncientBook/AncientBook';
+import { ShootingStars } from '@/components/ui/shooting-stars';
 
 export default function Hero() {
   const trackRef = useRef<HTMLDivElement>(null);
@@ -68,10 +69,44 @@ export default function Hero() {
     <section
       ref={trackRef}
       id="hero-track"
-      className="relative h-[270vh] bg-[#0B0A08]"
+      className="relative h-[270vh] bg-black"
     >
       {/* Pinned Sticky Viewport: locks for 170vh while book pages flip, then releases into next section */}
       <div className="sticky top-0 h-screen w-full overflow-hidden flex flex-col justify-between pt-20 pb-4 sm:pt-24 sm:pb-6 z-10">
+        {/* Celestial Shooting Stars (Landing Page Hero only - White) */}
+        <div className="absolute inset-0 pointer-events-none z-0 overflow-hidden">
+          <ShootingStars
+            starColor="#FFFFFF"
+            trailColor="#FFFFFF"
+            minSpeed={14}
+            maxSpeed={32}
+            minDelay={1000}
+            maxDelay={3000}
+            starWidth={14}
+            starHeight={1.5}
+          />
+          <ShootingStars
+            starColor="#FFFFFF"
+            trailColor="#FFFFFF"
+            minSpeed={10}
+            maxSpeed={24}
+            minDelay={1800}
+            maxDelay={4500}
+            starWidth={10}
+            starHeight={1.2}
+          />
+          <ShootingStars
+            starColor="#FFFFFF"
+            trailColor="#FFFFFF"
+            minSpeed={18}
+            maxSpeed={40}
+            minDelay={2200}
+            maxDelay={5500}
+            starWidth={18}
+            starHeight={2}
+          />
+        </div>
+
         {/* Background Giant Devanagari Watermark "गणित" */}
         <motion.div
           style={{ y: watermarkY, opacity: heroOpacity }}
