@@ -1,34 +1,57 @@
 'use client';
 
 import React from 'react';
-import CoverPage from '@/components/landing/CoverPage';
-import Hero from '@/components/landing/Hero';
-import StatsBand from '@/components/landing/StatsBand';
-import HowItWorks from '@/components/landing/HowItWorks';
-import SutraCatalog from '@/components/landing/SutraCatalog';
-import IksFactDeck from '@/components/landing/IksFactDeck';
-import NepContext from '@/components/landing/NepContext';
-import FinalCta from '@/components/landing/FinalCta';
+import Navbar from '@/components/iks/Navbar';
+import Hero from '@/components/iks/Hero';
+import MarqueeRibbon from '@/components/iks/MarqueeRibbon';
+import JourneyScrollytelling from '@/components/iks/JourneyScrollytelling';
+import ZeroExhibit from '@/components/iks/ZeroExhibit';
+import PioneersBento from '@/components/iks/PioneersBento';
+import VedicMathPlayground from '@/components/iks/VedicMathPlayground';
+import TreatisesArchive from '@/components/iks/TreatisesArchive';
+import Footer from '@/components/iks/Footer';
+import { ScrollProgress, FilmGrain, ErrorBoundary } from '@/components/iks/shared';
 
 export default function HomePage() {
   return (
-    <div className="flex flex-col min-h-screen">
-      {/* Cover — academic title sheet */}
-      <CoverPage />
-      {/* Preface — thesis demonstration */}
-      <Hero />
-      {/* At-a-glance strip */}
-      <StatsBand />
-      {/* 01 — Method */}
-      <HowItWorks />
-      {/* 02 — Content chapters */}
-      <SutraCatalog />
-      {/* 03 — Heritage archive */}
-      <IksFactDeck />
-      {/* 04 — Pedagogy */}
-      <NepContext />
-      {/* Colophon call to action */}
-      <FinalCta />
-    </div>
+    <ErrorBoundary>
+      <div className="relative min-h-screen bg-[#0B0A08] text-[#F5F0E6] selection:bg-[#E5A93C] selection:text-[#0B0A08]">
+        {/* Fixed Film Grain Overlay */}
+        <FilmGrain />
+
+        {/* Fixed Gold Scroll Progress Bar */}
+        <ScrollProgress />
+
+        {/* Fixed Navigation Bar */}
+        <Navbar />
+
+        {/* Main Content Sections */}
+        <main>
+          {/* Hero Section */}
+          <Hero />
+
+          {/* Marquee Ribbon */}
+          <MarqueeRibbon />
+
+          {/* 01: Journey Scrollytelling */}
+          <JourneyScrollytelling />
+
+          {/* 02: Zero Exhibit */}
+          <ZeroExhibit />
+
+          {/* 03: Pioneers Bento */}
+          <PioneersBento />
+
+          {/* 04: Vedic Math Playground */}
+          <VedicMathPlayground />
+
+          {/* 05: Treatises Archive */}
+          <TreatisesArchive />
+        </main>
+
+        {/* Footer */}
+        <Footer />
+      </div>
+    </ErrorBoundary>
   );
 }

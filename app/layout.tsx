@@ -1,14 +1,18 @@
 import './globals.css';
-import type { Metadata } from 'next';
-import Navbar from '@/components/common/Navbar';
-import Footer from '@/components/common/Footer';
+import type { Metadata, Viewport } from 'next';
 import SmoothScroll from '@/components/common/SmoothScroll';
 
-// Fonts load via the Google Fonts @import in globals.css with local serif
-// fallbacks, so production builds never depend on font-network access.
 export const metadata: Metadata = {
-  title: 'Indian Knowledge Systems (IKS) — SwiftSum Vedic Ganita',
-  description: 'A premium academic presentation of Indian Knowledge Systems: Vedic mathematics, Nalanda scholarly heritage, and NEP 2020 aligned computation.',
+  title: 'IKS · Where Zero Was Born — Ancient Indian Mathematics',
+  description:
+    "A scrollytelling descent through 2,000+ years of ancient Indian mathematics — from knotted altar ropes to the Kerala school's infinite series. The zero you read, the decimals you compute, the sine you plot: it all began here.",
+  icons: {
+    icon: '/favicon.svg',
+  },
+};
+
+export const viewport: Viewport = {
+  themeColor: '#0B0A08',
 };
 
 export default function RootLayout({
@@ -17,15 +21,13 @@ export default function RootLayout({
   children: React.ReactNode;
 }) {
   return (
-    <html lang="en">
-      <body className="min-h-screen flex flex-col justify-between">
-        {/* Step 3.2: Lenis smooth scroll + GSAP ScrollTrigger wiring (renders null). */}
+    <html lang="en" className="dark scroll-smooth">
+      <head>
+        <link rel="icon" href="/favicon.svg" type="image/svg+xml" />
+      </head>
+      <body className="min-h-screen bg-[#0B0A08] text-[#F5F0E6] antialiased selection:bg-[#E5A93C] selection:text-[#0B0A08]">
         <SmoothScroll />
-        <Navbar />
-        <main className="flex-grow z-10 relative">
-          {children}
-        </main>
-        <Footer />
+        {children}
       </body>
     </html>
   );
