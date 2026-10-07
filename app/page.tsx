@@ -13,41 +13,51 @@ import { ScrollProgress, FilmGrain, ErrorBoundary } from '@/components/iks/share
 
 export default function HomePage() {
   return (
-    <ErrorBoundary>
-      <div className="relative min-h-screen bg-[#0B0A08] text-[#F5F0E6] selection:bg-[#E5A93C] selection:text-[#0B0A08]">
-        {/* Fixed Film Grain Overlay */}
-        <FilmGrain />
+    <div className="relative min-h-screen bg-[#0B0A08] text-[#F5F0E6] selection:bg-[#E5A93C] selection:text-[#0B0A08]">
+      {/* Fixed Film Grain Overlay */}
+      <FilmGrain />
 
-        {/* Fixed Gold Scroll Progress Bar */}
-        <ScrollProgress />
+      {/* Fixed Gold Scroll Progress Bar */}
+      <ScrollProgress />
 
-        {/* Fixed Navigation Bar */}
-        <Navbar />
+      {/* Fixed Navigation Bar */}
+      <Navbar />
 
-        {/* Main Content Sections */}
-        <main>
-          {/* Hero Section */}
+      {/* Main Content Sections with isolated ErrorBoundaries */}
+      <main>
+        {/* Hero Section */}
+        <ErrorBoundary>
           <Hero />
+        </ErrorBoundary>
 
-          {/* 01: Journey Scrollytelling */}
+        {/* 01: Journey Scrollytelling */}
+        <ErrorBoundary>
           <JourneyScrollytelling />
+        </ErrorBoundary>
 
-          {/* 02: Zero Exhibit */}
+        {/* 02: Zero Exhibit */}
+        <ErrorBoundary>
           <ZeroExhibit />
+        </ErrorBoundary>
 
-          {/* 03: Pioneers Bento */}
+        {/* 03: Pioneers Bento */}
+        <ErrorBoundary>
           <PioneersBento />
+        </ErrorBoundary>
 
-          {/* 04: Vedic Math Playground */}
+        {/* 04: Vedic Math Playground */}
+        <ErrorBoundary>
           <VedicMathPlayground />
+        </ErrorBoundary>
 
-          {/* 05: Treatises Archive */}
+        {/* 05: Treatises Archive */}
+        <ErrorBoundary>
           <TreatisesArchive />
-        </main>
+        </ErrorBoundary>
+      </main>
 
-        {/* Footer */}
-        <Footer />
-      </div>
-    </ErrorBoundary>
+      {/* Footer */}
+      <Footer />
+    </div>
   );
 }

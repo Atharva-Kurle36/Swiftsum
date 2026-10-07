@@ -41,6 +41,9 @@ export function FilmGrain() {
 
 export function ScrollProgress() {
   const { scrollYProgress } = useScroll();
+  if ('accelerate' in scrollYProgress) {
+    delete (scrollYProgress as any).accelerate;
+  }
   const scaleX = useSpring(scrollYProgress, {
     stiffness: 120,
     damping: 30,
@@ -163,6 +166,7 @@ interface ErrorBoundaryProps {
 
 interface ErrorBoundaryState {
   hasError: boolean;
+  error?: Error;
 }
 
 export class ErrorBoundary extends Component<ErrorBoundaryProps, ErrorBoundaryState> {
@@ -171,8 +175,8 @@ export class ErrorBoundary extends Component<ErrorBoundaryProps, ErrorBoundarySt
     this.state = { hasError: false };
   }
 
-  static getDerivedStateFromError(): ErrorBoundaryState {
-    return { hasError: true };
+  static getDerivedStateFromError(error: Error): ErrorBoundaryState {
+    return { hasError: true, error };
   }
 
   componentDidCatch(error: Error, errorInfo: ErrorInfo) {
@@ -184,13 +188,19 @@ export class ErrorBoundary extends Component<ErrorBoundaryProps, ErrorBoundarySt
       return (
         this.props.fallback || (
           <div className="min-h-[40vh] flex items-center justify-center p-6 text-center bg-[#0B0A08] text-[#F5F0E6]">
-            <div>
+            <div className="max-w-xl mx-auto">
               <h2 className="font-cinzel text-xl text-[#E5A93C] mb-2">Something went wrong</h2>
               <p className="text-[#A8A090] text-sm mb-4">
                 The visual could not be displayed properly.
               </p>
+              {this.state.error && (
+                <div className="mb-4 p-3 rounded bg-red-950/40 border border-red-500/30 text-red-200 text-xs font-mono text-left max-h-48 overflow-auto">
+                  <p className="font-bold text-red-400 mb-1">{this.state.error.message}</p>
+                  <pre className="text-[10px] text-red-300/80 whitespace-pre-wrap">{this.state.error.stack}</pre>
+                </div>
+              )}
               <button
-                onClick={() => this.setState({ hasError: false })}
+                onClick={() => this.setState({ hasError: false, error: undefined })}
                 className="vedic-pill vedic-pill-gold text-xs"
               >
                 Try Again

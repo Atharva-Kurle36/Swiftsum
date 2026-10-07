@@ -1,6 +1,7 @@
 import './globals.css';
 import type { Metadata, Viewport } from 'next';
 import SmoothScroll from '@/components/common/SmoothScroll';
+import MotionInit from '@/components/common/MotionInit';
 
 export const metadata: Metadata = {
   title: 'IKS · Where Zero Was Born — Ancient Indian Mathematics',
@@ -26,6 +27,7 @@ export default function RootLayout({
         <link rel="icon" href="/favicon.svg" type="image/svg+xml" />
       </head>
       <body className="min-h-screen bg-[#0B0A08] text-[#F5F0E6] antialiased selection:bg-[#E5A93C] selection:text-[#0B0A08]">
+        <MotionInit />
         <SmoothScroll />
         {children}
       </body>

@@ -1,7 +1,7 @@
 'use client';
 
 import React, { useRef } from 'react';
-import { motion, useScroll, useTransform } from 'framer-motion';
+import { motion, useScroll, useTransform, transform } from 'framer-motion';
 import { FadeUp, SectionHeading } from './shared';
 
 const ZERO_RULES = [
@@ -32,11 +32,19 @@ export default function ZeroExhibit() {
     target: sectionRef,
     offset: ['start end', 'end start'],
   });
+  if ('accelerate' in scrollYProgress) {
+    delete (scrollYProgress as any).accelerate;
+  }
 
   // Monument animations
-  const monumentScale = useTransform(scrollYProgress, [0, 1], [0.72, 1.12]);
-  const monumentY = useTransform(scrollYProgress, [0, 1], ['12%', '-12%']);
-  const glowOpacity = useTransform(scrollYProgress, [0, 0.5, 1], [0.15, 0.45, 0.2]);
+  const monumentScaleMap = transform([0, 1], [0.72, 1.12]);
+  const monumentScale = useTransform(scrollYProgress, (v) => monumentScaleMap(v));
+
+  const monumentYMap = transform([0, 1], ['12%', '-12%']);
+  const monumentY = useTransform(scrollYProgress, (v) => monumentYMap(v));
+
+  const glowOpacityMap = transform([0, 0.5, 1], [0.15, 0.45, 0.2]);
+  const glowOpacity = useTransform(scrollYProgress, (v) => glowOpacityMap(v));
 
   return (
     <section

@@ -2,7 +2,7 @@
 
 import React, { useRef } from 'react';
 import Link from 'next/link';
-import { motion, useScroll, useTransform, useSpring, useMotionValue } from 'framer-motion';
+import { motion, useScroll, useTransform, useSpring, useMotionValue, transform } from 'framer-motion';
 import { ArrowDown } from 'lucide-react';
 import { EASE } from './shared';
 import AncientBook from '@/components/landing/AncientBook/AncientBook';
@@ -16,18 +16,25 @@ export default function Hero() {
     target: trackRef,
     offset: ['start start', 'end end'],
   });
+  if ('accelerate' in scrollYProgress) {
+    delete (scrollYProgress as any).accelerate;
+  }
 
   // Towards the very end of the pinned track (0.92 to 1.0), gentle fade as it transitions to next section
-  const heroOpacity = useTransform(scrollYProgress, [0, 0.9, 1], [1, 1, 0.85]);
-  const watermarkY = useTransform(scrollYProgress, [0, 1], ['0%', '20%']);
+  const heroOpacityMap = transform([0, 0.9, 1], [1, 1, 0.85]);
+  const heroOpacity = useTransform(scrollYProgress, (v) => heroOpacityMap(v));
+  const watermarkYMap = transform([0, 1], ['0%', '20%']);
+  const watermarkY = useTransform(scrollYProgress, (v) => watermarkYMap(v));
 
   // Mouse 3D tilt
   const mouseX = useMotionValue(0);
   const mouseY = useMotionValue(0);
 
   const springConfig = { stiffness: 60, damping: 16 };
-  const rotateX = useSpring(useTransform(mouseY, [-0.5, 0.5], [5, -5]), springConfig);
-  const rotateY = useSpring(useTransform(mouseX, [-0.5, 0.5], [-5, 5]), springConfig);
+  const rotXMap = transform([-0.5, 0.5], [5, -5]);
+  const rotYMap = transform([-0.5, 0.5], [-5, 5]);
+  const rotateX = useSpring(useTransform(mouseY, (v) => rotXMap(v)), springConfig);
+  const rotateY = useSpring(useTransform(mouseX, (v) => rotYMap(v)), springConfig);
 
   const handleMouseMove = (e: React.MouseEvent<HTMLDivElement>) => {
     if (!visualRef.current) return;

@@ -1,7 +1,7 @@
 'use client';
 
 import React, { RefObject, useEffect, useState } from 'react';
-import { motion, useReducedMotion, useTransform, MotionValue, useMotionValue, useSpring } from 'framer-motion';
+import { motion, useReducedMotion, useTransform, MotionValue, useMotionValue, useSpring, transform } from 'framer-motion';
 import { ChevronDown, ChevronLeft, ChevronRight } from 'lucide-react';
 import BookLeaf from './BookLeaf';
 import { NalandaIllustration } from '@/components/common/Motifs';
@@ -145,6 +145,9 @@ function LiveBook({ targetRef, scrollProgress }: AncientBookProps) {
   const rawProgress = useMotionValue(0);
   const internalSpring = useSpring(rawProgress, { stiffness: 90, damping: 20 });
   const scrollYProgress = scrollProgress ?? internalSpring;
+  if ('accelerate' in scrollYProgress) {
+    delete (scrollYProgress as any).accelerate;
+  }
   const [currentPage, setCurrentPage] = useState(0);
 
   // Sync scroll progress to active page dots
@@ -222,7 +225,8 @@ function LiveBook({ targetRef, scrollProgress }: AncientBookProps) {
   };
 
   // Fore-edge page block fades as leaves leave the right stack.
-  const edgeOpacity = useTransform(scrollYProgress, [0.05, 0.8], [1, 0.15]);
+  const edgeOpacityMap = transform([0.05, 0.8], [1, 0.15]);
+  const edgeOpacity = useTransform(scrollYProgress, (v) => edgeOpacityMap(v));
 
   return (
     <div className="flex flex-col items-center w-full">
