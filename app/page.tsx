@@ -3,7 +3,6 @@
 import React from 'react';
 import Navbar from '@/components/iks/Navbar';
 import Hero from '@/components/iks/Hero';
-import MarqueeRibbon from '@/components/iks/MarqueeRibbon';
 import JourneyScrollytelling from '@/components/iks/JourneyScrollytelling';
 import ZeroExhibit from '@/components/iks/ZeroExhibit';
 import PioneersBento from '@/components/iks/PioneersBento';
@@ -29,9 +28,6 @@ export default function HomePage() {
         <main>
           {/* Hero Section */}
           <Hero />
-
-          {/* Marquee Ribbon */}
-          <MarqueeRibbon />
 
           {/* 01: Journey Scrollytelling */}
           <JourneyScrollytelling />

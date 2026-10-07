@@ -84,13 +84,35 @@ export default function JourneyScrollytelling() {
   const activeChapter = CHAPTERS[activeIndex] || CHAPTERS[0];
 
   return (
-    <section
-      id="journey"
-      ref={containerRef}
-      className="relative h-[500vh] bg-[#0B0A08]"
-    >
-      {/* Pinned 100vh Full-Bleed Scrollytelling Viewport */}
-      <div className="sticky top-0 h-screen w-full overflow-hidden flex flex-col lg:flex-row bg-[#0B0A08]">
+    <section id="journey" className="relative bg-[#0B0A08] overflow-hidden">
+      {/* 01 Scrollytelling Section Introduction Heading */}
+      <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 pt-24 pb-14 sm:pt-32 sm:pb-18">
+        <div className="max-w-3xl">
+          <div className="flex items-center gap-3 mb-4">
+            <span className="font-dev text-sm text-[#FF9F1C] font-semibold">यात्रा</span>
+            <span className="w-1.5 h-1.5 rounded-full bg-[#E5A93C]" />
+            <span className="font-mono text-xs sm:text-sm uppercase tracking-[0.3em] text-[#FF9F1C] font-semibold">
+              01 — The Scrollytelling Descent
+            </span>
+          </div>
+
+          <h2 className="font-display font-medium text-4xl sm:text-6xl lg:text-7xl text-[#F5F0E6] leading-[1.08] tracking-tight mb-6 select-none">
+            Twenty-five centuries, five leaps.
+          </h2>
+
+          <p className="font-sans text-base sm:text-lg text-[#A8A090] font-light max-w-2xl leading-relaxed">
+            Scroll slowly. Each chapter pins the timeline as the tradition advances — rope geometry, binary poetry, the birth of zero, the sine tables, and the infinite.
+          </p>
+        </div>
+      </div>
+
+      {/* Pinned Scrollytelling Track (500vh) */}
+      <div
+        ref={containerRef}
+        className="relative h-[500vh] bg-[#0B0A08]"
+      >
+        {/* Pinned 100vh Full-Bleed Scrollytelling Viewport */}
+        <div className="sticky top-0 h-screen w-full overflow-hidden flex flex-col lg:flex-row bg-[#0B0A08]">
         {/* LEFT HALF (Full-bleed image stack with overlays) */}
         <div
           data-testid="journey-sticky-visual"
@@ -216,6 +238,7 @@ export default function JourneyScrollytelling() {
           ))}
         </div>
       </div>
-    </section>
-  );
+    </div>
+  </section>
+);
 }

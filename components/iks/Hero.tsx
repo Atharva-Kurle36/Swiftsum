@@ -7,13 +7,6 @@ import { ArrowDown } from 'lucide-react';
 import { EASE } from './shared';
 import AncientBook from '@/components/landing/AncientBook/AncientBook';
 
-const STATS = [
-  { era: 'c. 800 BCE', fact: 'Śulba Sūtras — altar geometry' },
-  { era: 'c. 200 BCE', fact: 'Piṅgala — binary verse meters' },
-  { era: '499 CE', fact: 'Āryabhaṭa — π ≈ 3.1416' },
-  { era: '628 CE', fact: 'Brahmagupta — rules of zero' },
-];
-
 export default function Hero() {
   const trackRef = useRef<HTMLDivElement>(null);
   const visualRef = useRef<HTMLDivElement>(null);
@@ -277,33 +270,7 @@ export default function Hero() {
             </div>
           </div>
         </motion.div>
-
-      {/* Stats Band at Bottom of Hero */}
-      <motion.div
-        initial={{ opacity: 0, y: 30 }}
-        animate={{ opacity: 1, y: 0 }}
-        transition={{ duration: 1.0, delay: 1.3, ease: EASE }}
-        style={{ opacity: heroOpacity }}
-        className="relative z-10 max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 w-full mt-10 sm:mt-14"
-      >
-        <div className="border-t border-[#E5A93C]/15 pt-6 grid grid-cols-2 lg:grid-cols-4 gap-6 sm:gap-8">
-          {STATS.map((stat, idx) => (
-            <div
-              key={idx}
-              data-testid="hero-stat"
-              className="flex flex-col gap-1 border-l border-[#E5A93C]/20 pl-4"
-            >
-              <span className="font-mono text-xs sm:text-sm font-bold text-[#E5A93C] tracking-wider">
-                {stat.era}
-              </span>
-              <span className="font-mono text-[10px] sm:text-[11px] uppercase tracking-wider text-[#A8A090]/80">
-                {stat.fact}
-              </span>
-            </div>
-          ))}
-        </div>
-      </motion.div>
-    </div>
-  </section>
-);
+      </div>
+    </section>
+  );
 }
