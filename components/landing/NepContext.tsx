@@ -14,7 +14,7 @@ export default function NepContext() {
         eyebrowTone="emerald"
         title="Bridging Ancient Wisdom"
         highlight="with Modern STEM"
-        description="NEP 2020 mandates Indian Knowledge Systems in classrooms. SwiftSum turns that mandate into tactile, auditable, classroom-ready practice."
+        description="NEP 2020 mandates Indian Knowledge Systems in classrooms. Swiftsum turns that mandate into tactile, auditable, classroom-ready practice."
       />
       
       <div className="grid grid-cols-1 lg:grid-cols-12 gap-8 items-center">
@@ -27,7 +27,7 @@ export default function NepContext() {
 
           <p className="text-sm sm:text-base text-[#45352B] leading-relaxed">
             India's National Education Policy (<strong className="text-[#641E16]">NEP 2020, Section 4.27</strong>) mandates integrating Indian Knowledge Systems into contemporary education. Rather than treating classical algorithms as dusty historical curiosities, 
-            <strong className="text-[#641E16]"> SwiftSum</strong> makes them tactile, auditable, and mathematically rigorous.
+            <strong className="text-[#641E16]"> Swiftsum</strong> makes them tactile, auditable, and mathematically rigorous.
           </p>
 
           <p className="text-sm sm:text-base text-[#45352B] leading-relaxed">

@@ -17,7 +17,7 @@ export default function Footer() {
                 style={{ background: '#641E16', color: '#FFF9EF', border: '1px solid #C49A45', fontFamily: 'Cinzel, serif' }}>
                 ॥
               </div>
-              <h3 className="text-lg">SwiftSum · Vedic Ganita</h3>
+              <h3 className="text-lg">Swiftsum · Vedic Ganita</h3>
             </div>
             <p className="text-sm max-w-md" style={{ lineHeight: 1.8 }}>
               An academic presentation of Indian Knowledge Systems — five classical sūtras with
@@ -72,7 +72,7 @@ export default function Footer() {
         </div>
 
         <div className="mt-12 pt-6 flex flex-col sm:flex-row items-center justify-between text-xs gap-4" style={{ borderTop: '1px solid #C49A45', color: '#8C7763' }}>
-          <p>© 2026 SwiftSum · IKS Course Submission</p>
+          <p>© 2026 Swiftsum · Indian Knowledge Systems</p>
           <PillarAccent />
           <span className="sanskrit-title" style={{ color: '#641E16', fontWeight: 700 }}>गणितं मूर्धनि स्थितम्</span>
         </div>

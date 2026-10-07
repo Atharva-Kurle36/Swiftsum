@@ -12,7 +12,7 @@ const STATS = [
 
 export default function StatsBand() {
   return (
-    <section aria-label="SwiftSum at a glance" className="px-4 sm:px-6 lg:px-8 max-w-7xl mx-auto -mt-2 mb-4">
+    <section aria-label="Swiftsum at a glance" className="px-4 sm:px-6 lg:px-8 max-w-7xl mx-auto -mt-2 mb-4">
       <div className="parchment-card px-6 py-5 grid grid-cols-2 lg:grid-cols-4 gap-6 !rounded-2xl !bg-[#FFF9EF] !border-[#C49A45]">
         {STATS.map((s) => (
           <div key={s.label} className="flex items-center gap-3.5">

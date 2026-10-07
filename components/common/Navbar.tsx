@@ -27,7 +27,7 @@ export default function Navbar() {
           <div>
             <div className="flex items-center gap-2">
               <span className="font-serif font-extrabold text-lg tracking-tight" style={{ color: '#641E16', fontFamily: 'Cinzel, serif' }}>
-                SwiftSum · IKS
+                Swiftsum
               </span>
               <span className="vedic-badge gold text-[10px] px-2 py-0.5 hidden sm:inline-flex">Vedic Ganita</span>
             </div>

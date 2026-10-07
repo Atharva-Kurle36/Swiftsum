@@ -151,7 +151,7 @@ export default function Footer() {
         {/* Bottom Bar after gold/10 divider */}
         <div className="pt-8 border-t border-[#E5A93C]/10 flex flex-col sm:flex-row items-center justify-between gap-4">
           <span className="font-mono text-xs uppercase tracking-[0.25em] text-[#A8A090]/80">
-            IKS — Ancient Indian Mathematics
+            Swiftsum — Ancient Indian Mathematics
           </span>
           <span className="font-dev text-sm text-[#E5A93C] tracking-wide">
             शून्यात् सर्वम्

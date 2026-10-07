@@ -5,8 +5,8 @@ import Footer from '@/components/iks/Footer';
 import { FilmGrain } from '@/components/iks/shared';
 
 export const metadata: Metadata = {
-  title: 'About — IKS · Indian Knowledge Systems',
-  description: 'About the IKS project: objectives, scope, methods and NEP 2020 alignment.',
+  title: 'About — Swiftsum · Indian Knowledge Systems',
+  description: 'About the Swiftsum project: objectives, scope, methods and NEP 2020 alignment.',
 };
 
 const OBJECTIVES = [
@@ -40,7 +40,7 @@ export default function AboutPage() {
         <div className="bg-[#1A1712] border border-[#E5A93C]/20 rounded-2xl p-8 sm:p-10 mb-8 shadow-2xl">
           <h2 className="font-display text-2xl sm:text-3xl text-[#E5A93C] mb-4">Project Overview</h2>
           <p className="font-sans text-sm sm:text-base text-[#A8A090] leading-relaxed font-light mb-6">
-            A scrollytelling and computational exploration of Indian Knowledge Systems (IKS),
+            Swiftsum is a scrollytelling and computational exploration of Indian Knowledge Systems (IKS),
             demonstrating the deep roots of algebra, binary sequences, infinite series, and the birth of zero.
             Built with modern interaction design, mathematical rigor, and respect for the Vedic tradition.
           </p>

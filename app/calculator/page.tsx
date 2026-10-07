@@ -6,7 +6,7 @@ import Footer from '@/components/iks/Footer';
 import { FilmGrain } from '@/components/iks/shared';
 
 export const metadata: Metadata = {
-  title: 'Vedic Calculator — Step-by-Step Indian Knowledge Systems Arithmetic',
+  title: 'Swiftsum — Vedic Arithmetic Engine & Step-by-Step Calculator',
   description: 'Interactive Vedic Mathematics calculator demonstrating Urdhva-Tiryagbhyam, Nikhilam, Ekadhikena, and Osculation with animated steps and crosswise lines.',
 };
 

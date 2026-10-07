@@ -64,9 +64,9 @@ export default function LogoMark({ className = '' }: { className?: string }) {
       <div className="flex flex-col">
         <span
           className="font-cinzel text-xl sm:text-2xl font-bold text-[#F5F0E6] group-hover:text-[#E5A93C] transition-colors leading-tight"
-          style={{ letterSpacing: '0.25em' }}
+          style={{ letterSpacing: '0.12em' }}
         >
-          IKS
+          Swiftsum
         </span>
         <span
           className="font-dev text-[11px] sm:text-xs text-[#E5A93C] tracking-wide leading-tight mt-0.5"

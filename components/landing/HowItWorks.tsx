@@ -38,7 +38,7 @@ export default function HowItWorks() {
       <div className="section-inner">
         <SectionHeading
           kicker="Section 01 — Method"
-          eyebrow="How SwiftSum Works"
+          eyebrow="How Swiftsum Works"
           eyebrowTone="teal"
           title="From Aphorism"
           highlight="to Auditable Proof."

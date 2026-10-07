@@ -4,7 +4,7 @@ import SmoothScroll from '@/components/common/SmoothScroll';
 import MotionInit from '@/components/common/MotionInit';
 
 export const metadata: Metadata = {
-  title: 'IKS · Where Zero Was Born — Ancient Indian Mathematics',
+  title: 'Swiftsum · Where Zero Was Born — Ancient Indian Mathematics',
   description:
     "A scrollytelling descent through 2,000+ years of ancient Indian mathematics — from knotted altar ropes to the Kerala school's infinite series. The zero you read, the decimals you compute, the sine you plot: it all began here.",
   icons: {

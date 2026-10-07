@@ -111,7 +111,7 @@ export function Header({
 				<button
 					onClick={scrollToTop}
 					className="flex items-center gap-2 cursor-pointer focus:outline-none"
-					aria-label="IKS - Indian Knowledge Systems"
+					aria-label="Swiftsum - Indian Knowledge Systems"
 				>
 					<LogoMark />
 				</button>
@@ -192,7 +192,7 @@ export function Header({
 				>
 					<div className="grid gap-y-2">
 						<p className="font-mono text-[10px] uppercase tracking-[0.3em] text-[#E5A93C]/70 mb-2">
-							IKS · Navigation
+							Swiftsum · Navigation
 						</p>
 						{links.map((link, idx) => (
 							<a

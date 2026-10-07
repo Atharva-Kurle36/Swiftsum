@@ -98,7 +98,7 @@ export default function Hero() {
               <div className="flex items-center gap-4 mb-5">
                 <div className="w-[40px] h-[1.5px] bg-[#E5A93C]" />
                 <p className="font-mono text-xs sm:text-sm uppercase tracking-[0.4em] text-[#E5A93C] font-semibold">
-                  IKS · Indian Knowledge Systems
+                  Swiftsum · Indian Knowledge Systems
                 </p>
               </div>
 
