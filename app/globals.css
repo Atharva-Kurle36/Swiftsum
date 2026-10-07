@@ -574,3 +574,51 @@ html.lenis, html.lenis body {
   100% { opacity: 0.45; }
 }
 
+/* Celestial & Mathematical Rotations & Drift */
+@keyframes spinSlower {
+  from { transform: rotate(0deg); }
+  to { transform: rotate(360deg); }
+}
+
+@keyframes spinSlowerRev {
+  from { transform: rotate(360deg); }
+  to { transform: rotate(0deg); }
+}
+
+@keyframes celestialFloat {
+  0%, 100% {
+    transform: translateY(0px) rotate(0deg);
+  }
+  50% {
+    transform: translateY(-7px) rotate(1.2deg);
+  }
+}
+
+@keyframes starburstTwinkle {
+  0%, 100% {
+    opacity: 0.55;
+    transform: scale(0.92);
+  }
+  50% {
+    opacity: 1;
+    transform: scale(1.15);
+  }
+}
+
+.animate-spin-slower {
+  animation: spinSlower 95s linear infinite;
+}
+
+.animate-spin-rev {
+  animation: spinSlowerRev 115s linear infinite;
+}
+
+.animate-celestial-float {
+  animation: celestialFloat 6.5s ease-in-out infinite;
+}
+
+.animate-starburst-twinkle {
+  animation: starburstTwinkle 3.5s ease-in-out infinite;
+}
+
+

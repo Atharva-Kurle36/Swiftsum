@@ -7,6 +7,7 @@ import { ArrowDown } from 'lucide-react';
 import { EASE } from './shared';
 import AncientBook from '@/components/landing/AncientBook/AncientBook';
 import { ShootingStars } from '@/components/ui/shooting-stars';
+import { CelestialBookYantra } from './CelestialMathSigns';
 
 export default function Hero() {
   const trackRef = useRef<HTMLDivElement>(null);
@@ -76,6 +77,7 @@ export default function Hero() {
           <div className="absolute inset-0 bg-[radial-gradient(ellipse_at_center,rgba(255,255,255,0.15)_0%,rgba(0,0,0,0)_80%)]" />
           <div className="hero-star-field absolute inset-0" />
         </div>
+
 
         {/* Celestial Blue Shooting Stars (Landing Page Hero only) */}
         <div className="absolute inset-0 pointer-events-none z-0 overflow-hidden">
@@ -223,6 +225,9 @@ export default function Hero() {
                 style={{ rotateX, rotateY }}
                 className="relative w-full max-w-[550px] flex flex-col items-center justify-center transition-transform duration-200"
               >
+                {/* Sacred Celestial Astrolabe & Gaṇita Chakra behind Manuscript */}
+                <CelestialBookYantra />
+
                 {/* Scrollable Ancient Book Component */}
                 <div
                   data-testid="hero-wheel-image"
