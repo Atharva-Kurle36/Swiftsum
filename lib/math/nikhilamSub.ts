@@ -14,12 +14,76 @@ export function nikhilamSubtraction(aStr: string, bStr: string): CalculationResu
       sutraName: 'Nikhilam Subtraction',
       sanskritName: 'Nikhilam Navatashcaramam Dashatah',
       inputs: { a: cleanA, b: cleanB },
-      finalAnswer: '0',
-      steps: [],
-      groundTruth: '0',
+      finalAnswer: 'Invalid',
+      steps: [
+        {
+          stepNumber: 1,
+          totalSteps: 1,
+          title: 'Input Out of Range',
+          sanskritSutra: 'Asambhavah (Undefined for Negative Natural Numbers)',
+          explanation: `In classical whole-number arithmetic, the minuend must be greater than or equal to the subtrahend. Here, ${cleanA} < ${cleanB}.`,
+          subResult: 'Minuend must be ≥ Subtrahend',
+          accumulatedAnswer: 'Invalid',
+        },
+      ],
+      groundTruth: (aBig - bBig).toString(),
       isVerified: false,
       methodUsed: 'Nikhilam Subtraction',
       notes: 'First number must be greater than or equal to the second number.',
+    };
+  }
+
+  // Identity Case 1: Subtracting zero (A - 0 = A)
+  if (bBig === BigInt(0)) {
+    return {
+      operationId: 'subtraction',
+      sutraName: 'Nikhilam Subtraction',
+      sanskritName: 'Nikhilam Navatashcaramam Dashatah',
+      inputs: { a: cleanA, b: cleanB },
+      finalAnswer: cleanA,
+      steps: [
+        {
+          stepNumber: 1,
+          totalSteps: 1,
+          title: 'Identity Subtraction (Subtracting Zero)',
+          sanskritSutra: 'Shunya Yoga (Zero Property)',
+          explanation: `Subtracting 0 from any quantity leaves the original quantity unchanged: ${cleanA} − 0 = ${cleanA}.`,
+          formula: `${cleanA} − 0 = ${cleanA}`,
+          subResult: `Final Answer = ${cleanA}`,
+          accumulatedAnswer: cleanA,
+        },
+      ],
+      groundTruth: cleanA,
+      isVerified: true,
+      methodUsed: 'Identity subtraction of zero',
+      notes: 'Subtracting zero preserves the minuend identically.',
+    };
+  }
+
+  // Identity Case 2: Subtracting equal numbers (A - A = 0)
+  if (aBig === bBig) {
+    return {
+      operationId: 'subtraction',
+      sutraName: 'Nikhilam Subtraction',
+      sanskritName: 'Nikhilam Navatashcaramam Dashatah',
+      inputs: { a: cleanA, b: cleanB },
+      finalAnswer: '0',
+      steps: [
+        {
+          stepNumber: 1,
+          totalSteps: 1,
+          title: 'Identity Subtraction (Equal Quantities)',
+          sanskritSutra: 'Sama Shunya (Equality Property)',
+          explanation: `Subtracting a quantity from itself yields zero: ${cleanA} − ${cleanB} = 0.`,
+          formula: `${cleanA} − ${cleanB} = 0`,
+          subResult: `Final Answer = 0`,
+          accumulatedAnswer: '0',
+        },
+      ],
+      groundTruth: '0',
+      isVerified: true,
+      methodUsed: 'Identity subtraction of equal quantities',
+      notes: 'Minuend equals subtrahend.',
     };
   }
 

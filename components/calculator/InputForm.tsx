@@ -55,8 +55,16 @@ export default function InputForm({
       if (!valB.trim() || !/^\d+$/.test(valB.trim())) {
         setErrorB('Enter a valid whole number (digits only)');
         valid = false;
-      } else if (config.id === 'division' && parseInt(valB.trim(), 10) === 0) {
+      } else if ((config.id === 'division' || config.id === 'divisibility') && parseInt(valB.trim(), 10) === 0) {
         setErrorB('Divisor cannot be 0');
+        valid = false;
+      } else if (
+        config.id === 'subtraction' &&
+        /^\d+$/.test(valA.trim()) &&
+        /^\d+$/.test(valB.trim()) &&
+        BigInt(valA.trim()) < BigInt(valB.trim())
+      ) {
+        setErrorB('Subtrahend must be ≤ minuend (positive integers only)');
         valid = false;
       } else {
         setErrorB('');

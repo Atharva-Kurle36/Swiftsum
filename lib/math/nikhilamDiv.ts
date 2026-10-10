@@ -57,72 +57,93 @@ function tryNikhilamDivision(
   const numZeros = Math.round(Math.log10(base));
   if (dividendStr.length <= numZeros) return null;
 
-  const quotientPartStr = dividendStr.slice(0, -numZeros);
-  const remainderPartStr = dividendStr.slice(-numZeros);
+  const qLen = dividendStr.length - numZeros;
+  const quotientPartStr = dividendStr.slice(0, qLen);
+  const remainderPartStr = dividendStr.slice(qLen);
 
-  const qDigits = quotientPartStr.split('').map(Number);
-  const rDigits = remainderPartStr.split('').map(Number);
+  const dividendDigits = dividendStr.split('').map(Number);
+  const complementDigits = complement.toString().padStart(numZeros, '0').split('').map(Number);
 
   const steps: CalculationStep[] = [];
 
   // Step 1: Base & Setup
   steps.push({
     stepNumber: 1,
-    totalSteps: qDigits.length + 2,
+    totalSteps: qLen + 2,
     title: 'Setup Nikhilam Base & Separation Bar',
     sanskritSutra: 'Nikhilam Vibhagah (Nikhilam Division Setup)',
-    explanation: `Divisor ${divisor} is close to Base ${base}. The deficiency/complement is C = ${base} - ${divisor} = ${complement}.
-Separate the dividend "${dividendStr}" into Quotient portion ("${quotientPartStr}") and Remainder portion ("${remainderPartStr}") having ${numZeros} digits (equal to the number of zeros in Base ${base}).`,
-    formula: `Base = ${base} | Complement C = ${complement} | Dividend: ${quotientPartStr} | ${remainderPartStr}`,
+    explanation: `Divisor ${divisor} is close to Base ${base}. The deficiency complement is C = ${base} − ${divisor} = ${complement} (represented across ${numZeros} column${numZeros > 1 ? 's' : ''}: [${complementDigits.join(', ')}]).
+Separate the dividend "${dividendStr}" into Quotient portion ("${quotientPartStr}") and Remainder portion ("${remainderPartStr}") having ${numZeros} digit${numZeros > 1 ? 's' : ''}.`,
+    formula: `Base = ${base} | Complement = ${complement} | Setup: ${quotientPartStr} | ${remainderPartStr}`,
     subResult: `Complement: ${complement}`,
     accumulatedAnswer: `${quotientPartStr} | ${remainderPartStr}`,
   });
 
-  // Step 2...N: Iterative column propagation
-  const workingQuotient: number[] = [];
-  let carry = 0;
+  // Step 2...N: Iterative column propagation using Vedic complement distribution
+  const workingCols = [...dividendDigits];
+  const qDigitsOut: number[] = [];
 
-  for (let i = 0; i < qDigits.length; i++) {
-    const rawDigit = qDigits[i] + carry;
-    workingQuotient.push(rawDigit);
-    // Multiply by complement to carry to next position
-    carry = rawDigit * complement;
+  for (let i = 0; i < qLen; i++) {
+    const rawQDigit = workingCols[i];
+    qDigitsOut.push(rawQDigit);
+
+    // Distribute products into subsequent columns
+    const distributionFormulas: string[] = [];
+    for (let p = 0; p < numZeros; p++) {
+      const targetCol = i + 1 + p;
+      if (targetCol < workingCols.length) {
+        const added = rawQDigit * complementDigits[p];
+        workingCols[targetCol] += added;
+        distributionFormulas.push(`Col ${targetCol + 1} += ${rawQDigit} × ${complementDigits[p]} = ${added}`);
+      }
+    }
 
     steps.push({
       stepNumber: i + 2,
-      totalSteps: qDigits.length + 2,
-      title: `Generate Quotient Digit ${i + 1}`,
+      totalSteps: qLen + 2,
+      title: `Process Column ${i + 1} (Quotient Component ${i + 1})`,
       sanskritSutra: 'Puraka Gunaka Samvahana (Complement Product Forwarding)',
-      explanation: `Column ${i + 1}: Bring down digit ${qDigits[i]}${carry !== 0 && i > 0 ? ` + forwarded value` : ''} = ${rawDigit}.
-Multiply this digit by complement ${complement}: ${rawDigit} × ${complement} = ${carry}. Forward this to the next column.`,
-      formula: `Q[${i + 1}] = ${rawDigit} | Forward = ${rawDigit} × ${complement} = ${carry}`,
-      subResult: `Quotient so far: ${workingQuotient.join('')}`,
-      accumulatedAnswer: `${workingQuotient.join('')} | ...`,
+      explanation: `Column ${i + 1}: Current value is ${rawQDigit}. Write ${rawQDigit} into the quotient register.
+Multiply this quotient value by the complement digit${numZeros > 1 ? 's' : ''} [${complementDigits.join(', ')}] and distribute forward:
+${distributionFormulas.join('; ')}.`,
+      formula: `Q-component[${i + 1}] = ${rawQDigit} | Distributed: ${distributionFormulas.join(', ')}`,
+      subResult: `Quotient components: [${qDigitsOut.join(', ')}]`,
+      accumulatedAnswer: `Q: [${qDigitsOut.join(', ')}] | Rem cols: [${workingCols.slice(qLen).join(', ')}]`,
     });
   }
 
-  // Calculate raw remainder by adding forwarded carry to remainder part
-  const initialRemainderVal = parseInt(remainderPartStr, 10) + carry;
-  let finalQVal = parseInt(workingQuotient.join(''), 10);
+  // Calculate raw quotient value from qDigitsOut
+  let rawQuotientVal = 0;
+  for (let i = 0; i < qLen; i++) {
+    rawQuotientVal = rawQuotientVal * 10 + qDigitsOut[i];
+  }
+
+  // Calculate raw remainder value from workingCols remainder section
+  let initialRemainderVal = 0;
+  for (let i = qLen; i < workingCols.length; i++) {
+    initialRemainderVal = initialRemainderVal * 10 + workingCols[i];
+  }
+
+  let finalQVal = rawQuotientVal;
   let finalRVal = initialRemainderVal;
 
-  // Self-correction if remainder >= divisor
+  // Self-correction (Shesha Shuddhi) if remainder >= divisor
   let correctionNote = '';
   if (finalRVal >= divisor) {
     const extraQ = Math.floor(finalRVal / divisor);
     finalRVal = finalRVal % divisor;
     finalQVal += extraQ;
-    correctionNote = ` Self-correction applied: Remainder ${initialRemainderVal} was ≥ Divisor ${divisor}, so added ${extraQ} to quotient and adjusted remainder to ${finalRVal}.`;
+    correctionNote = ` Self-correction (Shesha Shuddhi) applied: Remainder ${initialRemainderVal} was ≥ Divisor ${divisor}, so transferred ${extraQ} to quotient (${rawQuotientVal} + ${extraQ} = ${finalQVal}) leaving final remainder ${finalRVal}.`;
   }
 
   const finalAnswerStr = `Q: ${finalQVal}, R: ${finalRVal}`;
 
   steps.push({
-    stepNumber: qDigits.length + 2,
-    totalSteps: qDigits.length + 2,
-    title: 'Resolve Remainder & Self-Correction',
+    stepNumber: qLen + 2,
+    totalSteps: qLen + 2,
+    title: 'Resolve Remainder & Self-Correction (Shesha Shuddhi)',
     sanskritSutra: 'Shesha Shuddhi (Self-Correcting Remainder Adjustment)',
-    explanation: `Combine the forwarded amount with remainder column "${remainderPartStr}": ${parseInt(remainderPartStr, 10)} + ${carry} = ${initialRemainderVal}.${correctionNote}
+    explanation: `Evaluate the accumulated remainder section: initial remainder value = ${initialRemainderVal}.${correctionNote}
 Final Result: Quotient = ${finalQVal}, Remainder = ${finalRVal}.`,
     formula: `Quotient = ${finalQVal} | Remainder = ${finalRVal}`,
     subResult: finalAnswerStr,

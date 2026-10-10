@@ -4,9 +4,38 @@ export function checkDivisibility(numStr: string, divisorStr: string): Calculati
   const cleanNum = numStr.replace(/^0+(?!$)/, '') || '0';
   const cleanDivisor = divisorStr.replace(/^0+(?!$)/, '') || '1';
 
+  const divisor = parseInt(cleanDivisor, 10);
+
+  if (divisor === 0) {
+    return {
+      operationId: 'divisibility',
+      sutraName: 'Divisibility by Zero',
+      sanskritName: 'Avibhajyam',
+      inputs: { a: cleanNum, b: cleanDivisor },
+      finalAnswer: 'Undefined',
+      isDivisible: false,
+      verdictText: 'Division by zero is undefined.',
+      steps: [
+        {
+          stepNumber: 1,
+          totalSteps: 1,
+          title: 'Divisor is Zero',
+          sanskritSutra: 'Avibhajyam (Cannot Divide by Zero)',
+          explanation: 'Division by zero is undefined in mathematics. A number cannot be evaluated for divisibility by 0.',
+          formula: `${cleanNum} ÷ 0 = Undefined`,
+          subResult: 'Undefined',
+          accumulatedAnswer: 'Undefined',
+        },
+      ],
+      groundTruth: 'Undefined',
+      isVerified: false,
+      methodUsed: 'Error',
+      notes: 'Divisor cannot be 0.',
+    };
+  }
+
   const numBig = BigInt(cleanNum);
   const divBig = BigInt(cleanDivisor);
-  const divisor = parseInt(cleanDivisor, 10);
 
   const isDivisible = numBig % divBig === BigInt(0);
   const verdictText = isDivisible
@@ -155,20 +184,25 @@ ${digits.join(' + ')} = ${sum1}.`,
     accumulatedAnswer: sum1.toString(),
   });
 
+  let currentSum = sum1;
   let finalSum = sum1;
-  if (sum1 > 9) {
-    const sumDigits = sum1.toString().split('').map(Number);
+  let reductionRound = 2;
+
+  while (currentSum > 9) {
+    const sumDigits = currentSum.toString().split('').map(Number);
     finalSum = sumDigits.reduce((a, b) => a + b, 0);
     steps.push({
-      stepNumber: 2,
+      stepNumber: reductionRound,
       totalSteps: 3,
-      title: 'Secondary Reduction to Single Digit',
-      sanskritSutra: 'Shuddha Beejanka (Pure Beejank)',
-      explanation: `Reduce ${sum1} further by summing its digits: ${sumDigits.join(' + ')} = ${finalSum}.`,
+      title: reductionRound === 2 ? 'Secondary Reduction to Single Digit' : `Further Reduction Round ${reductionRound - 1}`,
+      sanskritSutra: 'Shuddha Beejanka (Pure Beejank Reduction)',
+      explanation: `Reduce ${currentSum} further by summing its digits: ${sumDigits.join(' + ')} = ${finalSum}.`,
       formula: `${sumDigits.join(' + ')} = ${finalSum}`,
-      subResult: `Final Beejank: ${finalSum}`,
+      subResult: `Beejank: ${finalSum}`,
       accumulatedAnswer: finalSum.toString(),
     });
+    currentSum = finalSum;
+    reductionRound++;
   }
 
   const stepCount = steps.length + 1;

@@ -83,27 +83,32 @@ Notice that ${b} + (${devAStr}) also equals ${lhs}! This beautiful symmetry guar
   // Step 4: Balancing and Final Combination
   let finalLhs = lhs;
   let finalRhsStr = '';
+  let balancingExplanation = '';
 
   if (rhsRaw >= 0) {
     const rhsDigits = rhsRaw.toString();
     if (rhsDigits.length < numZeros) {
       // Pad with leading zeros
       finalRhsStr = rhsDigits.padStart(numZeros, '0');
+      balancingExplanation = ` Zero-pad RHS to ${numZeros} digits: "${finalRhsStr}".`;
     } else if (rhsDigits.length > numZeros) {
       // Carry overflow to LHS
       const overflow = Math.floor(rhsRaw / Math.pow(10, numZeros));
       const remainderRhs = rhsRaw % Math.pow(10, numZeros);
       finalLhs += overflow;
       finalRhsStr = remainderRhs.toString().padStart(numZeros, '0');
+      balancingExplanation = ` Carry overflow of ${overflow} to LHS (${lhs} + ${overflow} = ${finalLhs}), leaving "${finalRhsStr}" on RHS.`;
     } else {
       finalRhsStr = rhsDigits;
     }
   } else {
     // Negative RHS (one number above base, one below)
-    // Borrow 1 from LHS
-    finalLhs -= 1;
-    const adjustedRhs = base + rhsRaw;
+    const absRhs = Math.abs(rhsRaw);
+    const borrow = Math.ceil(absRhs / base);
+    finalLhs -= borrow;
+    const adjustedRhs = borrow * base + rhsRaw;
     finalRhsStr = adjustedRhs.toString().padStart(numZeros, '0');
+    balancingExplanation = ` Since RHS was negative (${rhsRaw}), borrow ${borrow} from LHS (${lhs} − ${borrow} = ${finalLhs}) and compute (${borrow} × ${base}) + (${rhsRaw}) = ${finalRhsStr}.`;
   }
 
   const finalAnswer = (BigInt(finalLhs) * BigInt(base) + BigInt(finalRhsStr)).toString();
@@ -113,7 +118,7 @@ Notice that ${b} + (${devAStr}) also equals ${lhs}! This beautiful symmetry guar
     totalSteps: 4,
     title: 'Align Digits & Synthesize Final Result',
     sanskritSutra: 'Samyojanam (Final Synthesis)',
-    explanation: `Align the RHS into ${numZeros} digit columns.${rhsRaw < 0 ? ` Since RHS was negative, borrow 1 from LHS (${lhs} - 1 = ${finalLhs}) and compute ${base} - ${Math.abs(rhsRaw)} = ${finalRhsStr}.` : rhsRaw.toString().length < numZeros ? ` Zero-pad RHS to ${numZeros} digits: "${finalRhsStr}".` : ''}
+    explanation: `Align the RHS into ${numZeros} digit columns.${balancingExplanation}
 Combine: ${finalLhs} × ${base} + ${finalRhsStr} = ${finalAnswer}.`,
     formula: `${finalLhs} | ${finalRhsStr} = ${finalAnswer}`,
     subResult: `Answer: ${finalAnswer}`,

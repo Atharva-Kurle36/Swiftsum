@@ -62,6 +62,10 @@ const subCases = [
   ['100000', '45391'],
   ['524', '189'],
   ['8765', '4321'],
+  ['1000', '1000'],
+  ['1000', '0'],
+  ['500', '500'],
+  ['500', '0'],
 ];
 for (const [a, b] of subCases) {
   const res = nikhilamSubtraction(a, b);
@@ -76,6 +80,8 @@ const divCases = [
   ['3456', '12'],
   ['2104', '8'],
   ['7892', '23'],
+  ['199', '9'],
+  ['124', '9'],
 ];
 for (const [a, b] of divCases) {
   const res = nikhilamDivision(a, b);
@@ -90,6 +96,7 @@ console.log('\n=== 6. Testing Divisibility (Osculators & Digit Sums) ===');
 const divCheckCases = [
   ['27835', '7'],
   ['27836', '7'],
+  ['27832', '7'],
   ['39416', '13'],
   ['39417', '13'],
   ['47289', '11'],
