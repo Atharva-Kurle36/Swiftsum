@@ -3,7 +3,7 @@
 import React from 'react';
 import { NikhilamLessonData, NikhilamChapter } from '@/lib/math/nikhilamLesson';
 import { motion, AnimatePresence } from 'framer-motion';
-import { CheckCircle2, ArrowRight, Sparkles } from 'lucide-react';
+import { CheckCircle2, Sparkles } from 'lucide-react';
 
 interface Nikhilam2DFallbackProps {
   lesson: NikhilamLessonData;
@@ -16,8 +16,28 @@ export default function Nikhilam2DFallback({
   activeChapter,
 }: Nikhilam2DFallbackProps) {
   const { a, b, base, numZeros, devA, devB, lhs, rawRhs, balancedLhs, balancedRhsStr, finalAnswer, groundTruth } = lesson;
+  const isSquaring = lesson.operationType === 'squaring';
+  const isDuplex = isSquaring && lesson.squaringMethod === 'duplex';
+  const isEkadhikena = isSquaring && lesson.squaringMethod === 'ekadhikena';
+  const duplex = lesson.duplexData;
+  const ekadhikena = lesson.ekadhikenaData;
 
-  const formatDevSign = (val: number) => (val >= 0 ? `+${val}` : `−${Math.abs(val)}`);
+  const duplexTens = duplex ? duplex.tens : Math.floor(a / 10);
+  const duplexUnits = duplex ? duplex.units : a % 10;
+  const duplexDu = duplex ? duplex.du : duplexUnits * duplexUnits;
+  const duplexDtu = duplex ? duplex.dtu : 2 * duplexTens * duplexUnits;
+  const duplexDt = duplex ? duplex.dt : duplexTens * duplexTens;
+  const duplexTensPart = duplex ? duplex.tensPart : duplexDt * 100;
+  const duplexCrossPart = duplex ? duplex.crossPart : duplexDtu * 10;
+  const duplexUnitsPart = duplex ? duplex.unitsPart : duplexDu;
+
+  const ekPrefix = ekadhikena ? ekadhikena.prefix : Math.floor(a / 10);
+  const ekTerminal = ekadhikena ? ekadhikena.terminal : 5;
+  const ekSuccessor = ekadhikena ? ekadhikena.successor : ekPrefix + 1;
+  const ekLhs = ekadhikena ? ekadhikena.lhs : ekPrefix * ekSuccessor;
+  const ekRhs = ekadhikena ? ekadhikena.rhs : 25;
+
+  const formatDevSign = (val: number) => (val >= 0 ? `+${val}` : `-${Math.abs(val)}`);
   const devAFormatted = formatDevSign(devA);
   const devBFormatted = formatDevSign(devB);
 
@@ -48,171 +68,400 @@ export default function Nikhilam2DFallback({
             <div className="space-y-4">
               <div className="inline-flex items-center gap-2 px-3 py-1 rounded-full border border-[#E5A93C]/30 bg-[#1A1712] text-[#E5A93C] text-xs font-mono uppercase tracking-wider">
                 <Sparkles className="w-3.5 h-3.5" />
-                Vedic Multiplication Algorithm
+                {isSquaring ? 'Vedic Squaring Algorithm' : 'Vedic Multiplication Algorithm'}
               </div>
               <div className="text-5xl sm:text-7xl font-display font-medium text-[#F5F0E6] tracking-tight py-4 flex items-center justify-center gap-5">
-                <span className="text-[#FFD700]">{a}</span>
-                <span className="text-[#A8A090] text-3xl sm:text-4xl font-light">×</span>
-                <span className="text-[#FFD700]">{b}</span>
+                {isSquaring ? (
+                  <>
+                    <span className="text-[#FFD700]">{a}<sup>2</sup></span>
+                    <span className="text-[#A8A090] text-3xl sm:text-4xl font-light">=</span>
+                    <span className="text-[#FFD700]">?</span>
+                  </>
+                ) : (
+                  <>
+                    <span className="text-[#FFD700]">{a}</span>
+                    <span className="text-[#A8A090] text-3xl sm:text-4xl font-light">&times;</span>
+                    <span className="text-[#FFD700]">{b}</span>
+                  </>
+                )}
               </div>
               <p className="text-sm sm:text-base text-[#D1C9BE] max-w-md mx-auto leading-relaxed font-sans">
-                Can we multiply these two numbers without tedious long multiplication? Because they sit close to <strong className="text-[#FFD700] font-mono">{base}</strong>, the Nikhilam sūtra solves this instantly through deficits alone.
+                {activeChapter.captionText}
               </p>
             </div>
           )}
 
-          {/* SCENE 2: IDENTIFY BASE */}
+          {/* SCENE 2: IDENTIFY DIGITS (DUPLEX / EKADHIKENA) OR IDENTIFY BASE */}
           {activeChapter.id === 2 && (
             <div className="space-y-5 w-full">
-              <div className="p-4 sm:p-5 rounded-2xl border border-[#E5A93C]/35 bg-[#14120D] shadow-xl inline-block">
-                <span className="text-[10px] font-mono text-[#A8A090] uppercase tracking-[0.25em] block mb-1">
-                  Mathematical Reference Benchmark
-                </span>
-                <span className="text-3xl sm:text-4xl font-mono font-bold text-[#FFD700] tracking-wider">
-                  BASE = {base}
-                </span>
-              </div>
-              <div className="grid grid-cols-2 gap-4 max-w-md mx-auto">
-                <div className="p-4 rounded-xl bg-[#14120D] border border-[#E5A93C]/25 text-left">
-                  <div className="text-2xl font-display font-bold text-[#F5F0E6]">{a}</div>
-                  <div className="text-xs text-amber-400 mt-1 font-mono">
-                    = {base} {devAFormatted}
+              {isEkadhikena ? (
+                <>
+                  <div className="p-4 sm:p-5 rounded-2xl border border-[#E5A93C]/35 bg-[#14120D] shadow-xl inline-block">
+                    <span className="text-[10px] font-mono text-[#A8A090] uppercase tracking-[0.25em] block mb-1">
+                      Split The Number
+                    </span>
+                    <span className="text-3xl sm:text-4xl font-mono font-bold text-[#FFD700] tracking-wider">
+                      {`${a} = ${ekPrefix} | ${ekTerminal}`}
+                    </span>
                   </div>
-                  <div className="text-[10px] text-[#A8A090] mt-1 font-sans">
-                    {Math.abs(devA)} {devA < 0 ? 'deficit from' : 'surplus over'} base
+                  <div className="grid grid-cols-2 gap-4 max-w-md mx-auto">
+                    <div className="p-4 rounded-xl bg-[#14120D] border border-[#E5A93C]/25 text-left">
+                      <div className="text-xs text-[#A8A090] uppercase font-mono">Prefix</div>
+                      <div className="text-3xl font-display font-bold text-[#FFD700] mt-1">{ekPrefix}</div>
+                    </div>
+                    <div className="p-4 rounded-xl bg-[#14120D] border border-[#E5A93C]/25 text-left">
+                      <div className="text-xs text-[#A8A090] uppercase font-mono">Terminal Digit</div>
+                      <div className="text-3xl font-display font-bold text-[#FFD700] mt-1">{ekTerminal}</div>
+                    </div>
                   </div>
-                </div>
-                <div className="p-4 rounded-xl bg-[#14120D] border border-[#E5A93C]/25 text-left">
-                  <div className="text-2xl font-display font-bold text-[#F5F0E6]">{b}</div>
-                  <div className="text-xs text-amber-400 mt-1 font-mono">
-                    = {base} {devBFormatted}
+                  <p className="text-xs text-[#A8A090] max-w-sm mx-auto font-sans">
+                    Numbers ending in 5 are partitioned into the initial prefix and the terminal digit 5 without using any reference base.
+                  </p>
+                </>
+              ) : isDuplex ? (
+                <>
+                  <div className="p-4 sm:p-5 rounded-2xl border border-[#E5A93C]/35 bg-[#14120D] shadow-xl inline-block">
+                    <span className="text-[10px] font-mono text-[#A8A090] uppercase tracking-[0.25em] block mb-1">
+                      Identify Digits &amp; Place Values
+                    </span>
+                    <span className="text-3xl sm:text-4xl font-mono font-bold text-[#FFD700] tracking-wider">
+                      {`${a} = 10 \u00d7 ${duplexTens} + ${duplexUnits}`}
+                    </span>
                   </div>
-                  <div className="text-[10px] text-[#A8A090] mt-1 font-sans">
-                    {Math.abs(devB)} {devB < 0 ? 'deficit from' : 'surplus over'} base
+                  <div className="grid grid-cols-2 gap-4 max-w-md mx-auto">
+                    <div className="p-4 rounded-xl bg-[#14120D] border border-[#E5A93C]/25 text-left">
+                      <div className="text-xs text-[#A8A090] uppercase font-mono">Tens Digit (a)</div>
+                      <div className="text-3xl font-display font-bold text-[#FFD700] mt-1">{duplexTens}</div>
+                    </div>
+                    <div className="p-4 rounded-xl bg-[#14120D] border border-[#E5A93C]/25 text-left">
+                      <div className="text-xs text-[#A8A090] uppercase font-mono">Units Digit (b)</div>
+                      <div className="text-3xl font-display font-bold text-[#FFD700] mt-1">{duplexUnits}</div>
+                    </div>
                   </div>
-                </div>
-              </div>
+                  <p className="text-xs text-[#A8A090] max-w-sm mx-auto font-sans">
+                    The General Duplex method processes digits and place values without a reference base or deviation.
+                  </p>
+                </>
+              ) : (
+                <>
+                  <div className="p-4 sm:p-5 rounded-2xl border border-[#E5A93C]/35 bg-[#14120D] shadow-xl inline-block">
+                    <span className="text-[10px] font-mono text-[#A8A090] uppercase tracking-[0.25em] block mb-1">
+                      Mathematical Reference Benchmark
+                    </span>
+                    <span className="text-3xl sm:text-4xl font-mono font-bold text-[#FFD700] tracking-wider">
+                      BASE = {base}
+                    </span>
+                  </div>
+                  <div className="grid grid-cols-2 gap-4 max-w-md mx-auto">
+                    <div className="p-4 rounded-xl bg-[#14120D] border border-[#E5A93C]/25 text-left">
+                      <div className="text-2xl font-display font-bold text-[#F5F0E6]">{a}</div>
+                      <div className="text-xs text-amber-400 mt-1 font-mono">
+                        = {base} {devAFormatted}
+                      </div>
+                      <div className="text-[10px] text-[#A8A090] mt-1 font-sans">
+                        {Math.abs(devA)} {devA < 0 ? 'deficit from' : 'surplus over'} base
+                      </div>
+                    </div>
+                    <div className="p-4 rounded-xl bg-[#14120D] border border-[#E5A93C]/25 text-left">
+                      <div className="text-2xl font-display font-bold text-[#F5F0E6]">{b}</div>
+                      <div className="text-xs text-amber-400 mt-1 font-mono">
+                        = {base} {devBFormatted}
+                      </div>
+                      <div className="text-[10px] text-[#A8A090] mt-1 font-sans">
+                        {Math.abs(devB)} {devB < 0 ? 'deficit from' : 'surplus over'} base
+                      </div>
+                    </div>
+                  </div>
+                </>
+              )}
             </div>
           )}
 
-          {/* SCENE 3: DEVIATIONS (Upright & Horizontal) */}
+          {/* SCENE 3: SUCCESSOR (EKADHIKENA) / UNITS DUPLEX (DUPLEX) OR DEVIATIONS */}
           {activeChapter.id === 3 && (
             <div className="space-y-4 w-full">
-              <span className="text-xs font-mono text-[#A8A090] uppercase tracking-[0.2em]">
-                Signed Deviation Coordinate Register
-              </span>
-              <div className="flex items-center justify-center gap-6 max-w-md mx-auto py-2">
-                <div className="flex flex-col items-center gap-2 p-4 rounded-xl bg-[#14120D] border border-[#E5A93C]/30 min-w-[130px]">
-                  <span className="text-xs text-[#A8A090] font-mono">Factor 1</span>
-                  <span className="text-3xl font-display font-bold text-[#F5F0E6]">{a}</span>
-                  <span className="text-xs text-[#A8A090]">Deviation</span>
-                  <span className="text-2xl font-mono font-bold text-amber-400 bg-amber-500/10 px-3 py-1 rounded-lg border border-amber-500/30">
-                    {devAFormatted}
+              {isEkadhikena ? (
+                <>
+                  <span className="text-xs font-mono text-[#A8A090] uppercase tracking-[0.2em]">
+                    Find The Successor (Ekadhika)
                   </span>
-                </div>
-                <div className="text-2xl font-light text-[#A8A090]">×</div>
-                <div className="flex flex-col items-center gap-2 p-4 rounded-xl bg-[#14120D] border border-[#E5A93C]/30 min-w-[130px]">
-                  <span className="text-xs text-[#A8A090] font-mono">Factor 2</span>
-                  <span className="text-3xl font-display font-bold text-[#F5F0E6]">{b}</span>
-                  <span className="text-xs text-[#A8A090]">Deviation</span>
-                  <span className="text-2xl font-mono font-bold text-amber-400 bg-amber-500/10 px-3 py-1 rounded-lg border border-amber-500/30">
-                    {devBFormatted}
+                  <div className="p-5 rounded-2xl bg-[#14120D] border border-[#E5A93C]/30 max-w-md mx-auto space-y-3">
+                    <div className="text-xs text-[#A8A090] font-mono">Prefix = {ekPrefix}</div>
+                    <div className="text-3xl font-display font-bold text-[#FFD700]">
+                      {`Successor = ${ekPrefix} + 1 = ${ekSuccessor}`}
+                    </div>
+                    <p className="text-xs text-[#A8A090] font-sans">
+                      Ekadhikena means &ldquo;one more than the preceding&rdquo;&mdash;incrementing prefix {ekPrefix} by 1 yields {ekSuccessor}.
+                    </p>
+                  </div>
+                </>
+              ) : isDuplex ? (
+                <>
+                  <span className="text-xs font-mono text-[#A8A090] uppercase tracking-[0.2em]">
+                    Units Duplex: D(b) = b<sup>2</sup>
                   </span>
-                </div>
-              </div>
-              <p className="text-xs text-[#A8A090] max-w-sm mx-auto">
-                {devA < 0 && devB < 0
-                  ? 'Both deviations are negative because both factors sit below base 100.'
-                  : 'Signed deviations preserve algebraic orientation relative to base.'}
-              </p>
+                  <div className="p-5 rounded-2xl bg-[#14120D] border border-[#E5A93C]/30 max-w-md mx-auto space-y-2">
+                    <div className="text-3xl font-display font-bold text-[#FFD700]">
+                      {`D(${duplexUnits}) = ${duplexUnits}\u00b2 = ${duplexDu}`}
+                    </div>
+                    <div className="text-xs font-mono text-[#E5A93C]">
+                      Result: Units contribution = {duplexDu}
+                    </div>
+                  </div>
+                </>
+              ) : (
+                <>
+                  <span className="text-xs font-mono text-[#A8A090] uppercase tracking-[0.2em]">
+                    Signed Deviation Coordinate Register
+                  </span>
+                  <div className="flex items-center justify-center gap-6 max-w-md mx-auto py-2">
+                    <div className="flex flex-col items-center gap-2 p-4 rounded-xl bg-[#14120D] border border-[#E5A93C]/30 min-w-[130px]">
+                      <span className="text-xs text-[#A8A090] font-mono">Factor 1</span>
+                      <span className="text-3xl font-display font-bold text-[#F5F0E6]">{a}</span>
+                      <span className="text-xs text-[#A8A090]">Deviation</span>
+                      <span className="text-2xl font-mono font-bold text-amber-400 bg-amber-500/10 px-3 py-1 rounded-lg border border-amber-500/30">
+                        {devAFormatted}
+                      </span>
+                    </div>
+                    {!isSquaring && (
+                      <>
+                        <div className="text-2xl font-light text-[#A8A090]">&times;</div>
+                        <div className="flex flex-col items-center gap-2 p-4 rounded-xl bg-[#14120D] border border-[#E5A93C]/30 min-w-[130px]">
+                          <span className="text-xs text-[#A8A090] font-mono">Factor 2</span>
+                          <span className="text-3xl font-display font-bold text-[#F5F0E6]">{b}</span>
+                          <span className="text-xs text-[#A8A090]">Deviation</span>
+                          <span className="text-2xl font-mono font-bold text-amber-400 bg-amber-500/10 px-3 py-1 rounded-lg border border-amber-500/30">
+                            {devBFormatted}
+                          </span>
+                        </div>
+                      </>
+                    )}
+                  </div>
+                </>
+              )}
             </div>
           )}
 
-          {/* SCENE 4: CROSS-ADDITION */}
+          {/* SCENE 4: MULTIPLY PREFIX & SUCCESSOR (EKADHIKENA) / CROSS DUPLEX (DUPLEX) OR CROSS-ADDITION */}
           {activeChapter.id === 4 && (
             <div className="space-y-4 w-full">
-              <span className="text-xs font-mono text-[#A8A090] uppercase tracking-[0.2em]">
-                Crosswise Combination (Tiryag Yogah)
-              </span>
-              <div className="p-5 rounded-2xl bg-[#14120D] border border-[#E5A93C]/30 space-y-3 max-w-md mx-auto">
-                <div className="flex items-center justify-between text-sm sm:text-base font-mono border-b border-[#E5A93C]/15 pb-2">
-                  <span className="text-[#A8A090]">Left Cross:</span>
-                  <span className="text-[#F5F0E6]">{a} + ({devBFormatted}) = <strong className="text-[#FFD700]">{lhs}</strong></span>
-                </div>
-                <div className="flex items-center justify-between text-sm sm:text-base font-mono">
-                  <span className="text-[#A8A090]">Right Cross:</span>
-                  <span className="text-[#F5F0E6]">{b} + ({devAFormatted}) = <strong className="text-[#FFD700]">{lhs}</strong></span>
-                </div>
-              </div>
-              <div className="inline-block p-4 sm:p-5 rounded-2xl bg-[#1A1712] border border-[#E5A93C]/40">
-                <span className="text-xs font-mono text-[#E5A93C] uppercase tracking-[0.2em] block mb-1">
-                  Synthesized Left Part
-                </span>
-                <span className="text-4xl sm:text-5xl font-display font-bold text-[#FFD700]">{lhs}</span>
-              </div>
+              {isEkadhikena ? (
+                <>
+                  <span className="text-xs font-mono text-[#A8A090] uppercase tracking-[0.2em]">
+                    Multiply Prefix and Successor
+                  </span>
+                  <div className="p-5 rounded-2xl bg-[#14120D] border border-[#E5A93C]/30 space-y-3 max-w-md mx-auto">
+                    <div className="text-3xl sm:text-4xl font-mono font-bold text-[#FFD700]">
+                      {`${ekPrefix} \u00d7 ${ekSuccessor} = ${ekLhs}`}
+                    </div>
+                    <div className="text-xs font-mono text-[#E5A93C]">
+                      LEFT PART = {ekLhs}
+                    </div>
+                  </div>
+                </>
+              ) : isDuplex ? (
+                <>
+                  <span className="text-xs font-mono text-[#A8A090] uppercase tracking-[0.2em]">
+                    Cross Duplex: D(a, b) = 2ab
+                  </span>
+                  <div className="p-5 rounded-2xl bg-[#14120D] border border-[#E5A93C]/30 space-y-3 max-w-md mx-auto">
+                    <div className="text-2xl sm:text-3xl font-mono font-bold text-[#FFD700]">
+                      {`D(${duplexTens}, ${duplexUnits}) = 2 \u00d7 ${duplexTens} \u00d7 ${duplexUnits} = ${duplexDtu}`}
+                    </div>
+                    <div className="text-xs font-mono text-[#E5A93C]">
+                      {duplexUnits === 0 || duplexTens === 0
+                        ? 'Cross contribution is zero because one of the digits is zero'
+                        : `Cross contribution = ${duplexDtu} \u00d7 10 = ${duplexCrossPart}`}
+                    </div>
+                  </div>
+                </>
+              ) : (
+                <>
+                  <span className="text-xs font-mono text-[#A8A090] uppercase tracking-[0.2em]">
+                    Crosswise Combination (Tiryag Yogah)
+                  </span>
+                  <div className="p-5 rounded-2xl bg-[#14120D] border border-[#E5A93C]/30 space-y-3 max-w-md mx-auto">
+                    <div className="flex items-center justify-between text-sm sm:text-base font-mono border-b border-[#E5A93C]/15 pb-2">
+                      <span className="text-[#A8A090]">Left Cross:</span>
+                      <span className="text-[#F5F0E6]">{`${a} + (${devBFormatted}) = `}<strong className="text-[#FFD700]">{lhs}</strong></span>
+                    </div>
+                    <div className="flex items-center justify-between text-sm sm:text-base font-mono">
+                      <span className="text-[#A8A090]">Right Cross:</span>
+                      <span className="text-[#F5F0E6]">{`${b} + (${devAFormatted}) = `}<strong className="text-[#FFD700]">{lhs}</strong></span>
+                    </div>
+                  </div>
+                  <div className="inline-block p-4 sm:p-5 rounded-2xl bg-[#1A1712] border border-[#E5A93C]/40">
+                    <span className="text-xs font-mono text-[#E5A93C] uppercase tracking-[0.2em] block mb-1">
+                      Synthesized Left Part
+                    </span>
+                    <span className="text-4xl sm:text-5xl font-display font-bold text-[#FFD700]">{lhs}</span>
+                  </div>
+                </>
+              )}
             </div>
           )}
 
-          {/* SCENE 5: MULTIPLY DEVIATIONS */}
+          {/* SCENE 5: SQUARE FINAL DIGIT (EKADHIKENA) / TENS DUPLEX (DUPLEX) OR MULTIPLY DEVIATIONS */}
           {activeChapter.id === 5 && (
             <div className="space-y-4 w-full">
-              <span className="text-xs font-mono text-[#A8A090] uppercase tracking-[0.2em]">
-                Product of Deviations (Charamayorghatah)
-              </span>
-              <div className="p-5 rounded-2xl bg-[#14120D] border border-[#E5A93C]/30 max-w-md mx-auto space-y-3">
-                <div className="text-2xl sm:text-3xl font-mono font-bold text-[#F5F0E6]">
-                  ({devAFormatted}) × ({devBFormatted}) = <span className="text-[#FFD700]">+{rawRhs}</span>
-                </div>
-                <p className="text-xs text-[#A8A090] font-sans">
-                  Multiplying two negative numbers yields a positive product.
-                </p>
-                <div className="pt-2 border-t border-[#E5A93C]/15 text-xs text-[#E5A93C] font-mono">
-                  Base {base} has {numZeros} zeros ➔ Right part requires {numZeros} digits
-                </div>
-              </div>
-              <div className="inline-block p-4 sm:p-5 rounded-2xl bg-[#1A1712] border border-amber-500/40">
-                <span className="text-xs font-mono text-amber-400 uppercase tracking-[0.2em] block mb-1">
-                  Aligned Right Part
-                </span>
-                <span className="text-4xl sm:text-5xl font-display font-bold text-[#FFD700]">{balancedRhsStr}</span>
-              </div>
+              {isEkadhikena ? (
+                <>
+                  <span className="text-xs font-mono text-[#A8A090] uppercase tracking-[0.2em]">
+                    Square The Final Digit
+                  </span>
+                  <div className="p-5 rounded-2xl bg-[#14120D] border border-[#E5A93C]/30 max-w-md mx-auto space-y-3">
+                    <div className="text-3xl sm:text-4xl font-mono font-bold text-[#FFD700]">
+                      {`${ekTerminal}\u00b2 = ${ekRhs}`}
+                    </div>
+                    <div className="text-xs font-mono text-[#E5A93C]">
+                      RIGHT PART = {ekRhs}
+                    </div>
+                    <p className="text-xs text-[#A8A090] font-sans">
+                      The final digit is 5, and its square is always 25.
+                    </p>
+                  </div>
+                </>
+              ) : isDuplex ? (
+                <>
+                  <span className="text-xs font-mono text-[#A8A090] uppercase tracking-[0.2em]">
+                    Tens Duplex: D(a) = a<sup>2</sup>
+                  </span>
+                  <div className="p-5 rounded-2xl bg-[#14120D] border border-[#E5A93C]/30 max-w-md mx-auto space-y-2">
+                    <div className="text-3xl font-display font-bold text-[#FFD700]">
+                      {`D(${duplexTens}) = ${duplexTens}\u00b2 = ${duplexDt}`}
+                    </div>
+                    <div className="text-xs font-mono text-[#E5A93C]">
+                      {`(${duplexTens} \u00d7 10)\u00b2 = ${duplexDt} \u00d7 100 = ${duplexTensPart}`}
+                    </div>
+                    <div className="text-xs text-amber-300 font-sans">
+                      Result: Tens contribution = {duplexTensPart}
+                    </div>
+                  </div>
+                </>
+              ) : (
+                <>
+                  <span className="text-xs font-mono text-[#A8A090] uppercase tracking-[0.2em]">
+                    {isSquaring ? 'Square of Deviation (d\u00b2)' : 'Product of Deviations (Charamayorghatah)'}
+                  </span>
+                  <div className="p-5 rounded-2xl bg-[#14120D] border border-[#E5A93C]/30 max-w-md mx-auto space-y-3">
+                    <div className="text-2xl sm:text-3xl font-mono font-bold text-[#F5F0E6]">
+                      {isSquaring ? (
+                        <span>{`(${devAFormatted})\u00b2 = `}<span className="text-[#FFD700]">+{rawRhs}</span></span>
+                      ) : (
+                        <span>{`(${devAFormatted}) \u00d7 (${devBFormatted}) = `}<span className="text-[#FFD700]">+{rawRhs}</span></span>
+                      )}
+                    </div>
+                    <div className="pt-2 border-t border-[#E5A93C]/15 text-xs text-[#E5A93C] font-mono">
+                      {`Base ${base} has ${numZeros} zeros \u2192 Right part requires ${numZeros} digits: "${balancedRhsStr}"`}
+                    </div>
+                  </div>
+                  <div className="inline-block p-4 sm:p-5 rounded-2xl bg-[#1A1712] border border-amber-500/40">
+                    <span className="text-xs font-mono text-amber-400 uppercase tracking-[0.2em] block mb-1">
+                      Aligned Right Part
+                    </span>
+                    <span className="text-4xl sm:text-5xl font-display font-bold text-[#FFD700]">{balancedRhsStr}</span>
+                  </div>
+                </>
+              )}
             </div>
           )}
 
-          {/* ── SCENE 6: REBUILT BALANCED LEFT & RIGHT PART COMPONENT LAYOUT (Requirement 5) ── */}
+          {/* SCENE 6: COMBINE CONTRIBUTIONS */}
           {activeChapter.id === 6 && (
             <div className="space-y-6 w-full">
               <span className="text-xs font-mono text-[#A8A090] uppercase tracking-[0.2em]">
-                Synthesize Both Coordinate Halves
+                {isEkadhikena ? 'Combine The Parts' : isDuplex ? 'Combine Place-Value Contributions' : 'Synthesize Both Coordinate Halves'}
               </span>
-              <div className="flex items-center justify-center gap-4 sm:gap-6">
-                
-                {/* Left Part Box */}
-                <div className="flex flex-col items-center justify-center px-6 py-4 rounded-2xl bg-[#14120D] border border-[#E5A93C]/40 shadow-xl w-[150px] sm:w-[170px]">
-                  <span className="font-mono text-[10px] uppercase tracking-[0.2em] text-[#A8A090] font-semibold mb-1 text-center whitespace-nowrap">
-                    LEFT PART
-                  </span>
-                  <span className="font-display text-4xl sm:text-5xl font-bold text-[#FFD700] tracking-tight text-center leading-none">
-                    {balancedLhs}
-                  </span>
+
+              {isDuplex ? (
+                <div className="grid grid-cols-1 sm:grid-cols-3 gap-3 w-full max-w-lg mx-auto">
+                  {/* Tens contribution */}
+                  <div className="flex flex-col items-center justify-center p-3.5 rounded-2xl bg-[#14120D] border border-[#E5A93C]/40 shadow-xl">
+                    <span className="font-mono text-[9px] uppercase tracking-[0.15em] text-[#A8A090] font-semibold mb-1">
+                      TENS CONTRIBUTION
+                    </span>
+                    <span className="font-display text-2xl sm:text-3xl font-bold text-[#FFD700]">
+                      {duplexTensPart}
+                    </span>
+                    <span className="font-mono text-[10px] text-[#E5A93C] mt-1">
+                      {`100 \u00d7 ${duplexTens}\u00b2 = ${duplexTensPart}`}
+                    </span>
+                  </div>
+
+                  {/* Cross contribution */}
+                  <div className="flex flex-col items-center justify-center p-3.5 rounded-2xl bg-[#14120D] border border-[#E5A93C]/40 shadow-xl">
+                    <span className="font-mono text-[9px] uppercase tracking-[0.15em] text-[#A8A090] font-semibold mb-1">
+                      CROSS CONTRIBUTION
+                    </span>
+                    <span className="font-display text-2xl sm:text-3xl font-bold text-[#FFD700]">
+                      {duplexCrossPart}
+                    </span>
+                    <span className="font-mono text-[10px] text-[#E5A93C] mt-1">
+                      {`10 \u00d7 (2 \u00d7 ${duplexTens} \u00d7 ${duplexUnits}) = ${duplexCrossPart}`}
+                    </span>
+                  </div>
+
+                  {/* Units contribution */}
+                  <div className="flex flex-col items-center justify-center p-3.5 rounded-2xl bg-[#14120D] border border-[#E5A93C]/40 shadow-xl">
+                    <span className="font-mono text-[9px] uppercase tracking-[0.15em] text-[#A8A090] font-semibold mb-1">
+                      UNITS CONTRIBUTION
+                    </span>
+                    <span className="font-display text-2xl sm:text-3xl font-bold text-[#FFD700]">
+                      {duplexUnitsPart}
+                    </span>
+                    <span className="font-mono text-[10px] text-[#E5A93C] mt-1">
+                      {`${duplexUnits}\u00b2 = ${duplexUnitsPart}`}
+                    </span>
+                  </div>
                 </div>
+              ) : (
+                <div className="flex items-center justify-center gap-4 sm:gap-6">
+                  {/* Left Part */}
+                  <div className="flex flex-col items-center justify-center px-6 py-4 rounded-2xl bg-[#14120D] border border-[#E5A93C]/40 shadow-xl w-[160px] sm:w-[180px]">
+                    <span className="font-mono text-[10px] uppercase tracking-[0.2em] text-[#A8A090] font-semibold mb-1 text-center whitespace-nowrap">
+                      LEFT PART
+                    </span>
+                    <span className="font-display text-3xl sm:text-4xl font-bold text-[#FFD700] tracking-tight text-center leading-none">
+                      {isEkadhikena ? ekLhs : balancedLhs}
+                    </span>
+                  </div>
 
-                <span className="text-2xl sm:text-3xl font-light text-[#E5A93C]">|</span>
+                  <span className="text-2xl sm:text-3xl font-light text-[#E5A93C]">{isEkadhikena ? '|' : '+'}</span>
 
-                {/* Right Part Box */}
-                <div className="flex flex-col items-center justify-center px-6 py-4 rounded-2xl bg-[#14120D] border border-[#E5A93C]/40 shadow-xl w-[150px] sm:w-[170px]">
-                  <span className="font-mono text-[10px] uppercase tracking-[0.2em] text-[#A8A090] font-semibold mb-1 text-center whitespace-nowrap">
-                    RIGHT PART
-                  </span>
-                  <span className="font-display text-4xl sm:text-5xl font-bold text-[#FFD700] tracking-tight text-center leading-none">
-                    {balancedRhsStr}
-                  </span>
+                  {/* Right Part */}
+                  <div className="flex flex-col items-center justify-center px-6 py-4 rounded-2xl bg-[#14120D] border border-[#E5A93C]/40 shadow-xl w-[160px] sm:w-[180px]">
+                    <span className="font-mono text-[10px] uppercase tracking-[0.2em] text-[#A8A090] font-semibold mb-1 text-center whitespace-nowrap">
+                      RIGHT PART
+                    </span>
+                    <span className="font-display text-3xl sm:text-4xl font-bold text-[#FFD700] tracking-tight text-center leading-none">
+                      {isEkadhikena ? ekRhs : balancedRhsStr}
+                    </span>
+                  </div>
                 </div>
-
-              </div>
+              )}
 
               <div className="text-xs sm:text-sm font-mono text-[#D1C9BE] bg-[#14120D] p-3.5 rounded-xl border border-[#E5A93C]/20 max-w-md mx-auto">
-                {balancedLhs} × {base} + {balancedRhsStr} = <strong className="text-[#FFD700]">{finalAnswer}</strong>
+                {isEkadhikena ? (
+                  <span>
+                    {`${ekLhs} | ${ekRhs} \u2192 ${ekLhs} \u00d7 100 + ${ekRhs} = `}
+                    <strong className="text-[#FFD700]">{finalAnswer}</strong>
+                  </span>
+                ) : isDuplex ? (
+                  <div className="space-y-1">
+                    <div>
+                      {`Then show: ${duplexTensPart} + ${duplexCrossPart} + ${duplexUnitsPart} = `}
+                      <strong className="text-[#FFD700]">{finalAnswer}</strong>
+                    </div>
+                    <div className="text-amber-400 font-bold">
+                      {`Final result: ${a}\u00b2 = ${finalAnswer}`}
+                    </div>
+                  </div>
+                ) : (
+                  <span>
+                    {`${balancedLhs} \u00d7 ${base} + ${balancedRhsStr} = `}
+                    <strong className="text-[#FFD700]">{finalAnswer}</strong>
+                  </span>
+                )}
               </div>
             </div>
           )}
@@ -222,14 +471,14 @@ export default function Nikhilam2DFallback({
             <div className="space-y-4 w-full">
               <div className="inline-flex items-center gap-2 px-3 py-1 rounded-full border border-emerald-500/30 bg-emerald-500/10 text-emerald-400 text-xs font-mono">
                 <CheckCircle2 className="w-3.5 h-3.5" />
-                Proof Complete & Hardware Verified
+                Proof Complete &amp; Arithmetic Verified
               </div>
               <div className="text-5xl sm:text-7xl font-display font-bold text-[#FFD700] py-2">
                 {finalAnswer}
               </div>
               <div className="p-3.5 rounded-xl bg-[#14120D] border border-emerald-500/30 text-xs font-mono text-[#A8A090] max-w-md mx-auto flex items-center justify-between">
-                <span>Nikhilam Result: <strong className="text-[#F5F0E6]">{finalAnswer}</strong></span>
-                <span>Verification: <strong className="text-emerald-400">{groundTruth} ✓</strong></span>
+                <span>{isSquaring ? `${a}\u00b2 = ${finalAnswer}` : `${a} \u00d7 ${b} = ${finalAnswer}`}</span>
+                <span>Verification: <strong className="text-emerald-400">{groundTruth} &#10003;</strong></span>
               </div>
             </div>
           )}

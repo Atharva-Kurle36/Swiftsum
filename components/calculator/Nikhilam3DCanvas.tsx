@@ -74,7 +74,28 @@ export default function Nikhilam3DCanvas({ lesson, activeChapter }: Nikhilam3DCa
     rotY: 0
   });
 
-  const { a, b, base, numZeros, devA, devB, lhs, rawRhs, balancedLhs, balancedRhsStr, finalAnswer } = lesson;
+  const { a, b, base, numZeros, devA, devB, lhs, rawRhs, balancedLhs, balancedRhsStr, finalAnswer, groundTruth } = lesson;
+
+  const isSquaring = lesson.operationType === 'squaring';
+  const isDuplex = isSquaring && lesson.squaringMethod === 'duplex';
+  const isEkadhikena = isSquaring && lesson.squaringMethod === 'ekadhikena';
+  const duplex = lesson.duplexData;
+  const duplexTens = duplex ? duplex.tens : Math.floor(a / 10);
+  const duplexUnits = duplex ? duplex.units : a % 10;
+  const duplexDu = duplex ? duplex.du : duplexUnits * duplexUnits;
+  const duplexDtu = duplex ? duplex.dtu : 2 * duplexTens * duplexUnits;
+  const duplexDt = duplex ? duplex.dt : duplexTens * duplexTens;
+  const duplexTensPart = duplex ? duplex.tensPart : duplexDt * 100;
+  const duplexCrossPart = duplex ? duplex.crossPart : duplexDtu * 10;
+  const duplexUnitsPart = duplex ? duplex.unitsPart : duplexDu;
+  const duplexCarry1 = Math.floor(duplexDu / 10);
+  const duplexUnitsPlaced = duplexDu % 10;
+
+  const ekadhikena = lesson.ekadhikenaData;
+  const ekPrefix = ekadhikena ? ekadhikena.prefix : Math.floor(a / 10);
+  const ekSuccessor = ekadhikena ? ekadhikena.successor : ekPrefix + 1;
+  const ekLhs = ekadhikena ? ekadhikena.lhs : ekPrefix * ekSuccessor;
+  const ekRhs = ekadhikena ? ekadhikena.rhs : 25;
 
   // Format signed deviations with genuine mathematical minus sign
   const formatDevSign = (val: number) => (val >= 0 ? `+${val}` : `−${Math.abs(val)}`);
@@ -326,11 +347,11 @@ export default function Nikhilam3DCanvas({ lesson, activeChapter }: Nikhilam3DCa
     };
 
     // Main Animation & Choreography Loop
-    let clock = new THREE.Clock();
+    const startTime = performance.now();
 
     const animate = () => {
       animFrameIdRef.current = requestAnimationFrame(animate);
-      const elapsedTime = clock.getElapsedTime();
+      const elapsedTime = (performance.now() - startTime) * 0.001;
       const w = container.clientWidth || 800;
       const h = container.clientHeight || 460;
       const currentChapterId = activeChapterRef.current.id;
@@ -383,7 +404,7 @@ export default function Nikhilam3DCanvas({ lesson, activeChapter }: Nikhilam3DCa
         const lerpSpeed = 0.15;
 
         // Animate cross particles in Scene 4 along cross addition vectors
-        if (m.crossParticles.length > 0) {
+        if (m.crossParticles.length > 0 && !isDuplex && !isEkadhikena) {
           m.crossParticles.forEach((p, idx) => {
             const t = (elapsedTime * 1.05 + idx * 0.16) % 1;
             if (idx < 3) {
@@ -398,11 +419,11 @@ export default function Nikhilam3DCanvas({ lesson, activeChapter }: Nikhilam3DCa
           });
         }
 
-        // Scene 1: Introduction (Only Factor A and B present)
+        // Scene 1: Introduction
         if (currentChapterId === 1) {
           m.groupA.scale.lerp(new THREE.Vector3(1, 1, 1), lerpSpeed);
-          m.groupA.position.lerp(new THREE.Vector3(-3.0, 0.5, 0), lerpSpeed);
-          m.groupB.scale.lerp(new THREE.Vector3(1, 1, 1), lerpSpeed);
+          m.groupA.position.lerp(new THREE.Vector3(isSquaring ? 0 : -3.0, 0.5, 0), lerpSpeed);
+          m.groupB.scale.lerp(new THREE.Vector3(isSquaring ? 0.001 : 1, isSquaring ? 0.001 : 1, isSquaring ? 0.001 : 1), lerpSpeed);
           m.groupB.position.lerp(new THREE.Vector3(3.0, 0.5, 0), lerpSpeed);
 
           m.basePillar.scale.lerp(new THREE.Vector3(0.001, 0.001, 0.001), lerpSpeed);
@@ -412,17 +433,34 @@ export default function Nikhilam3DCanvas({ lesson, activeChapter }: Nikhilam3DCa
           m.multGroup.scale.lerp(new THREE.Vector3(0.001, 0.001, 0.001), lerpSpeed);
           m.combineGroup.scale.lerp(new THREE.Vector3(0.001, 0.001, 0.001), lerpSpeed);
           m.verifyGroup.scale.lerp(new THREE.Vector3(0.001, 0.001, 0.001), lerpSpeed);
+          m.lhsGroup.scale.lerp(new THREE.Vector3(0.001, 0.001, 0.001), lerpSpeed);
+          m.rhsGroup.scale.lerp(new THREE.Vector3(0.001, 0.001, 0.001), lerpSpeed);
         }
 
-        // Scene 2: Identify Base (Base monolith appears in center)
+        // Scene 2: Identify Base (Yavadunam) or Split / Identify Digits (Ekadhikena / Duplex)
         else if (currentChapterId === 2) {
-          m.groupA.scale.lerp(new THREE.Vector3(0.9, 0.9, 0.9), lerpSpeed);
-          m.groupA.position.lerp(new THREE.Vector3(-3.8, 0.2, 0), lerpSpeed);
-          m.groupB.scale.lerp(new THREE.Vector3(0.9, 0.9, 0.9), lerpSpeed);
-          m.groupB.position.lerp(new THREE.Vector3(3.8, 0.2, 0), lerpSpeed);
+          if (isDuplex || isEkadhikena) {
+            m.groupA.scale.lerp(new THREE.Vector3(0.85, 0.85, 0.85), lerpSpeed);
+            m.groupA.position.lerp(new THREE.Vector3(0, 1.4, 0), lerpSpeed);
+            m.groupB.scale.lerp(new THREE.Vector3(0.001, 0.001, 0.001), lerpSpeed);
+            m.basePillar.scale.lerp(new THREE.Vector3(0.001, 0.001, 0.001), lerpSpeed);
+            m.badgeDevA.scale.lerp(new THREE.Vector3(0.001, 0.001, 0.001), lerpSpeed);
+            m.badgeDevB.scale.lerp(new THREE.Vector3(0.001, 0.001, 0.001), lerpSpeed);
+            m.crossGroup.scale.lerp(new THREE.Vector3(0.001, 0.001, 0.001), lerpSpeed);
+            m.lhsGroup.scale.lerp(new THREE.Vector3(1, 1, 1), lerpSpeed);
+            m.lhsGroup.position.lerp(new THREE.Vector3(0, -0.6, 0), lerpSpeed);
+            m.rhsGroup.scale.lerp(new THREE.Vector3(0.001, 0.001, 0.001), lerpSpeed);
+          } else {
+            m.groupA.scale.lerp(new THREE.Vector3(0.9, 0.9, 0.9), lerpSpeed);
+            m.groupA.position.lerp(new THREE.Vector3(isSquaring ? 0 : -3.8, isSquaring ? 0.1 : 0.2, 0), lerpSpeed);
+            m.groupB.scale.lerp(new THREE.Vector3(isSquaring ? 0.001 : 0.9, isSquaring ? 0.001 : 0.9, isSquaring ? 0.001 : 0.9), lerpSpeed);
+            m.groupB.position.lerp(new THREE.Vector3(3.8, 0.2, 0), lerpSpeed);
 
-          m.basePillar.scale.lerp(new THREE.Vector3(1, 1, 1), lerpSpeed);
-          m.basePillar.position.lerp(new THREE.Vector3(0, 2.2, 0), lerpSpeed);
+            m.basePillar.scale.lerp(new THREE.Vector3(1, 1, 1), lerpSpeed);
+            m.basePillar.position.lerp(new THREE.Vector3(0, 2.2, 0), lerpSpeed);
+            m.lhsGroup.scale.lerp(new THREE.Vector3(0.001, 0.001, 0.001), lerpSpeed);
+            m.rhsGroup.scale.lerp(new THREE.Vector3(0.001, 0.001, 0.001), lerpSpeed);
+          }
 
           m.badgeDevA.scale.lerp(new THREE.Vector3(0.001, 0.001, 0.001), lerpSpeed);
           m.badgeDevB.scale.lerp(new THREE.Vector3(0.001, 0.001, 0.001), lerpSpeed);
@@ -432,20 +470,35 @@ export default function Nikhilam3DCanvas({ lesson, activeChapter }: Nikhilam3DCa
           m.verifyGroup.scale.lerp(new THREE.Vector3(0.001, 0.001, 0.001), lerpSpeed);
         }
 
-        // Scene 3: Deviations (Deviations glide directly below A and B)
+        // Scene 3: Deviations (Yavadunam), Units Duplex (Duplex), Successor (Ekadhikena)
         else if (currentChapterId === 3) {
-          m.groupA.scale.lerp(new THREE.Vector3(0.88, 0.88, 0.88), lerpSpeed);
-          m.groupA.position.lerp(new THREE.Vector3(-3.4, 1.1, 0), lerpSpeed);
-          m.groupB.scale.lerp(new THREE.Vector3(0.88, 0.88, 0.88), lerpSpeed);
-          m.groupB.position.lerp(new THREE.Vector3(3.4, 1.1, 0), lerpSpeed);
+          if (isDuplex || isEkadhikena) {
+            m.groupA.scale.lerp(new THREE.Vector3(0.85, 0.85, 0.85), lerpSpeed);
+            m.groupA.position.lerp(new THREE.Vector3(0, 1.4, 0), lerpSpeed);
+            m.groupB.scale.lerp(new THREE.Vector3(0.001, 0.001, 0.001), lerpSpeed);
+            m.basePillar.scale.lerp(new THREE.Vector3(0.001, 0.001, 0.001), lerpSpeed);
+            m.badgeDevA.scale.lerp(new THREE.Vector3(0.001, 0.001, 0.001), lerpSpeed);
+            m.badgeDevB.scale.lerp(new THREE.Vector3(0.001, 0.001, 0.001), lerpSpeed);
+            m.crossGroup.scale.lerp(new THREE.Vector3(0.001, 0.001, 0.001), lerpSpeed);
+            m.lhsGroup.scale.lerp(new THREE.Vector3(0.001, 0.001, 0.001), lerpSpeed);
+            m.rhsGroup.scale.lerp(new THREE.Vector3(1, 1, 1), lerpSpeed);
+            m.rhsGroup.position.lerp(new THREE.Vector3(0, -0.6, 0), lerpSpeed);
+          } else {
+            m.groupA.scale.lerp(new THREE.Vector3(0.88, 0.88, 0.88), lerpSpeed);
+            m.groupA.position.lerp(new THREE.Vector3(isSquaring ? 0 : -3.4, isSquaring ? 1.2 : 1.1, 0), lerpSpeed);
+            m.groupB.scale.lerp(new THREE.Vector3(isSquaring ? 0.001 : 0.88, isSquaring ? 0.001 : 0.88, isSquaring ? 0.001 : 0.88), lerpSpeed);
+            m.groupB.position.lerp(new THREE.Vector3(3.4, 1.1, 0), lerpSpeed);
 
-          m.basePillar.scale.lerp(new THREE.Vector3(0.75, 0.75, 0.75), lerpSpeed);
-          m.basePillar.position.lerp(new THREE.Vector3(0, 3.2, -1.2), lerpSpeed);
+            m.basePillar.scale.lerp(new THREE.Vector3(0.75, 0.75, 0.75), lerpSpeed);
+            m.basePillar.position.lerp(new THREE.Vector3(0, 3.2, -1.2), lerpSpeed);
 
-          m.badgeDevA.scale.lerp(new THREE.Vector3(1, 1, 1), lerpSpeed);
-          m.badgeDevA.position.lerp(new THREE.Vector3(-3.4, -1.2, 0), lerpSpeed);
-          m.badgeDevB.scale.lerp(new THREE.Vector3(1, 1, 1), lerpSpeed);
-          m.badgeDevB.position.lerp(new THREE.Vector3(3.4, -1.2, 0), lerpSpeed);
+            m.badgeDevA.scale.lerp(new THREE.Vector3(1, 1, 1), lerpSpeed);
+            m.badgeDevA.position.lerp(new THREE.Vector3(isSquaring ? 0 : -3.4, isSquaring ? -0.6 : -1.2, 0), lerpSpeed);
+            m.badgeDevB.scale.lerp(new THREE.Vector3(isSquaring ? 0.001 : 1, isSquaring ? 0.001 : 1, isSquaring ? 0.001 : 1), lerpSpeed);
+            m.badgeDevB.position.lerp(new THREE.Vector3(3.4, -1.2, 0), lerpSpeed);
+            m.lhsGroup.scale.lerp(new THREE.Vector3(0.001, 0.001, 0.001), lerpSpeed);
+            m.rhsGroup.scale.lerp(new THREE.Vector3(0.001, 0.001, 0.001), lerpSpeed);
+          }
 
           m.crossGroup.scale.lerp(new THREE.Vector3(0.001, 0.001, 0.001), lerpSpeed);
           m.multGroup.scale.lerp(new THREE.Vector3(0.001, 0.001, 0.001), lerpSpeed);
@@ -453,44 +506,73 @@ export default function Nikhilam3DCanvas({ lesson, activeChapter }: Nikhilam3DCa
           m.verifyGroup.scale.lerp(new THREE.Vector3(0.001, 0.001, 0.001), lerpSpeed);
         }
 
-        // Scene 4: Cross-Addition (Connectors active, Left Part in center)
+        // Scene 4: Cross-Addition (Yavadunam), Cross Duplex (Duplex), Prefix × Successor (Ekadhikena)
         else if (currentChapterId === 4) {
-          m.groupA.scale.lerp(new THREE.Vector3(0.78, 0.78, 0.78), lerpSpeed);
-          m.groupA.position.lerp(new THREE.Vector3(-4.0, 1.6, 0), lerpSpeed);
-          m.groupB.scale.lerp(new THREE.Vector3(0.78, 0.78, 0.78), lerpSpeed);
-          m.groupB.position.lerp(new THREE.Vector3(4.0, 1.6, 0), lerpSpeed);
+          if (isDuplex || isEkadhikena) {
+            m.groupA.scale.lerp(new THREE.Vector3(0.85, 0.85, 0.85), lerpSpeed);
+            m.groupA.position.lerp(new THREE.Vector3(0, 1.4, 0), lerpSpeed);
+            m.groupB.scale.lerp(new THREE.Vector3(0.001, 0.001, 0.001), lerpSpeed);
+            m.basePillar.scale.lerp(new THREE.Vector3(0.001, 0.001, 0.001), lerpSpeed);
+            m.badgeDevA.scale.lerp(new THREE.Vector3(0.001, 0.001, 0.001), lerpSpeed);
+            m.badgeDevB.scale.lerp(new THREE.Vector3(0.001, 0.001, 0.001), lerpSpeed);
+            m.crossGroup.scale.lerp(new THREE.Vector3(0.001, 0.001, 0.001), lerpSpeed);
+            m.lhsGroup.scale.lerp(new THREE.Vector3(1, 1, 1), lerpSpeed);
+            m.lhsGroup.position.lerp(new THREE.Vector3(0, -0.6, 0), lerpSpeed);
+            m.rhsGroup.scale.lerp(new THREE.Vector3(0.001, 0.001, 0.001), lerpSpeed);
+          } else {
+            m.groupA.scale.lerp(new THREE.Vector3(0.78, 0.78, 0.78), lerpSpeed);
+            m.groupA.position.lerp(new THREE.Vector3(isSquaring ? -3.4 : -4.0, isSquaring ? 1.4 : 1.6, 0), lerpSpeed);
+            m.groupB.scale.lerp(new THREE.Vector3(isSquaring ? 0.001 : 0.78, isSquaring ? 0.001 : 0.78, isSquaring ? 0.001 : 0.78), lerpSpeed);
+            m.groupB.position.lerp(new THREE.Vector3(4.0, 1.6, 0), lerpSpeed);
 
-          m.badgeDevA.scale.lerp(new THREE.Vector3(0.85, 0.85, 0.85), lerpSpeed);
-          m.badgeDevA.position.lerp(new THREE.Vector3(-4.0, -1.3, 0), lerpSpeed);
-          m.badgeDevB.scale.lerp(new THREE.Vector3(0.85, 0.85, 0.85), lerpSpeed);
-          m.badgeDevB.position.lerp(new THREE.Vector3(4.0, -1.3, 0), lerpSpeed);
+            m.badgeDevA.scale.lerp(new THREE.Vector3(0.85, 0.85, 0.85), lerpSpeed);
+            m.badgeDevA.position.lerp(new THREE.Vector3(isSquaring ? -3.4 : -4.0, isSquaring ? -1.0 : -1.3, 0), lerpSpeed);
+            m.badgeDevB.scale.lerp(new THREE.Vector3(isSquaring ? 0.001 : 0.85, isSquaring ? 0.001 : 0.85, isSquaring ? 0.001 : 0.85), lerpSpeed);
+            m.badgeDevB.position.lerp(new THREE.Vector3(4.0, -1.3, 0), lerpSpeed);
 
-          m.basePillar.scale.lerp(new THREE.Vector3(0.001, 0.001, 0.001), lerpSpeed);
-          m.crossGroup.scale.lerp(new THREE.Vector3(1, 1, 1), lerpSpeed);
+            m.basePillar.scale.lerp(new THREE.Vector3(0.001, 0.001, 0.001), lerpSpeed);
+            m.crossGroup.scale.lerp(new THREE.Vector3(1, 1, 1), lerpSpeed);
+            m.lhsGroup.position.lerp(new THREE.Vector3(isSquaring ? 1.2 : 0, 0.2, 0), lerpSpeed);
+            m.rhsGroup.scale.lerp(new THREE.Vector3(0.001, 0.001, 0.001), lerpSpeed);
+          }
 
           m.multGroup.scale.lerp(new THREE.Vector3(0.001, 0.001, 0.001), lerpSpeed);
           m.combineGroup.scale.lerp(new THREE.Vector3(0.001, 0.001, 0.001), lerpSpeed);
           m.verifyGroup.scale.lerp(new THREE.Vector3(0.001, 0.001, 0.001), lerpSpeed);
         }
 
-        // Scene 5: Multiply Deviations (Deviations in center, Right Part synthesized)
+        // Scene 5: Multiply Deviations (Yavadunam), Tens Duplex (Duplex), Square Terminal 5 (Ekadhikena)
         else if (currentChapterId === 5) {
-          m.groupA.scale.lerp(new THREE.Vector3(0.001, 0.001, 0.001), lerpSpeed);
           m.groupB.scale.lerp(new THREE.Vector3(0.001, 0.001, 0.001), lerpSpeed);
           m.basePillar.scale.lerp(new THREE.Vector3(0.001, 0.001, 0.001), lerpSpeed);
           m.crossGroup.scale.lerp(new THREE.Vector3(0.001, 0.001, 0.001), lerpSpeed);
 
-          m.badgeDevA.scale.lerp(new THREE.Vector3(0.9, 0.9, 0.9), lerpSpeed);
-          m.badgeDevA.position.lerp(new THREE.Vector3(-3.0, 0.4, 0), lerpSpeed);
-          m.badgeDevB.scale.lerp(new THREE.Vector3(0.9, 0.9, 0.9), lerpSpeed);
-          m.badgeDevB.position.lerp(new THREE.Vector3(3.0, 0.4, 0), lerpSpeed);
+          if (isDuplex || isEkadhikena) {
+            m.groupA.scale.lerp(new THREE.Vector3(0.85, 0.85, 0.85), lerpSpeed);
+            m.groupA.position.lerp(new THREE.Vector3(0, 1.4, 0), lerpSpeed);
+            m.badgeDevA.scale.lerp(new THREE.Vector3(0.001, 0.001, 0.001), lerpSpeed);
+            m.badgeDevB.scale.lerp(new THREE.Vector3(0.001, 0.001, 0.001), lerpSpeed);
+            m.multGroup.scale.lerp(new THREE.Vector3(0.001, 0.001, 0.001), lerpSpeed);
+            m.lhsGroup.scale.lerp(new THREE.Vector3(0.001, 0.001, 0.001), lerpSpeed);
+            m.rhsGroup.scale.lerp(new THREE.Vector3(1, 1, 1), lerpSpeed);
+            m.rhsGroup.position.lerp(new THREE.Vector3(0, -0.6, 0), lerpSpeed);
+          } else {
+            m.groupA.scale.lerp(new THREE.Vector3(0.001, 0.001, 0.001), lerpSpeed);
+            m.badgeDevA.scale.lerp(new THREE.Vector3(0.9, 0.9, 0.9), lerpSpeed);
+            m.badgeDevA.position.lerp(new THREE.Vector3(isSquaring ? 0 : -3.0, isSquaring ? 1.6 : 0.4, 0), lerpSpeed);
+            m.badgeDevB.scale.lerp(new THREE.Vector3(isSquaring ? 0.001 : 0.9, isSquaring ? 0.001 : 0.9, isSquaring ? 0.001 : 0.9), lerpSpeed);
+            m.badgeDevB.position.lerp(new THREE.Vector3(3.0, 0.4, 0), lerpSpeed);
 
-          m.multGroup.scale.lerp(new THREE.Vector3(1, 1, 1), lerpSpeed);
+            m.multGroup.scale.lerp(new THREE.Vector3(1, 1, 1), lerpSpeed);
+            m.lhsGroup.scale.lerp(new THREE.Vector3(0.001, 0.001, 0.001), lerpSpeed);
+            m.rhsGroup.position.lerp(new THREE.Vector3(0, isSquaring ? -0.4 : 0.2, 0), lerpSpeed);
+          }
+
           m.combineGroup.scale.lerp(new THREE.Vector3(0.001, 0.001, 0.001), lerpSpeed);
           m.verifyGroup.scale.lerp(new THREE.Vector3(0.001, 0.001, 0.001), lerpSpeed);
         }
 
-        // Scene 6: Combine Both Parts (Left & Right slide together)
+        // Scene 6: Combine Both Parts / Contributions
         else if (currentChapterId === 6) {
           m.groupA.scale.lerp(new THREE.Vector3(0.001, 0.001, 0.001), lerpSpeed);
           m.groupB.scale.lerp(new THREE.Vector3(0.001, 0.001, 0.001), lerpSpeed);
@@ -499,6 +581,8 @@ export default function Nikhilam3DCanvas({ lesson, activeChapter }: Nikhilam3DCa
           m.basePillar.scale.lerp(new THREE.Vector3(0.001, 0.001, 0.001), lerpSpeed);
           m.crossGroup.scale.lerp(new THREE.Vector3(0.001, 0.001, 0.001), lerpSpeed);
           m.multGroup.scale.lerp(new THREE.Vector3(0.001, 0.001, 0.001), lerpSpeed);
+          m.lhsGroup.scale.lerp(new THREE.Vector3(0.001, 0.001, 0.001), lerpSpeed);
+          m.rhsGroup.scale.lerp(new THREE.Vector3(0.001, 0.001, 0.001), lerpSpeed);
 
           m.combineGroup.scale.lerp(new THREE.Vector3(1, 1, 1), lerpSpeed);
 
@@ -519,6 +603,8 @@ export default function Nikhilam3DCanvas({ lesson, activeChapter }: Nikhilam3DCa
           m.crossGroup.scale.lerp(new THREE.Vector3(0.001, 0.001, 0.001), lerpSpeed);
           m.multGroup.scale.lerp(new THREE.Vector3(0.001, 0.001, 0.001), lerpSpeed);
           m.combineGroup.scale.lerp(new THREE.Vector3(0.001, 0.001, 0.001), lerpSpeed);
+          m.lhsGroup.scale.lerp(new THREE.Vector3(0.001, 0.001, 0.001), lerpSpeed);
+          m.rhsGroup.scale.lerp(new THREE.Vector3(0.001, 0.001, 0.001), lerpSpeed);
 
           m.verifyGroup.scale.lerp(new THREE.Vector3(1, 1, 1), lerpSpeed);
           m.verifyGroup.position.lerp(new THREE.Vector3(0, 0.2, 0), lerpSpeed);
@@ -587,8 +673,8 @@ export default function Nikhilam3DCanvas({ lesson, activeChapter }: Nikhilam3DCa
       {/* ── CRISP, CAMERA-ANCHORED TYPOGRAPHY OVERLAYS ── */}
       <div className="absolute inset-0 pointer-events-none z-10 overflow-hidden">
         
-        {/* FACTOR A CARD */}
-        {(activeChapter.id === 1 || activeChapter.id === 2 || activeChapter.id === 3 || activeChapter.id === 4) && (
+        {/* FACTOR A / NUMBER TO SQUARE CARD */}
+        {(activeChapter.id === 1 || activeChapter.id === 2 || activeChapter.id === 3 || activeChapter.id === 4 || ((isDuplex || isEkadhikena) && activeChapter.id === 5)) && (
           <div
             ref={cardARef}
             style={{
@@ -600,19 +686,19 @@ export default function Nikhilam3DCanvas({ lesson, activeChapter }: Nikhilam3DCa
             className="flex flex-col items-center justify-center px-6 py-3 rounded-xl bg-[#14120D]/95 border border-[#E5A93C]/40 shadow-xl min-w-[130px] transition-opacity duration-150"
           >
             <span className="font-mono text-[10px] uppercase tracking-[0.2em] text-[#A8A090] font-semibold leading-none text-center">
-              Factor 1
+              {lesson.operationType === 'squaring' ? 'Number to Square' : 'Factor 1'}
             </span>
             <span className="font-display text-4xl sm:text-5xl font-bold text-[#F5F0E6] tracking-tight leading-none text-center tabular-nums my-1.5">
               {a}
             </span>
-            <span className="font-mono text-[10px] uppercase tracking-[0.2em] invisible select-none leading-none text-center" aria-hidden="true">
-              Factor 1
+            <span className="font-mono text-[10px] uppercase tracking-[0.2em] text-[#E5A93C]/80 leading-none text-center">
+              {lesson.operationType === 'squaring' ? `${a}² = ?` : 'Factor 1'}
             </span>
           </div>
         )}
 
-        {/* FACTOR B CARD */}
-        {(activeChapter.id === 1 || activeChapter.id === 2 || activeChapter.id === 3 || activeChapter.id === 4) && (
+        {/* FACTOR B CARD — only displayed for multiplication */}
+        {lesson.operationType !== 'squaring' && (activeChapter.id === 1 || activeChapter.id === 2 || activeChapter.id === 3 || activeChapter.id === 4) && (
           <div
             ref={cardBRef}
             style={{
@@ -635,8 +721,8 @@ export default function Nikhilam3DCanvas({ lesson, activeChapter }: Nikhilam3DCa
           </div>
         )}
 
-        {/* BASE MONOLITH LABEL */}
-        {(activeChapter.id === 2 || activeChapter.id === 3) && (
+        {/* BASE MONOLITH LABEL (Yavadunam / Nikhilam Only — Never in Duplex or Ekadhikena) */}
+        {!isDuplex && !isEkadhikena && (activeChapter.id === 2 || activeChapter.id === 3) && (
           <div
             ref={basePillarRef}
             style={{
@@ -659,8 +745,8 @@ export default function Nikhilam3DCanvas({ lesson, activeChapter }: Nikhilam3DCa
           </div>
         )}
 
-        {/* DEVIATION A BADGE */}
-        {(activeChapter.id === 3 || activeChapter.id === 4 || activeChapter.id === 5) && (
+        {/* DEVIATION A BADGE (Yavadunam / Nikhilam Only — Never in Duplex or Ekadhikena) */}
+        {!isDuplex && !isEkadhikena && (activeChapter.id === 3 || activeChapter.id === 4 || activeChapter.id === 5) && (
           <div
             ref={badgeDevARef}
             style={{
@@ -672,19 +758,19 @@ export default function Nikhilam3DCanvas({ lesson, activeChapter }: Nikhilam3DCa
             className="flex flex-col items-center justify-center px-4 py-2.5 rounded-lg bg-[#14120D]/95 border border-[#E5A93C]/50 shadow-lg min-w-[105px] transition-opacity duration-150"
           >
             <span className="font-mono text-[9px] uppercase tracking-[0.15em] text-[#A8A090] font-semibold leading-none text-center">
-              Deviation
+              {lesson.operationType === 'squaring' ? 'Deviation (d)' : 'Deviation'}
             </span>
             <span className="font-mono text-2xl sm:text-3xl font-bold text-amber-400 tracking-tight leading-none text-center tabular-nums my-1">
               {devAFormatted}
             </span>
-            <span className="font-mono text-[9px] uppercase tracking-[0.15em] invisible select-none leading-none text-center" aria-hidden="true">
-              Deviation
+            <span className="font-mono text-[9px] uppercase tracking-[0.15em] text-[#E5A93C]/70 leading-none text-center">
+              {lesson.operationType === 'squaring' ? `d = ${a} − ${base}` : 'Deviation'}
             </span>
           </div>
         )}
 
-        {/* DEVIATION B BADGE */}
-        {(activeChapter.id === 3 || activeChapter.id === 4 || activeChapter.id === 5) && (
+        {/* DEVIATION B BADGE — only displayed for multiplication */}
+        {lesson.operationType !== 'squaring' && (activeChapter.id === 3 || activeChapter.id === 4 || activeChapter.id === 5) && (
           <div
             ref={badgeDevBRef}
             style={{
@@ -707,7 +793,118 @@ export default function Nikhilam3DCanvas({ lesson, activeChapter }: Nikhilam3DCa
           </div>
         )}
 
-        {/* SCENE 4: CROSS-ADDITION RESULT CARD */}
+        {/* SCENE 2 (DUPLEX OR EKADHIKENA): IDENTIFY DIGITS / SPLIT CARD */}
+        {(isDuplex || isEkadhikena) && activeChapter.id === 2 && (
+          <div
+            ref={lhsCardRef}
+            style={{
+              position: 'absolute',
+              top: 0,
+              left: 0,
+              willChange: 'transform',
+            }}
+            className="flex flex-col items-center justify-center px-7 py-4 rounded-2xl bg-[#14120D]/95 border border-[#E5A93C]/50 shadow-[0_10px_35px_rgba(0,0,0,0.85)] min-w-[240px] transition-opacity duration-150"
+          >
+            {isEkadhikena ? (
+              <>
+                <span className="font-mono text-[10px] uppercase tracking-[0.2em] text-[#A8A090] font-semibold leading-none text-center mb-1.5">
+                  Split the Number: Prefix &amp; Terminal 5
+                </span>
+                <div className="font-display text-4xl sm:text-5xl font-bold text-[#FFD700] tracking-tight leading-none text-center tabular-nums my-1.5">
+                  {a} = {ekPrefix} | 5
+                </div>
+                <div className="flex items-center gap-4 my-1">
+                  <div className="flex flex-col items-center px-4 py-1.5 rounded-lg bg-black/40 border border-[#E5A93C]/30">
+                    <span className="font-mono text-[9px] uppercase tracking-[0.15em] text-[#A8A090]">Prefix</span>
+                    <span className="font-display text-2xl font-bold text-[#FFD700]">{ekPrefix}</span>
+                  </div>
+                  <div className="flex flex-col items-center px-4 py-1.5 rounded-lg bg-black/40 border border-[#E5A93C]/30">
+                    <span className="font-mono text-[9px] uppercase tracking-[0.15em] text-[#A8A090]">Last Digit</span>
+                    <span className="font-display text-2xl font-bold text-[#FFD700]">5</span>
+                  </div>
+                </div>
+                <div className="font-mono text-[11px] text-[#E5A93C]/90 leading-none text-center mt-1.5">
+                  Prefix = {ekPrefix} · Last digit = 5
+                </div>
+                <div className="font-sans text-[10px] text-[#A8A090]/80 leading-none text-center mt-1">
+                  Ekadhikena Purvena operates on the prefix and terminal digit without an unnecessary reference base
+                </div>
+              </>
+            ) : (
+              <>
+                <span className="font-mono text-[10px] uppercase tracking-[0.2em] text-[#A8A090] font-semibold leading-none text-center mb-1.5">
+                  Identify Digits &amp; Place Values
+                </span>
+                <div className="flex items-center gap-4 my-1.5">
+                  <div className="flex flex-col items-center px-4 py-2 rounded-lg bg-black/40 border border-[#E5A93C]/30">
+                    <span className="font-mono text-[9px] uppercase tracking-[0.15em] text-[#A8A090]">Tens Digit (a)</span>
+                    <span className="font-display text-3xl font-bold text-[#FFD700]">{duplexTens}</span>
+                  </div>
+                  <div className="flex flex-col items-center px-4 py-2 rounded-lg bg-black/40 border border-[#E5A93C]/30">
+                    <span className="font-mono text-[9px] uppercase tracking-[0.15em] text-[#A8A090]">Units Digit (b)</span>
+                    <span className="font-display text-3xl font-bold text-[#FFD700]">{duplexUnits}</span>
+                  </div>
+                </div>
+                <div className="font-mono text-[11px] text-[#E5A93C]/90 leading-none text-center mt-1.5">
+                  Tens digit = {duplexTens} · Units digit = {duplexUnits} ({a} = 10 × {duplexTens} + {duplexUnits})
+                </div>
+                <div className="font-sans text-[10px] text-[#A8A090]/80 leading-none text-center mt-1">
+                  General Duplex processes digits directly without any reference base or deviation
+                </div>
+              </>
+            )}
+          </div>
+        )}
+
+        {/* SCENE 3 (DUPLEX OR EKADHIKENA): UNITS DUPLEX / SUCCESSOR CARD */}
+        {(isDuplex || isEkadhikena) && activeChapter.id === 3 && (
+          <div
+            ref={rhsCardRef}
+            style={{
+              position: 'absolute',
+              top: 0,
+              left: 0,
+              willChange: 'transform',
+            }}
+            className="flex flex-col items-center justify-center px-7 py-4 rounded-2xl bg-[#14120D]/95 border border-[#E5A93C]/50 shadow-[0_10px_35px_rgba(0,0,0,0.85)] min-w-[240px] transition-opacity duration-150"
+          >
+            {isEkadhikena ? (
+              <>
+                <span className="font-mono text-[10px] uppercase tracking-[0.2em] text-[#A8A090] font-semibold leading-none text-center mb-1.5">
+                  Find the Successor (Ekadhika)
+                </span>
+                <div className="font-display text-3xl sm:text-4xl font-bold text-[#FFD700] tracking-tight leading-none text-center tabular-nums my-1">
+                  Successor = {ekPrefix} + 1 = {ekSuccessor}
+                </div>
+                <div className="font-mono text-[11px] text-[#E5A93C]/90 leading-none text-center mt-1.5">
+                  Prefix = {ekPrefix} ➔ Successor = {ekSuccessor}
+                </div>
+                <div className="font-sans text-[10px] text-[#A8A090]/80 leading-none text-center mt-1">
+                  Ekadhikena means &quot;by one more than the preceding number&quot;
+                </div>
+              </>
+            ) : (
+              <>
+                <span className="font-mono text-[10px] uppercase tracking-[0.2em] text-[#A8A090] font-semibold leading-none text-center mb-1.5">
+                  Units Duplex: D({duplexUnits}) = {duplexUnits}²
+                </span>
+                <div className="font-display text-4xl sm:text-5xl font-bold text-[#FFD700] tracking-tight leading-none text-center tabular-nums my-1">
+                  D({duplexUnits}) = {duplexDu}
+                </div>
+                <div className="font-mono text-[11px] text-[#E5A93C]/90 leading-none text-center mt-1.5">
+                  Result: Units contribution = {duplexDu}
+                </div>
+                {duplexDu >= 10 && (
+                  <div className="font-sans text-[10px] text-amber-300 leading-none text-center mt-1">
+                    Place {duplexUnitsPlaced} in units column, carry {duplexCarry1} to tens column
+                  </div>
+                )}
+              </>
+            )}
+          </div>
+        )}
+
+        {/* SCENE 4: CROSS-ADDITION (YAVADUNAM), PREFIX × SUCCESSOR (EKADHIKENA), OR CROSS DUPLEX (DUPLEX) CARD */}
         {activeChapter.id === 4 && (
           <div
             ref={lhsCardRef}
@@ -717,21 +914,59 @@ export default function Nikhilam3DCanvas({ lesson, activeChapter }: Nikhilam3DCa
               left: 0,
               willChange: 'transform',
             }}
-            className="flex flex-col items-center justify-center px-7 py-4 rounded-2xl bg-[#14120D]/95 border border-[#E5A93C]/50 shadow-[0_10px_35px_rgba(0,0,0,0.85)] min-w-[220px] transition-opacity duration-150"
+            className="flex flex-col items-center justify-center px-7 py-4 rounded-2xl bg-[#14120D]/95 border border-[#E5A93C]/50 shadow-[0_10px_35px_rgba(0,0,0,0.85)] min-w-[240px] transition-opacity duration-150"
           >
-            <span className="font-mono text-[10px] uppercase tracking-[0.2em] text-[#A8A090] font-semibold leading-none text-center mb-1.5">
-              Cross-Add Symmetry
-            </span>
-            <div className="font-display text-4xl sm:text-5xl font-bold text-[#FFD700] tracking-tight leading-none text-center tabular-nums my-1">
-              LEFT PART = {lhs}
-            </div>
-            <div className="font-mono text-[11px] text-[#E5A93C]/90 leading-none text-center mt-1.5">
-              {a} + ({devBFormatted}) = {b} + ({devAFormatted}) = {lhs}
-            </div>
+            {isDuplex ? (
+              <>
+                <span className="font-mono text-[10px] uppercase tracking-[0.2em] text-[#A8A090] font-semibold leading-none text-center mb-1.5">
+                  Cross Duplex: D({duplexTens}, {duplexUnits}) = 2 × {duplexTens} × {duplexUnits}
+                </span>
+                <div className="font-display text-3xl sm:text-4xl font-bold text-[#FFD700] tracking-tight leading-none text-center tabular-nums my-1">
+                  D({duplexTens}, {duplexUnits}) = {duplexDtu}
+                </div>
+                <div className="font-mono text-[11px] text-[#E5A93C]/90 leading-none text-center mt-1.5">
+                  {duplexUnits === 0 || duplexTens === 0
+                    ? 'Cross contribution is zero because one of the digits is zero'
+                    : `Cross contribution = ${duplexDtu} × 10 = ${duplexCrossPart} (Place Value 10)`}
+                </div>
+                <div className="font-sans text-[10px] text-[#A8A090]/80 leading-none text-center mt-1">
+                  Evaluates the 2ab term in (10a + b)² = 100a² + 20ab + b²
+                </div>
+              </>
+            ) : isEkadhikena ? (
+              <>
+                <span className="font-mono text-[10px] uppercase tracking-[0.2em] text-[#A8A090] font-semibold leading-none text-center mb-1.5">
+                  Multiply the Prefix and Successor
+                </span>
+                <div className="font-display text-4xl sm:text-5xl font-bold text-[#FFD700] tracking-tight leading-none text-center tabular-nums my-1">
+                  LEFT PART = {ekLhs}
+                </div>
+                <div className="font-mono text-[12px] text-[#E5A93C] font-bold leading-none text-center mt-1.5">
+                  {ekPrefix} × {ekSuccessor} = {ekLhs}
+                </div>
+                <div className="font-sans text-[10px] text-[#A8A090]/80 leading-none text-center mt-1">
+                  This must be the actual calculation that produces {ekLhs}
+                </div>
+              </>
+            ) : (
+              <>
+                <span className="font-mono text-[10px] uppercase tracking-[0.2em] text-[#A8A090] font-semibold leading-none text-center mb-1.5">
+                  {lesson.operationType === 'squaring' ? 'Left Component (n + d)' : 'Cross-Add Symmetry'}
+                </span>
+                <div className="font-display text-4xl sm:text-5xl font-bold text-[#FFD700] tracking-tight leading-none text-center tabular-nums my-1">
+                  LEFT PART = {lhs}
+                </div>
+                <div className="font-mono text-[11px] text-[#E5A93C]/90 leading-none text-center mt-1.5">
+                  {lesson.operationType === 'squaring'
+                    ? `left = n + d = ${a} + (${devAFormatted}) = ${lhs}`
+                    : `${a} + (${devBFormatted}) = ${b} + (${devAFormatted}) = ${lhs}`}
+                </div>
+              </>
+            )}
           </div>
         )}
 
-        {/* SCENE 5: MULTIPLY DEVIATIONS RESULT CARD */}
+        {/* SCENE 5: MULTIPLY DEVIATIONS (YAVADUNAM), SQUARE TERMINAL 5 (EKADHIKENA), OR TENS DUPLEX (DUPLEX) CARD */}
         {activeChapter.id === 5 && (
           <div
             ref={rhsCardRef}
@@ -741,17 +976,55 @@ export default function Nikhilam3DCanvas({ lesson, activeChapter }: Nikhilam3DCa
               left: 0,
               willChange: 'transform',
             }}
-            className="flex flex-col items-center justify-center px-7 py-4 rounded-2xl bg-[#14120D]/95 border border-[#E5A93C]/50 shadow-[0_10px_35px_rgba(0,0,0,0.85)] min-w-[220px] transition-opacity duration-150"
+            className="flex flex-col items-center justify-center px-7 py-4 rounded-2xl bg-[#14120D]/95 border border-[#E5A93C]/50 shadow-[0_10px_35px_rgba(0,0,0,0.85)] min-w-[240px] transition-opacity duration-150"
           >
-            <span className="font-mono text-[10px] uppercase tracking-[0.2em] text-[#A8A090] font-semibold leading-none text-center mb-1.5">
-              Deviation Product ({numZeros} Digits Allocated)
-            </span>
-            <div className="font-display text-4xl sm:text-5xl font-bold text-[#FFD700] tracking-tight leading-none text-center tabular-nums my-1">
-              RIGHT PART = {balancedRhsStr}
-            </div>
-            <div className="font-mono text-[11px] text-[#E5A93C]/90 leading-none text-center mt-1.5">
-              ({devAFormatted}) × ({devBFormatted}) = +{rawRhs} ➔ &ldquo;{balancedRhsStr}&rdquo;
-            </div>
+            {isDuplex ? (
+              <>
+                <span className="font-mono text-[10px] uppercase tracking-[0.2em] text-[#A8A090] font-semibold leading-none text-center mb-1.5">
+                  Tens Duplex: D({duplexTens}) = {duplexTens}²
+                </span>
+                <div className="font-display text-3xl sm:text-4xl font-bold text-[#FFD700] tracking-tight leading-none text-center tabular-nums my-1">
+                  D({duplexTens}) = {duplexDt}
+                </div>
+                <div className="font-mono text-[11px] text-[#E5A93C]/90 leading-none text-center mt-1.5">
+                  Digit {duplexTens} represents {duplexTens} tens ➔ ({duplexTens} × 10)² = {duplexDt} × 100 = {duplexTensPart}
+                </div>
+                <div className="font-sans text-[10px] text-amber-300 leading-none text-center mt-1">
+                  Result: Tens contribution = {duplexTensPart}
+                </div>
+              </>
+            ) : isEkadhikena ? (
+              <>
+                <span className="font-mono text-[10px] uppercase tracking-[0.2em] text-[#A8A090] font-semibold leading-none text-center mb-1.5">
+                  Square the Final Digit
+                </span>
+                <div className="font-display text-4xl sm:text-5xl font-bold text-[#FFD700] tracking-tight leading-none text-center tabular-nums my-1">
+                  RIGHT PART = 25
+                </div>
+                <div className="font-mono text-[12px] text-[#E5A93C] font-bold leading-none text-center mt-1.5">
+                  5² = 25
+                </div>
+                <div className="font-sans text-[10px] text-[#A8A090]/80 leading-none text-center mt-1">
+                  The final digit is 5, and its square is 25
+                </div>
+              </>
+            ) : (
+              <>
+                <span className="font-mono text-[10px] uppercase tracking-[0.2em] text-[#A8A090] font-semibold leading-none text-center mb-1.5">
+                  {lesson.operationType === 'squaring'
+                    ? `Square of Deviation (${numZeros} Digit${numZeros > 1 ? 's' : ''} Allocated)`
+                    : `Deviation Product (${numZeros} Digits Allocated)`}
+                </span>
+                <div className="font-display text-4xl sm:text-5xl font-bold text-[#FFD700] tracking-tight leading-none text-center tabular-nums my-1">
+                  RIGHT PART = {balancedRhsStr}
+                </div>
+                <div className="font-mono text-[11px] text-[#E5A93C]/90 leading-none text-center mt-1.5">
+                  {lesson.operationType === 'squaring'
+                    ? `right = d² = (${devAFormatted})² = ${rawRhs} ➔ "${balancedRhsStr}"`
+                    : `(${devAFormatted}) × (${devBFormatted}) = +${rawRhs} ➔ "${balancedRhsStr}"`}
+                </div>
+              </>
+            )}
           </div>
         )}
 
@@ -765,17 +1038,33 @@ export default function Nikhilam3DCanvas({ lesson, activeChapter }: Nikhilam3DCa
               left: 0,
               willChange: 'transform',
             }}
-            className="flex flex-col items-center justify-center px-6 py-4 rounded-2xl bg-[#14120D]/95 border border-[#E5A93C]/40 shadow-xl w-[150px] sm:w-[170px] transition-opacity duration-150"
+            className="flex flex-col items-center justify-center px-6 py-4 rounded-2xl bg-[#14120D]/95 border border-[#E5A93C]/40 shadow-xl w-[170px] sm:w-[200px] transition-opacity duration-150"
           >
-            <span className="font-mono text-[10px] uppercase tracking-[0.2em] text-[#A8A090] font-semibold leading-none text-center whitespace-nowrap">
-              LEFT PART
-            </span>
-            <span className="font-display text-4xl sm:text-5xl font-bold text-[#FFD700] tracking-tight leading-none text-center tabular-nums my-1.5">
-              {balancedLhs}
-            </span>
-            <span className="font-mono text-[10px] uppercase tracking-[0.2em] invisible select-none leading-none text-center whitespace-nowrap" aria-hidden="true">
-              LEFT PART
-            </span>
+            {isDuplex ? (
+              <>
+                <span className="font-mono text-[9px] uppercase tracking-[0.15em] text-[#A8A090] font-semibold leading-none text-center whitespace-nowrap mb-1">
+                  TENS CONTRIBUTION
+                </span>
+                <span className="font-display text-2xl sm:text-3xl font-bold text-[#FFD700] tracking-tight leading-none text-center tabular-nums my-1">
+                  {duplexTensPart}
+                </span>
+                <span className="font-mono text-[10px] text-[#E5A93C] leading-none text-center whitespace-nowrap mt-1">
+                  {`100 × ${duplexTens}² = ${duplexTensPart}`}
+                </span>
+              </>
+            ) : (
+              <>
+                <span className="font-mono text-[10px] uppercase tracking-[0.2em] text-[#A8A090] font-semibold leading-none text-center whitespace-nowrap">
+                  LEFT PART
+                </span>
+                <span className="font-display text-3xl sm:text-4xl font-bold text-[#FFD700] tracking-tight leading-none text-center tabular-nums my-1.5">
+                  {isEkadhikena ? ekLhs : balancedLhs}
+                </span>
+                <span className="font-mono text-[10px] uppercase tracking-[0.2em] text-[#A8A090]/80 leading-none text-center whitespace-nowrap">
+                  {isEkadhikena ? `${ekLhs} Hundreds` : 'LEFT PART'}
+                </span>
+              </>
+            )}
           </div>
         )}
 
@@ -788,17 +1077,36 @@ export default function Nikhilam3DCanvas({ lesson, activeChapter }: Nikhilam3DCa
               left: 0,
               willChange: 'transform',
             }}
-            className="flex flex-col items-center justify-center px-6 py-4 rounded-2xl bg-[#14120D]/95 border border-[#E5A93C]/40 shadow-xl w-[150px] sm:w-[170px] transition-opacity duration-150"
+            className="flex flex-col items-center justify-center px-6 py-4 rounded-2xl bg-[#14120D]/95 border border-[#E5A93C]/40 shadow-xl w-[170px] sm:w-[200px] transition-opacity duration-150"
           >
-            <span className="font-mono text-[10px] uppercase tracking-[0.2em] text-[#A8A090] font-semibold leading-none text-center whitespace-nowrap">
-              RIGHT PART
-            </span>
-            <span className="font-display text-4xl sm:text-5xl font-bold text-[#FFD700] tracking-tight leading-none text-center tabular-nums my-1.5">
-              {balancedRhsStr}
-            </span>
-            <span className="font-mono text-[10px] uppercase tracking-[0.2em] invisible select-none leading-none text-center whitespace-nowrap" aria-hidden="true">
-              RIGHT PART
-            </span>
+            {isDuplex ? (
+              <>
+                <span className="font-mono text-[9px] uppercase tracking-[0.15em] text-[#A8A090] font-semibold leading-none text-center whitespace-nowrap mb-1">
+                  CROSS &amp; UNITS
+                </span>
+                <div className="font-mono text-[10px] text-[#FFD700] leading-tight text-center my-0.5">
+                  Cross: 10 × (2 × {duplexTens} × {duplexUnits}) = {duplexCrossPart}
+                </div>
+                <div className="font-mono text-[10px] text-[#FFD700] leading-tight text-center my-0.5">
+                  Units: {duplexUnits}² = {duplexUnitsPart}
+                </div>
+                <span className="font-mono text-[10px] text-[#E5A93C] leading-none text-center whitespace-nowrap mt-1">
+                  Sum: {duplexCrossPart} + {duplexUnitsPart} = {duplexCrossPart + duplexUnitsPart}
+                </span>
+              </>
+            ) : (
+              <>
+                <span className="font-mono text-[10px] uppercase tracking-[0.2em] text-[#A8A090] font-semibold leading-none text-center whitespace-nowrap">
+                  RIGHT PART
+                </span>
+                <span className="font-display text-3xl sm:text-4xl font-bold text-[#FFD700] tracking-tight leading-none text-center tabular-nums my-1.5">
+                  {isEkadhikena ? ekRhs : balancedRhsStr}
+                </span>
+                <span className="font-mono text-[10px] uppercase tracking-[0.2em] text-[#A8A090]/80 leading-none text-center whitespace-nowrap">
+                  {isEkadhikena ? '5² = 25' : 'RIGHT PART'}
+                </span>
+              </>
+            )}
           </div>
         )}
 
@@ -814,9 +1122,37 @@ export default function Nikhilam3DCanvas({ lesson, activeChapter }: Nikhilam3DCa
             }}
             className="flex items-center gap-2 px-5 py-2.5 rounded-xl bg-black/90 border border-[#E5A93C]/30 shadow-lg text-xs font-mono text-[#D1C9BE] transition-opacity duration-150"
           >
-            <span>{balancedLhs} × {base} + {balancedRhsStr}</span>
-            <ArrowRight className="w-3.5 h-3.5 text-[#E5A93C]" />
-            <strong className="text-base text-[#FFD700]">{finalAnswer}</strong>
+            {isDuplex ? (
+              <div className="flex flex-col items-center gap-1 text-center font-mono py-0.5">
+                <div className="text-xs text-[#D1C9BE] flex items-center gap-1.5 flex-wrap justify-center">
+                  <span>Then show:</span>
+                  <span className="text-[#FFD700] font-bold">{duplexTensPart}</span>
+                  <span className="text-[#E5A93C]">+</span>
+                  <span className="text-[#FFD700] font-bold">{duplexCrossPart}</span>
+                  <span className="text-[#E5A93C]">+</span>
+                  <span className="text-[#FFD700] font-bold">{duplexUnitsPart}</span>
+                  <span className="text-[#E5A93C]">=</span>
+                  <strong className="text-sm sm:text-base text-[#FFD700]">{finalAnswer}</strong>
+                </div>
+                <div className="text-xs text-amber-400 font-bold">
+                  Final result: {a}² = {finalAnswer}
+                </div>
+              </div>
+            ) : isEkadhikena ? (
+              <>
+                <span>{ekLhs} | 25</span>
+                <ArrowRight className="w-3.5 h-3.5 text-[#E5A93C]" />
+                <span>{ekLhs} × 100 + 25</span>
+                <ArrowRight className="w-3.5 h-3.5 text-[#E5A93C]" />
+                <strong className="text-base text-[#FFD700]">{finalAnswer}</strong>
+              </>
+            ) : (
+              <>
+                <span>{balancedLhs} × {base} + {balancedRhsStr}</span>
+                <ArrowRight className="w-3.5 h-3.5 text-[#E5A93C]" />
+                <strong className="text-base text-[#FFD700]">{finalAnswer}</strong>
+              </>
+            )}
           </div>
         )}
 
@@ -835,12 +1171,12 @@ export default function Nikhilam3DCanvas({ lesson, activeChapter }: Nikhilam3DCa
             {/* Top Verified Badge */}
             <div className="flex items-center gap-1.5 text-xs font-mono text-emerald-400 font-semibold leading-none mb-3 z-10">
               <CheckCircle2 className="w-4 h-4" />
-              <span>Hardware Proof Verified</span>
+              <span>Arithmetic Verification Passed</span>
             </div>
 
             {/* Dedicated Answer Container with Shared Center Gold Circle */}
             <div className="relative flex items-center justify-center w-36 h-36 sm:w-40 sm:h-40 my-1">
-              {/* Luminous Gold Circular Ring — 100% Mathematically Centered with Answer 9506 */}
+              {/* Luminous Gold Circular Ring — 100% Mathematically Centered with Answer */}
               <div
                 className="absolute inset-0 rounded-full border-2 border-[#FFD700] shadow-[0_0_24px_rgba(255,215,0,0.4),inset_0_0_16px_rgba(229,169,60,0.25)] pointer-events-none"
                 style={{ boxSizing: 'border-box' }}
@@ -859,7 +1195,7 @@ export default function Nikhilam3DCanvas({ lesson, activeChapter }: Nikhilam3DCa
 
             {/* Subtitle Formula */}
             <div className="font-mono text-xs text-[#A8A090] leading-none text-center mt-3 z-10">
-              {a} × {b} = {finalAnswer}
+              {lesson.operationType === 'squaring' ? `${a}² = ${finalAnswer}` : `${a} × ${b} = ${finalAnswer}`}
             </div>
           </div>
         )}

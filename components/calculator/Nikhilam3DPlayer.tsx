@@ -237,10 +237,10 @@ export default function Nikhilam3DPlayer({ lesson, onSelectPreset }: Nikhilam3DP
           <span className="w-2 h-2 rounded-full bg-[#E5A93C] shadow-[0_0_8px_#E5A93C] flex-shrink-0 animate-pulse" />
           <div className="truncate">
             <h3 className="font-display font-medium text-sm sm:text-base text-[#F5F0E6] truncate tracking-tight">
-              Multiplication Using the Nikhilam Method
+              {lesson.methodTitle || (lesson.operationType === 'squaring' ? 'Squaring Using the Yavadunam Method' : 'Multiplication Using the Nikhilam Method')}
             </h3>
             <p className="font-mono text-[11px] text-[#A8A090] truncate">
-              {lesson.a} × {lesson.b} · Base {lesson.base} · Sūtra: Nikhilam Navatashcaramam Dashatah
+              {lesson.sutraSubtitle || (lesson.operationType === 'squaring' ? `${lesson.a}² · Base ${lesson.base} · Deviation ${lesson.devAStr}` : `${lesson.a} × ${lesson.b} · Base ${lesson.base} · Sūtra: Nikhilam Navatashcaramam Dashatah`)}
             </p>
           </div>
         </div>
@@ -430,31 +430,58 @@ export default function Nikhilam3DPlayer({ lesson, onSelectPreset }: Nikhilam3DP
         <div className="flex flex-wrap items-center justify-between gap-3 pb-3 border-b border-[#E5A93C]/10">
           <span className="text-xs font-mono text-[#A8A090] uppercase tracking-[0.2em] flex items-center gap-1.5">
             <Sparkles className="w-3.5 h-3.5 text-[#E5A93C]" />
-            Try Other Multiplications Near Base:
+            {lesson.operationType === 'squaring'
+              ? 'Try Classical Squaring Presets:'
+              : 'Try Other Multiplications Near Base:'}
           </span>
           <div className="flex flex-wrap items-center gap-2">
-            {[
-              { label: '98 × 97 (Original)', a: '98', b: '97' },
-              { label: '96 × 94', a: '96', b: '94' },
-              { label: '99 × 98', a: '99', b: '98' },
-              { label: '102 × 103 (Surplus)', a: '102', b: '103' },
-              { label: '996 × 992 (Base 1000)', a: '996', b: '992' },
-            ].map(p => {
-              const isSelected = lesson.aStr === p.a && lesson.bStr === p.b;
-              return (
-                <button
-                  key={p.label}
-                  onClick={() => onSelectPreset && onSelectPreset(p.a, p.b)}
-                  className={`px-3 py-1 rounded-lg text-xs font-mono transition-all cursor-pointer border ${
-                    isSelected
-                      ? 'bg-[#E5A93C] text-black font-bold border-[#FFD700]'
-                      : 'bg-[#14120D] text-[#A8A090] border-[#E5A93C]/15 hover:text-[#E5A93C] hover:border-[#E5A93C]/35'
-                  }`}
-                >
-                  {p.label}
-                </button>
-              );
-            })}
+            {lesson.operationType === 'squaring'
+              ? [
+                  { label: '40² (General Duplex: 4 & 0)', a: '40' },
+                  { label: '43² (General Duplex)', a: '43' },
+                  { label: '12² (Base 10: Yavadunam)', a: '12' },
+                  { label: '96² (Deficiency: 100)', a: '96' },
+                  { label: '108² (Surplus: 100)', a: '108' },
+                  { label: '85² (Ekadhikena: Ends in 5)', a: '85' },
+                  { label: '18² (Base 10 with Carry)', a: '18' },
+                ].map(p => {
+                  const isSelected = lesson.aStr === p.a;
+                  return (
+                    <button
+                      key={p.label}
+                      onClick={() => onSelectPreset && onSelectPreset(p.a, '')}
+                      className={`px-3 py-1 rounded-lg text-xs font-mono transition-all cursor-pointer border ${
+                        isSelected
+                          ? 'bg-[#E5A93C] text-black font-bold border-[#FFD700]'
+                          : 'bg-[#14120D] text-[#A8A090] border-[#E5A93C]/15 hover:text-[#E5A93C] hover:border-[#E5A93C]/35'
+                      }`}
+                    >
+                      {p.label}
+                    </button>
+                  );
+                })
+              : [
+                  { label: '98 × 97 (Original)', a: '98', b: '97' },
+                  { label: '96 × 94', a: '96', b: '94' },
+                  { label: '99 × 98', a: '99', b: '98' },
+                  { label: '102 × 103 (Surplus)', a: '102', b: '103' },
+                  { label: '996 × 992 (Base 1000)', a: '996', b: '992' },
+                ].map(p => {
+                  const isSelected = lesson.aStr === p.a && lesson.bStr === p.b;
+                  return (
+                    <button
+                      key={p.label}
+                      onClick={() => onSelectPreset && onSelectPreset(p.a, p.b || '')}
+                      className={`px-3 py-1 rounded-lg text-xs font-mono transition-all cursor-pointer border ${
+                        isSelected
+                          ? 'bg-[#E5A93C] text-black font-bold border-[#FFD700]'
+                          : 'bg-[#14120D] text-[#A8A090] border-[#E5A93C]/15 hover:text-[#E5A93C] hover:border-[#E5A93C]/35'
+                      }`}
+                    >
+                      {p.label}
+                    </button>
+                  );
+                })}
           </div>
         </div>
 
@@ -465,7 +492,13 @@ export default function Nikhilam3DPlayer({ lesson, onSelectPreset }: Nikhilam3DP
               Place-Value Identity
             </span>
             <div className="font-mono text-xs text-[#FFD700]">
-              {lesson.a} × {lesson.b} = {lesson.base} × ({lesson.base} + {lesson.devAStr} + {lesson.devBStr}) + ({lesson.devAStr} × {lesson.devBStr})
+              {lesson.operationType === 'squaring'
+                ? lesson.squaringMethod === 'duplex'
+                  ? `n = 10a + b ➔ n² = 100a² + 20ab + b² = 100·D(a) + 10·D(a,b) + D(b)`
+                  : lesson.squaringMethod === 'ekadhikena'
+                    ? `${lesson.a}² = (10a + 5)² = 100·a(a + 1) + 25`
+                    : `${lesson.a}² = (${lesson.base} + (${lesson.devAStr}))² = ${lesson.base}(${lesson.base} + 2(${lesson.devAStr})) + (${lesson.devAStr})²`
+                : `${lesson.a} × ${lesson.b} = ${lesson.base} × (${lesson.base} + ${lesson.devAStr} + ${lesson.devBStr}) + (${lesson.devAStr} × ${lesson.devBStr})`}
             </div>
           </div>
 
@@ -474,17 +507,29 @@ export default function Nikhilam3DPlayer({ lesson, onSelectPreset }: Nikhilam3DP
               Coordinate Alignment
             </span>
             <div className="font-mono text-xs text-[#F5F0E6]">
-              {lesson.balancedLhs} × {lesson.base} + {lesson.balancedRhsStr} = <strong className="text-[#FFD700]">{lesson.finalAnswer}</strong>
+              {lesson.operationType === 'squaring' ? (
+                lesson.squaringMethod === 'duplex' && lesson.duplexData ? (
+                  <>100 × {lesson.duplexData.dt} + 10 × {lesson.duplexData.dtu} + {lesson.duplexData.du} = <strong className="text-[#FFD700]">{lesson.finalAnswer}</strong></>
+                ) : lesson.squaringMethod === 'ekadhikena' ? (
+                  <>100 × {lesson.balancedLhs} + 25 = <strong className="text-[#FFD700]">{lesson.finalAnswer}</strong></>
+                ) : (
+                  <>{lesson.balancedLhs} × {lesson.base} + {lesson.balancedRhsStr} = <strong className="text-[#FFD700]">{lesson.finalAnswer}</strong></>
+                )
+              ) : (
+                <>{lesson.balancedLhs} × {lesson.base} + {lesson.balancedRhsStr} = <strong className="text-[#FFD700]">{lesson.finalAnswer}</strong></>
+              )}
             </div>
           </div>
 
           <div className="p-3.5 rounded-xl bg-[#14120D] border border-emerald-500/20">
             <span className="text-[10px] font-mono text-emerald-400 uppercase tracking-[0.2em] block mb-1 flex items-center gap-1">
               <CheckCircle2 className="w-3 h-3" />
-              Hardware Verification
+              Arithmetic Verification Passed
             </span>
             <div className="font-mono text-xs text-emerald-300">
-              Nikhilam: {lesson.finalAnswer} === Standard: {lesson.groundTruth}
+              {lesson.operationType === 'squaring'
+                ? `${lesson.squaringMethod === 'duplex' ? 'Duplex' : lesson.squaringMethod === 'ekadhikena' ? 'Ekadhikena' : 'Yavadunam'}: ${lesson.finalAnswer} === Standard: ${lesson.groundTruth}`
+                : `Nikhilam: ${lesson.finalAnswer} === Standard: ${lesson.groundTruth}`}
             </div>
           </div>
         </div>

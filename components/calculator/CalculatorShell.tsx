@@ -4,7 +4,7 @@ import React, { useState, useMemo } from 'react';
 import { useSearchParams } from 'next/navigation';
 import { SUTRA_REGISTRY } from '@/lib/math/registry';
 import { CalculationResult } from '@/lib/math/types';
-import { generateNikhilamLesson } from '@/lib/math/nikhilamLesson';
+import { generateNikhilamLesson, generateSquaringLesson, NikhilamLessonData } from '@/lib/math/nikhilamLesson';
 import InputForm from './InputForm';
 import StepPlayer from './StepPlayer';
 import StepCard from './StepCard';
@@ -31,6 +31,23 @@ function CalcSectionLabel({ num, title, sub }: { num: string; title: string; sub
   );
 }
 
+interface OpState {
+  a: string;
+  b?: string;
+  result: CalculationResult;
+}
+
+function getInitialOpState(opId: string, searchA?: string, searchB?: string): OpState {
+  const config = SUTRA_REGISTRY[opId] || SUTRA_REGISTRY.multiplication;
+  const a = searchA || config.presets[0]?.a || (config.requiresSecondInput ? '98' : '85');
+  const b = config.requiresSecondInput ? (searchB || config.presets[0]?.b || '97') : undefined;
+  return {
+    a,
+    b,
+    result: config.calculate(a, b),
+  };
+}
+
 export default function CalculatorShell() {
   const searchParams = useSearchParams();
   const initialOp = searchParams.get('op') || 'multiplication';
@@ -43,12 +60,21 @@ export default function CalculatorShell() {
 
   const activeConfig = SUTRA_REGISTRY[activeOpId] || SUTRA_REGISTRY.multiplication;
 
-  // Calculation state
-  const [calcResult, setCalcResult] = useState<CalculationResult>(() => {
-    const a = initialA || activeConfig.presets[0]?.a || '98';
-    const b = initialB || activeConfig.presets[0]?.b || '97';
-    return activeConfig.calculate(a, b);
+  // Fully isolated state per operation to prevent any cross-operation pollution (Tasks 2 & 8)
+  const [opStates, setOpStates] = useState<Record<string, OpState>>(() => {
+    const map: Record<string, OpState> = {};
+    for (const key of Object.keys(SUTRA_REGISTRY)) {
+      map[key] = getInitialOpState(
+        key,
+        key === initialOp ? initialA : undefined,
+        key === initialOp ? initialB : undefined
+      );
+    }
+    return map;
   });
+
+  const activeOpState = opStates[activeOpId] || getInitialOpState(activeOpId);
+  const calcResult = activeOpState.result;
 
   const [currentStep, setCurrentStep] = useState<number>(1);
   const [isPlaying, setIsPlaying] = useState<boolean>(false);
@@ -56,31 +82,51 @@ export default function CalculatorShell() {
   // View mode switcher: '3d' for cinematic educational walkthrough, 'steps' for classic step-by-step
   const [viewMode, setViewMode] = useState<'3d' | 'steps'>('3d');
 
-  // Dynamically compute the Nikhilam 3D lesson dataset for current inputs
-  const nikhilamLesson = useMemo(() => {
-    const a = calcResult.inputs.a || '98';
-    const b = calcResult.inputs.b || '97';
+  // Dynamically compute the operation-aware 3D lesson dataset for current inputs (Task 2, 4, 6)
+  const currentLesson: NikhilamLessonData = useMemo(() => {
+    if (activeOpId === 'squaring') {
+      const a = activeOpState.a || '12';
+      const method = activeOpState.result?.methodUsed?.toLowerCase().includes('duplex')
+        ? 'duplex'
+        : activeOpState.result?.methodUsed?.toLowerCase().includes('ekadhikena')
+        ? 'ekadhikena'
+        : activeOpState.result?.methodUsed?.toLowerCase().includes('yavadunam')
+        ? 'yavadunam'
+        : undefined;
+      return generateSquaringLesson(a, method);
+    }
+    // Default to multiplication lesson
+    const a = activeOpState.a || '98';
+    const b = activeOpState.b || '97';
     return generateNikhilamLesson(a, b);
-  }, [calcResult.inputs.a, calcResult.inputs.b]);
+  }, [activeOpId, activeOpState.a, activeOpState.b, activeOpState.result]);
 
-  // When tab changes, re-calculate with defaults
+  // When tab changes, keep independent state
   const handleTabChange = (opId: string) => {
     setActiveOpId(opId);
     setIsPlaying(false);
-    const newConfig = SUTRA_REGISTRY[opId];
-    if (newConfig) {
-      const defaultA = newConfig.presets[0]?.a || '98';
-      const defaultB = newConfig.presets[0]?.b || '97';
-      const res = newConfig.calculate(defaultA, defaultB);
-      setCalcResult(res);
-      setCurrentStep(1);
-    }
+    setCurrentStep(1);
+    setOpStates(prev => {
+      if (prev[opId]) return prev;
+      return {
+        ...prev,
+        [opId]: getInitialOpState(opId),
+      };
+    });
   };
 
   const handleCalculate = (a: string, b?: string) => {
     setIsPlaying(false);
-    const res = activeConfig.calculate(a, b);
-    setCalcResult(res);
+    const cleanB = activeConfig.requiresSecondInput ? b : undefined;
+    const res = activeConfig.calculate(a, cleanB);
+    setOpStates(prev => ({
+      ...prev,
+      [activeOpId]: {
+        a,
+        b: cleanB,
+        result: res,
+      },
+    }));
     setCurrentStep(1);
   };
 
@@ -175,9 +221,10 @@ export default function CalculatorShell() {
           <section aria-label="Input parameters">
             <CalcSectionLabel num="02" title="Input Coordinates" sub="Choose historical presets or enter custom digits" />
             <InputForm
+              key={activeOpId}
               config={activeConfig}
-              initialA={initialA}
-              initialB={initialB}
+              initialA={activeOpState.a}
+              initialB={activeOpState.b}
               onCalculate={handleCalculate}
             />
           </section>
@@ -194,7 +241,7 @@ export default function CalculatorShell() {
             </p>
             <div className="pt-3 border-t border-[#E5A93C]/15 flex items-center justify-between text-xs text-[#A8A090] font-mono">
               <span>Method: <strong className="text-[#E5A93C]">{calcResult.methodUsed}</strong></span>
-              <span>Total Steps: <strong className="text-[#F5F0E6]">{calcResult.steps.length}</strong></span>
+              <span>Core Operations: <strong className="text-[#F5F0E6]">{calcResult.steps.length}</strong></span>
             </div>
           </div>
         </div>
@@ -241,11 +288,19 @@ export default function CalculatorShell() {
               <CalcSectionLabel
                 num="03"
                 title="Cinematic 3D Educational Walkthrough"
-                sub="YouTube-style interactive 3D player · animated deviations, cross-addition & place-value synthesis"
+                sub={
+                  activeOpId === 'squaring'
+                    ? currentLesson.squaringMethod === 'ekadhikena'
+                      ? 'Prefix and successor multiplication for numbers ending in 5.'
+                      : currentLesson.squaringMethod === 'duplex'
+                        ? 'Digit-wise duplex contributions, place values and carries.'
+                        : 'Base selection, signed deviations and place-value alignment.'
+                    : 'YouTube-style interactive 3D player · animated deviations, cross-addition & place-value synthesis'
+                }
               />
               <Nikhilam3DPlayer
-                lesson={nikhilamLesson}
-                onSelectPreset={(a, b) => handleCalculate(a, b)}
+                lesson={currentLesson}
+                onSelectPreset={(a, b) => handleCalculate(a, activeConfig.requiresSecondInput ? b : undefined)}
               />
             </section>
           )}

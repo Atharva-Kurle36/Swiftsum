@@ -87,7 +87,7 @@ export default function ResultBanner({ result }: ResultBannerProps) {
       <div className="pt-5 border-t border-[#E5A93C]/15 flex flex-col sm:flex-row items-center justify-between text-xs text-[#A8A090] gap-3">
         <div className="flex items-center gap-2.5">
           <Award className="w-4 h-4 text-[#E5A93C]" />
-          <span>Standard Hardware Arithmetic Match:</span>
+          <span>Independent Arithmetic Verification:</span>
           <code className="font-mono bg-[#0B0A08] px-3 py-1 rounded-lg text-emerald-400 font-bold border border-emerald-500/30">
             {result.groundTruth}
           </code>
