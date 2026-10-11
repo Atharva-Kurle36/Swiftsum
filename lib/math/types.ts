@@ -19,6 +19,9 @@ export interface CalculationStep {
     bottom?: number[]; // indices in bottom number
   };
   accumulatedAnswer: string;
+  what?: string;
+  why?: string;
+  how?: string;
 }
 
 export interface CalculationResult {

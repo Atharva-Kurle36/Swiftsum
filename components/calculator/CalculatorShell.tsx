@@ -1,15 +1,17 @@
 'use client';
 
-import React, { useState } from 'react';
+import React, { useState, useMemo } from 'react';
 import { useSearchParams } from 'next/navigation';
 import { SUTRA_REGISTRY } from '@/lib/math/registry';
 import { CalculationResult } from '@/lib/math/types';
+import { generateNikhilamLesson } from '@/lib/math/nikhilamLesson';
 import InputForm from './InputForm';
 import StepPlayer from './StepPlayer';
 import StepCard from './StepCard';
 import DigitCrossGrid from './DigitCrossGrid';
 import ResultBanner from './ResultBanner';
-import { BookOpen, CheckCircle2, Cpu, Sparkles } from 'lucide-react';
+import Nikhilam3DPlayer from './Nikhilam3DPlayer';
+import { BookOpen, CheckCircle2, Cpu, Sparkles, Video, PlayCircle } from 'lucide-react';
 
 function CalcSectionLabel({ num, title, sub }: { num: string; title: string; sub: string }) {
   return (
@@ -51,14 +53,24 @@ export default function CalculatorShell() {
   const [currentStep, setCurrentStep] = useState<number>(1);
   const [isPlaying, setIsPlaying] = useState<boolean>(false);
 
+  // View mode switcher: '3d' for cinematic educational walkthrough, 'steps' for classic step-by-step
+  const [viewMode, setViewMode] = useState<'3d' | 'steps'>('3d');
+
+  // Dynamically compute the Nikhilam 3D lesson dataset for current inputs
+  const nikhilamLesson = useMemo(() => {
+    const a = calcResult.inputs.a || '98';
+    const b = calcResult.inputs.b || '97';
+    return generateNikhilamLesson(a, b);
+  }, [calcResult.inputs.a, calcResult.inputs.b]);
+
   // When tab changes, re-calculate with defaults
   const handleTabChange = (opId: string) => {
     setActiveOpId(opId);
     setIsPlaying(false);
     const newConfig = SUTRA_REGISTRY[opId];
     if (newConfig) {
-      const defaultA = newConfig.presets[0]?.a || '85';
-      const defaultB = newConfig.presets[0]?.b || '21';
+      const defaultA = newConfig.presets[0]?.a || '98';
+      const defaultB = newConfig.presets[0]?.b || '97';
       const res = newConfig.calculate(defaultA, defaultB);
       setCalcResult(res);
       setCurrentStep(1);
@@ -90,7 +102,7 @@ export default function CalculatorShell() {
       {/* Section 00 — Page header */}
       <div className="text-center max-w-3xl mx-auto mb-10 sm:mb-12">
         <p className="font-mono text-xs uppercase tracking-[0.35em] text-[#A8A090] mb-3">
-          Swiftsum Workspace · 5 Stages · Step-Scrubbable
+          Swiftsum Workspace · Interactive Indian Mathematics
         </p>
         <div className="inline-flex items-center gap-2 mb-4">
           <span className="px-3.5 py-1.5 rounded-full border border-[#E5A93C]/35 bg-[#14120D] text-[#E5A93C] font-mono text-xs uppercase tracking-widest inline-flex items-center gap-2 shadow-[0_0_15px_rgba(229,169,60,0.12)]">
@@ -102,7 +114,7 @@ export default function CalculatorShell() {
           Sūtra Computational Engine
         </h1>
         <p className="text-sm sm:text-base text-[#A8A090] font-light leading-relaxed max-w-2xl mx-auto">
-          Experience classical Indian arithmetic algorithms through interactive digit-level coordinate manipulation, continuous ray tracking, and hardware-verified proofs.
+          Experience classical Indian arithmetic algorithms through interactive 3D geometric transformations, digit-level coordinate manipulation, and hardware-verified proofs.
         </p>
       </div>
 
@@ -155,7 +167,7 @@ export default function CalculatorShell() {
         </div>
       </section>
 
-      {/* Two Column Layout: Left Input Panel, Right Step Player & Visualizer */}
+      {/* Two Column Layout: Left Input Panel, Right Educational Player & Visualizer */}
       <div className="grid grid-cols-1 lg:grid-cols-12 gap-8 items-start">
         
         {/* Left Column (Inputs & Method info) */}
@@ -187,55 +199,108 @@ export default function CalculatorShell() {
           </div>
         </div>
 
-        {/* Right Column (Visual Grid, Step Player, Step Card, Final Banner) */}
+        {/* Right Column (Mode Switcher, 3D Player or Classic Step Solution) */}
         <div className="lg:col-span-8 space-y-6">
           
-          {/* Section 03 — Visualization */}
-          {showDigitGrid && (
-            <section aria-label="Ray visualization">
-              <CalcSectionLabel num="03" title="Vector Ray Visualizer" sub="Ūrdhva-Tiryag parallel coordinate cross-matrix" />
-              <DigitCrossGrid
-                numberA={gridNumA}
-                numberB={gridNumB}
-                activeConnections={activeStep?.activeConnections}
-                activeDigits={activeStep?.activeDigits}
-                currentFormula={activeStep?.formula}
-                placedDigit={activeStep?.subResult?.includes('Digit:') ? parseInt(activeStep.subResult.split('Digit:')[1], 10) : undefined}
-                carryOut={activeStep?.carryOut}
+          {/* Prominent Educational View Mode Switcher (Requirement 1) */}
+          <div className="rounded-2xl border border-[#E5A93C]/20 bg-[#14120D] p-2 sm:p-2.5 shadow-xl flex flex-wrap items-center justify-between gap-3">
+            <div className="flex flex-wrap items-center gap-2">
+              <button
+                onClick={() => setViewMode('3d')}
+                className={`px-5 py-2.5 rounded-xl font-mono text-xs uppercase font-semibold tracking-[0.15em] flex items-center gap-2.5 transition-all cursor-pointer border ${
+                  viewMode === '3d'
+                    ? 'bg-[#E5A93C] text-black border-[#FFD700] shadow-[0_0_18px_rgba(229,169,60,0.3)]'
+                    : 'bg-transparent text-[#A8A090] border-transparent hover:text-[#E5A93C] hover:bg-[#1A1712]'
+                }`}
+              >
+                <Sparkles className="w-3.5 h-3.5 fill-current text-inherit" />
+                <span>WATCH 3D EXPLANATION</span>
+              </button>
+
+              <button
+                onClick={() => setViewMode('steps')}
+                className={`px-5 py-2.5 rounded-xl font-mono text-xs uppercase font-semibold tracking-[0.15em] flex items-center gap-2.5 transition-all cursor-pointer border ${
+                  viewMode === 'steps'
+                    ? 'bg-[#E5A93C] text-black border-[#FFD700] shadow-[0_0_18px_rgba(229,169,60,0.3)]'
+                    : 'bg-transparent text-[#A8A090] border-transparent hover:text-[#E5A93C] hover:bg-[#1A1712]'
+                }`}
+              >
+                <BookOpen className="w-3.5 h-3.5" />
+                <span>VIEW STEP-BY-STEP SOLUTION</span>
+              </button>
+            </div>
+
+            <span className="hidden xl:inline text-xs font-mono text-[#E5A93C]/80 pr-3 tracking-wider">
+              {viewMode === '3d' ? '3D Cinematic Walkthrough' : 'Step-by-Step Breakdown'}
+            </span>
+          </div>
+
+          {/* VIEW MODE 1: YOUTUBE-STYLE 3D WALKTHROUGH */}
+          {viewMode === '3d' && (
+            <section aria-label="3D Educational Player">
+              <CalcSectionLabel
+                num="03"
+                title="Cinematic 3D Educational Walkthrough"
+                sub="YouTube-style interactive 3D player · animated deviations, cross-addition & place-value synthesis"
+              />
+              <Nikhilam3DPlayer
+                lesson={nikhilamLesson}
+                onSelectPreset={(a, b) => handleCalculate(a, b)}
               />
             </section>
           )}
 
-          {/* Section 04 — Step walkthrough */}
-          <section aria-label="Step walkthrough">
-            <CalcSectionLabel num="04" title="Step-by-Step Walkthrough" sub={`Step ${currentStep} of ${calcResult.steps.length} · scrub or auto-play through each coordinate`} />
-            <div className="space-y-4">
-              <StepPlayer
-                currentStep={currentStep}
-                totalSteps={calcResult.steps.length}
-                isPlaying={isPlaying}
-                onStepChange={step => setCurrentStep(step)}
-                onTogglePlay={() => setIsPlaying(!isPlaying)}
-                onReset={() => {
-                  setIsPlaying(false);
-                  setCurrentStep(1);
-                }}
-              />
-              {activeStep && <StepCard step={activeStep} />}
-            </div>
-          </section>
+          {/* VIEW MODE 2: CLASSIC STEP-BY-STEP SOLUTION */}
+          {viewMode === 'steps' && (
+            <>
+              {/* Digit Vector Ray Visualizer */}
+              {showDigitGrid && (
+                <section aria-label="Ray visualization">
+                  <CalcSectionLabel num="03" title="Vector Ray Visualizer" sub="Ūrdhva-Tiryag parallel coordinate cross-matrix" />
+                  <DigitCrossGrid
+                    numberA={gridNumA}
+                    numberB={gridNumB}
+                    activeConnections={activeStep?.activeConnections}
+                    activeDigits={activeStep?.activeDigits}
+                    currentFormula={activeStep?.formula}
+                    placedDigit={activeStep?.subResult?.includes('Digit:') ? parseInt(activeStep.subResult.split('Digit:')[1], 10) : undefined}
+                    carryOut={activeStep?.carryOut}
+                  />
+                </section>
+              )}
 
-          {/* Section 05 — Result */}
-          <section aria-label="Verified result">
-            <CalcSectionLabel num="05" title="Verified Result" sub={isFinalStep ? 'Synthesized result · hardware verified' : `Unlocks at final step (${calcResult.steps.length})`} />
-            {isFinalStep ? (
-              <ResultBanner result={calcResult} />
-            ) : (
-              <div className="rounded-2xl border border-dashed border-[#E5A93C]/30 bg-[#14120D]/60 p-6 text-center text-xs sm:text-sm text-[#A8A090]">
-                Scrub to <strong className="text-[#E5A93C] font-mono">Step {calcResult.steps.length}</strong> or click <span className="text-[#E5A93C] font-medium">Play Steps</span> to synthesize the final verified result.
-              </div>
-            )}
-          </section>
+              {/* Step walkthrough */}
+              <section aria-label="Step walkthrough">
+                <CalcSectionLabel num="04" title="Step-by-Step Walkthrough" sub={`Step ${currentStep} of ${calcResult.steps.length} · scrub or auto-play through each coordinate`} />
+                <div className="space-y-4">
+                  <StepPlayer
+                    currentStep={currentStep}
+                    totalSteps={calcResult.steps.length}
+                    isPlaying={isPlaying}
+                    onStepChange={step => setCurrentStep(step)}
+                    onTogglePlay={() => setIsPlaying(!isPlaying)}
+                    onReset={() => {
+                      setIsPlaying(false);
+                      setCurrentStep(1);
+                    }}
+                  />
+                  {activeStep && <StepCard step={activeStep} />}
+                </div>
+              </section>
+
+              {/* Verified Result Banner */}
+              <section aria-label="Verified result">
+                <CalcSectionLabel num="05" title="Verified Result" sub={isFinalStep ? 'Synthesized result · hardware verified' : `Unlocks at final step (${calcResult.steps.length})`} />
+                {isFinalStep ? (
+                  <ResultBanner result={calcResult} />
+                ) : (
+                  <div className="rounded-2xl border border-dashed border-[#E5A93C]/30 bg-[#14120D]/60 p-6 text-center text-xs sm:text-sm text-[#A8A090]">
+                    Scrub to <strong className="text-[#E5A93C] font-mono">Step {calcResult.steps.length}</strong> or click <span className="text-[#E5A93C] font-medium">Play Steps</span> to synthesize the final verified result.
+                  </div>
+                )}
+              </section>
+            </>
+          )}
 
         </div>
 

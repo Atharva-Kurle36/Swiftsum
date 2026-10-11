@@ -2,13 +2,15 @@
 
 import React from 'react';
 import { CalculationStep } from '@/lib/math/types';
-import { ArrowDownCircle, Sparkles } from 'lucide-react';
+import { ArrowDownCircle, Sparkles, HelpCircle, Compass, Target } from 'lucide-react';
 
 interface StepCardProps {
   step: CalculationStep;
 }
 
 export default function StepCard({ step }: StepCardProps) {
+  const hasStructuredDetails = !!(step.what || step.why || step.how);
+
   return (
     <div className="rounded-2xl border border-[#E5A93C]/20 bg-[#14120D]/90 backdrop-blur-md p-6 sm:p-7 shadow-xl space-y-5">
       
@@ -33,10 +35,63 @@ export default function StepCard({ step }: StepCardProps) {
         <span className="font-dev font-semibold text-base sm:text-lg">{step.sanskritSutra}</span>
       </div>
 
-      {/* Plain-Language Explanation */}
-      <div className="text-sm text-[#D1C9BE] leading-relaxed whitespace-pre-line bg-[#0B0A08]/75 p-4 sm:p-5 rounded-xl border border-[#E5A93C]/15 font-sans">
-        {step.explanation}
-      </div>
+      {/* Structured WHAT / WHY / HOW Explanation (Requirement 6) */}
+      {hasStructuredDetails ? (
+        <div className="grid grid-cols-1 md:grid-cols-3 gap-3">
+          {/* WHAT */}
+          <div className="p-4 rounded-xl bg-[#0B0A08]/90 border border-[#E5A93C]/25 flex flex-col justify-between">
+            <div>
+              <div className="flex items-center gap-1.5 text-xs font-mono font-bold uppercase tracking-wider text-[#FFD700] mb-2">
+                <Target className="w-3.5 h-3.5 text-[#FFD700]" />
+                <span>1. What</span>
+              </div>
+              <p className="font-mono text-xs text-[#F5F0E6] leading-relaxed">
+                {step.what}
+              </p>
+            </div>
+            <span className="text-[10px] text-[#A8A090] mt-3 font-sans block border-t border-[#E5A93C]/10 pt-2">
+              Specific mathematical operation
+            </span>
+          </div>
+
+          {/* WHY */}
+          <div className="p-4 rounded-xl bg-[#0B0A08]/90 border border-[#E5A93C]/25 flex flex-col justify-between">
+            <div>
+              <div className="flex items-center gap-1.5 text-xs font-mono font-bold uppercase tracking-wider text-[#E5A93C] mb-2">
+                <HelpCircle className="w-3.5 h-3.5 text-[#E5A93C]" />
+                <span>2. Why</span>
+              </div>
+              <p className="font-sans text-xs text-[#D1C9BE] leading-relaxed">
+                {step.why}
+              </p>
+            </div>
+            <span className="text-[10px] text-[#A8A090] mt-3 font-sans block border-t border-[#E5A93C]/10 pt-2">
+              Underlying algebraic necessity
+            </span>
+          </div>
+
+          {/* HOW */}
+          <div className="p-4 rounded-xl bg-[#0B0A08]/90 border border-emerald-500/25 flex flex-col justify-between">
+            <div>
+              <div className="flex items-center gap-1.5 text-xs font-mono font-bold uppercase tracking-wider text-emerald-400 mb-2">
+                <Compass className="w-3.5 h-3.5 text-emerald-400" />
+                <span>3. How</span>
+              </div>
+              <p className="font-sans text-xs text-[#D1C9BE] leading-relaxed">
+                {step.how}
+              </p>
+            </div>
+            <span className="text-[10px] text-[#A8A090] mt-3 font-sans block border-t border-emerald-500/10 pt-2">
+              Contribution to final answer
+            </span>
+          </div>
+        </div>
+      ) : (
+        /* Fallback Plain-Language Explanation if what/why/how are not present */
+        <div className="text-sm text-[#D1C9BE] leading-relaxed whitespace-pre-line bg-[#0B0A08]/75 p-4 sm:p-5 rounded-xl border border-[#E5A93C]/15 font-sans">
+          {step.explanation}
+        </div>
+      )}
 
       {/* Formula & Subresult details */}
       {(step.formula || step.subResult) && (
