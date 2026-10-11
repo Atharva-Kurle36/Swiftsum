@@ -18,7 +18,7 @@ export interface NikhilamChapter {
 }
 
 export interface NikhilamLessonData {
-  operationType: 'multiplication' | 'squaring';
+  operationType: 'multiplication' | 'squaring' | 'subtraction';
   squaringMethod?: 'yavadunam' | 'ekadhikena' | 'duplex';
   methodTitle: string;
   sutraSubtitle: string;
@@ -37,7 +37,7 @@ export interface NikhilamLessonData {
   lhs1: number; // a + devB
   lhs2: number; // b + devA
   lhs: number;
-  rawRhs: number; // devA * devB or d²
+  rawRhs: number; // devA * devB or d² or complement
   balancedLhs: number;
   balancedRhsStr: string;
   finalAnswer: string;
@@ -76,6 +76,24 @@ export interface NikhilamLessonData {
     rhs: number;
     tensContribution: number;
     finalAnswer: string;
+  };
+  subtractionData?: {
+    minuend: number;
+    subtrahend: number;
+    base: number;
+    numZeros: number;
+    complement: number;
+    complementStr: string;
+    intermediateSum: number;
+    digitSteps: {
+      digit: number;
+      rule: string;
+      calc: string;
+      result: number;
+    }[];
+    isDirectPowerOf10: boolean;
+    finalAnswer: string;
+    verificationFormula: string;
   };
 }
 
@@ -1016,3 +1034,290 @@ export function generateSquaringLesson(
     };
   }
 }
+
+/**
+ * Generate 7-chapter educational walkthrough data for Subtraction using Nikhilam Navatashcaramam Dashatah
+ */
+export function generateSubtractionLesson(minuendInput: string | number, subtrahendInput: string | number): NikhilamLessonData {
+  const cleanA = String(minuendInput).replace(/^0+(?!$)/, '') || '0';
+  const cleanB = String(subtrahendInput).replace(/^0+(?!$)/, '') || '0';
+  const m = parseInt(cleanA, 10) || 0;
+  const s = parseInt(cleanB, 10) || 0;
+
+  // Power of 10 base selection:
+  // If minuend is a power of 10 and >= s, base is exactly minuend (e.g. 1000, 10000, 100000).
+  // For general subtractions (e.g. 524 - 189), base is 10^k where k = max(len(M), len(S)).
+  const isPowerOf10 = /^10+$/.test(cleanA) && m >= s;
+  let base: number;
+  let numZeros: number;
+
+  if (isPowerOf10) {
+    base = m;
+    numZeros = cleanA.length - 1;
+  } else {
+    numZeros = Math.max(cleanA.length, cleanB.length);
+    base = Math.pow(10, numZeros);
+  }
+
+  // Calculate complement of subtrahend (C = Base - S)
+  const complement = base - s;
+  const complementStr = complement.toString();
+  const intermediateSum = m + complement;
+  const finalDiff = m - s;
+  const finalAnswer = finalDiff.toString();
+  const groundTruth = (BigInt(cleanA) - BigInt(cleanB)).toString();
+  const isVerified = finalAnswer === groundTruth;
+
+  // Compute digit-by-digit breakdown of "All from 9 and last from 10" for the subtrahend
+  const paddedB = cleanB.padStart(numZeros, '0');
+  const digitsB = paddedB.split('').map(Number);
+  let lastNonZeroIdx = -1;
+  for (let i = digitsB.length - 1; i >= 0; i--) {
+    if (digitsB[i] !== 0) {
+      lastNonZeroIdx = i;
+      break;
+    }
+  }
+
+  const digitSteps: { digit: number; rule: string; calc: string; result: number }[] = [];
+  for (let i = 0; i < digitsB.length; i++) {
+    const d = digitsB[i];
+    let resDigit = 0;
+    let rule = '';
+    let calc = '';
+
+    if (lastNonZeroIdx === -1) {
+      resDigit = 0;
+      rule = 'Zero remains 0';
+      calc = '0 → 0';
+    } else if (i > lastNonZeroIdx) {
+      resDigit = 0;
+      rule = 'Trailing zero remains 0';
+      calc = '0 → 0';
+    } else if (i === lastNonZeroIdx) {
+      resDigit = 10 - d;
+      rule = 'Last from 10';
+      calc = `10 − ${d} = ${resDigit}`;
+    } else {
+      resDigit = 9 - d;
+      rule = 'All from 9';
+      calc = `9 − ${d} = ${resDigit}`;
+    }
+
+    digitSteps.push({
+      digit: d,
+      rule,
+      calc,
+      result: resDigit,
+    });
+  }
+
+  const digitCalcSummary = digitSteps.map(st => st.calc).join(', ');
+
+  // Durations for the 7 scenes
+  const durations = [4.5, 4.5, 5.5, 5.0, 5.0, 5.0, 4.5];
+  const totalDurationSeconds = durations.reduce((acc, d) => acc + d, 0);
+
+  let currentStart = 0;
+  const chapters: NikhilamChapter[] = [
+    // SCENE 1 — INTRODUCTION
+    {
+      id: 1,
+      title: 'Subtraction Using the Nikhilam Method',
+      shortTitle: 'Introduction',
+      subtitle: 'Nikhilam Navatashcaramam Dashatah Sūtra',
+      durationSeconds: durations[0],
+      startTimeSeconds: currentStart,
+      endTimeSeconds: (currentStart += durations[0]),
+      narrationText: `Can we calculate ${m} minus ${s} without recursive borrowing? The ancient Nikhilam complement technique transforms subtraction into an addition involving a power-of-ten complement.`,
+      captionText: `Subtraction Using the Nikhilam Method. Minuend = ${m}, Subtrahend = ${s}. The Nikhilam complement technique transforms subtraction into an addition involving a power-of-ten complement.`,
+      equations: [`${m} − ${s} = ?`, `Minuend = ${m}`, `Subtrahend = ${s}`],
+      active3dFocus: 'intro',
+      explanationDetails: {
+        what: `Subtract ${s} from ${m}`,
+        why: 'Vedic subtraction eliminates column borrowing by utilizing power-of-10 complements.',
+        how: 'Transforms M − S into M + (B − S) − B.'
+      }
+    },
+
+    // SCENE 2 — IDENTIFY THE BASE
+    {
+      id: 2,
+      title: 'Identify the Reference Base',
+      shortTitle: 'Reference Base',
+      subtitle: `Base = ${base} (${numZeros} zeros allocated)`,
+      durationSeconds: durations[1],
+      startTimeSeconds: currentStart,
+      endTimeSeconds: (currentStart += durations[1]),
+      narrationText: `${base} is the convenient power-of-ten reference base for this subtraction. Aligning with base ${base} enables forward complement calculation.`,
+      captionText: `Display: BASE = ${base}, MINUEND = ${m}, SUBTRAHEND = ${s}. ${base} is a convenient power-of-ten reference base for this calculation.`,
+      equations: [`Base = ${base}`, `Minuend = ${m}`, `Subtrahend = ${s}`],
+      active3dFocus: 'base',
+      explanationDetails: {
+        what: `Select Base ${base}`,
+        why: `The subtrahend ${s} has ${cleanB.length} digits, making ${base} the ideal power-of-10 base.`,
+        how: `Allocates ${numZeros} zeros for digit place-value alignment.`
+      }
+    },
+
+    // SCENE 3 — CALCULATE THE COMPLEMENT
+    {
+      id: 3,
+      title: 'Calculate the Complement',
+      shortTitle: 'Complement',
+      subtitle: `C = Base − Subtrahend = ${base} − ${s} = ${complement}`,
+      durationSeconds: durations[2],
+      startTimeSeconds: currentStart,
+      endTimeSeconds: (currentStart += durations[2]),
+      narrationText: `Calculate the complement of ${s} using the rule 'All from 9 and the last from 10'. The complement of ${s} with respect to ${base} is ${complement}.`,
+      captionText: `Digit Complement: All from 9 and the last from 10. ${digitCalcSummary}. Complement C = ${base} − ${s} = ${complement}.`,
+      equations: [
+        `C = B − S`,
+        `C = ${base} − ${s} = ${complement}`,
+        ...digitSteps.map(st => st.calc)
+      ],
+      active3dFocus: 'deviations',
+      explanationDetails: {
+        what: `10's Complement: ${complement}`,
+        why: 'Nikhilam rule subtracts each non-terminal digit from 9 and the last non-zero digit from 10.',
+        how: digitCalcSummary
+      }
+    },
+
+    // SCENE 4 — ADD THE COMPLEMENT TO THE MINUEND
+    {
+      id: 4,
+      title: 'Add the Complement to the Minuend',
+      shortTitle: 'Add Complement',
+      subtitle: `${m} + ${complement} = ${intermediateSum}`,
+      durationSeconds: durations[3],
+      startTimeSeconds: currentStart,
+      endTimeSeconds: (currentStart += durations[3]),
+      narrationText: `Instead of borrowing across columns, add the complement ${complement} to the minuend ${m}. This yields the intermediate sum ${intermediateSum}.`,
+      captionText: `Display: ${m} + ${complement} = ${intermediateSum}. Adding the complement creates the intermediate sum used by the subtraction formula.`,
+      equations: [
+        `Intermediate Sum = Minuend + Complement`,
+        `${m} + ${complement} = ${intermediateSum}`
+      ],
+      active3dFocus: 'crossAdd',
+      explanationDetails: {
+        what: `Intermediate sum: ${intermediateSum}`,
+        why: 'Converting subtraction to addition replaces tedious borrowing with simple column addition.',
+        how: `${m} + ${complement} = ${intermediateSum}`
+      }
+    },
+
+    // SCENE 5 — REMOVE THE REFERENCE BASE
+    {
+      id: 5,
+      title: 'Remove the Reference Base',
+      shortTitle: 'Remove Base',
+      subtitle: `${intermediateSum} − ${base} = ${finalAnswer}`,
+      durationSeconds: durations[4],
+      startTimeSeconds: currentStart,
+      endTimeSeconds: (currentStart += durations[4]),
+      narrationText: `Now remove the reference base ${base} from the intermediate sum ${intermediateSum}. ${intermediateSum} minus ${base} leaves ${finalAnswer}.`,
+      captionText: `Display: ${intermediateSum} − ${base} = ${finalAnswer}. Subtracting the reference base ${base} from the intermediate sum recovers the required difference.`,
+      equations: [
+        `Difference = Intermediate Sum − Base`,
+        `${intermediateSum} − ${base} = ${finalAnswer}`
+      ],
+      active3dFocus: 'multiplyDev',
+      explanationDetails: {
+        what: `Base subtraction: ${finalAnswer}`,
+        why: 'Cancels the added reference base to produce the exact difference.',
+        how: `${intermediateSum} − ${base} = ${finalAnswer}`
+      }
+    },
+
+    // SCENE 6 — FINAL RESULT
+    {
+      id: 6,
+      title: 'Final Result of Subtraction',
+      shortTitle: 'Final Difference',
+      subtitle: `${m} − ${s} = ${finalAnswer}`,
+      durationSeconds: durations[5],
+      startTimeSeconds: currentStart,
+      endTimeSeconds: (currentStart += durations[5]),
+      narrationText: `The subtraction is complete. ${m} minus ${s} equals ${finalAnswer}, computed with forward addition and zero column borrowing.`,
+      captionText: `Display: ${m} − ${s} = ${finalAnswer}. The subtraction is complete: ${m} − ${s} = ${finalAnswer}. The complement relation M + (B − S) − B produces the exact difference.`,
+      equations: [
+        `${m} − ${s} = ${finalAnswer}`,
+        `${m} + (${base} − ${s}) − ${base} = ${finalAnswer}`
+      ],
+      active3dFocus: 'combine',
+      explanationDetails: {
+        what: `Final difference: ${finalAnswer}`,
+        why: 'Demonstrates the power of Vedic complement mathematics.',
+        how: `${m} − ${s} = ${finalAnswer}`
+      }
+    },
+
+    // SCENE 7 — INDEPENDENT VERIFICATION
+    {
+      id: 7,
+      title: 'Arithmetic Verification Passed',
+      shortTitle: 'Verification',
+      subtitle: `${finalAnswer} + ${s} = ${m}`,
+      durationSeconds: durations[6],
+      startTimeSeconds: currentStart,
+      endTimeSeconds: (currentStart += durations[6]),
+      narrationText: `Independent verification confirms that difference ${finalAnswer} plus subtrahend ${s} equals minuend ${m}. The arithmetic is verified.`,
+      captionText: `Display: ${m} − ${s} = ${finalAnswer}. Independent arithmetic check: ${finalAnswer} + ${s} = ${m}. Both results agree!`,
+      equations: [
+        `${m} − ${s} = ${finalAnswer}`,
+        `Independent Check: ${finalAnswer} + ${s} = ${m} ✓`
+      ],
+      active3dFocus: 'verify',
+      explanationDetails: {
+        what: `Independent verification: ${finalAnswer} + ${s} = ${m}`,
+        why: 'Validates Vedic subtraction against standard arithmetic addition.',
+        how: `Confirmed: ${finalAnswer} + ${s} = ${m}`
+      }
+    }
+  ];
+
+  return {
+    operationType: 'subtraction',
+    methodTitle: 'Subtraction Using the Nikhilam Method',
+    sutraSubtitle: `${m} − ${s} · Base ${base} · Sūtra: Nikhilam Navatashcaramam Dashatah`,
+    a: m,
+    b: s,
+    aStr: cleanA,
+    bStr: cleanB,
+    base,
+    numZeros,
+    devA: 0,
+    devB: 0,
+    devAStr: '',
+    devBStr: '',
+    absDevA: 0,
+    absDevB: 0,
+    lhs1: m,
+    lhs2: m,
+    lhs: m,
+    rawRhs: complement,
+    balancedLhs: m,
+    balancedRhsStr: complementStr,
+    finalAnswer,
+    groundTruth,
+    isVerified,
+    isSuitableForNikhilam: true,
+    totalDurationSeconds,
+    chapters,
+    subtractionData: {
+      minuend: m,
+      subtrahend: s,
+      base,
+      numZeros,
+      complement,
+      complementStr,
+      intermediateSum,
+      digitSteps,
+      isDirectPowerOf10: isPowerOf10,
+      finalAnswer,
+      verificationFormula: `${finalAnswer} + ${s} = ${m}`
+    }
+  };
+}
+

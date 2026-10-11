@@ -237,10 +237,10 @@ export default function Nikhilam3DPlayer({ lesson, onSelectPreset }: Nikhilam3DP
           <span className="w-2 h-2 rounded-full bg-[#E5A93C] shadow-[0_0_8px_#E5A93C] flex-shrink-0 animate-pulse" />
           <div className="truncate">
             <h3 className="font-display font-medium text-sm sm:text-base text-[#F5F0E6] truncate tracking-tight">
-              {lesson.methodTitle || (lesson.operationType === 'squaring' ? 'Squaring Using the Yavadunam Method' : 'Multiplication Using the Nikhilam Method')}
+              {lesson.methodTitle || (lesson.operationType === 'squaring' ? 'Squaring Using the Yavadunam Method' : lesson.operationType === 'subtraction' ? 'Subtraction Using the Nikhilam Method' : 'Multiplication Using the Nikhilam Method')}
             </h3>
             <p className="font-mono text-[11px] text-[#A8A090] truncate">
-              {lesson.sutraSubtitle || (lesson.operationType === 'squaring' ? `${lesson.a}² · Base ${lesson.base} · Deviation ${lesson.devAStr}` : `${lesson.a} × ${lesson.b} · Base ${lesson.base} · Sūtra: Nikhilam Navatashcaramam Dashatah`)}
+              {lesson.sutraSubtitle || (lesson.operationType === 'squaring' ? `${lesson.a}² · Base ${lesson.base} · Deviation ${lesson.devAStr}` : lesson.operationType === 'subtraction' ? `${lesson.a} − ${lesson.b} · Base ${lesson.base} · Sūtra: Nikhilam Navatashcaramam Dashatah` : `${lesson.a} × ${lesson.b} · Base ${lesson.base} · Sūtra: Nikhilam Navatashcaramam Dashatah`)}
             </p>
           </div>
         </div>
@@ -432,6 +432,8 @@ export default function Nikhilam3DPlayer({ lesson, onSelectPreset }: Nikhilam3DP
             <Sparkles className="w-3.5 h-3.5 text-[#E5A93C]" />
             {lesson.operationType === 'squaring'
               ? 'Try Classical Squaring Presets:'
+              : lesson.operationType === 'subtraction'
+              ? 'Try Classical Subtraction Presets:'
               : 'Try Other Multiplications Near Base:'}
           </span>
           <div className="flex flex-wrap items-center gap-2">
@@ -450,6 +452,28 @@ export default function Nikhilam3DPlayer({ lesson, onSelectPreset }: Nikhilam3DP
                     <button
                       key={p.label}
                       onClick={() => onSelectPreset && onSelectPreset(p.a, '')}
+                      className={`px-3 py-1 rounded-lg text-xs font-mono transition-all cursor-pointer border ${
+                        isSelected
+                          ? 'bg-[#E5A93C] text-black font-bold border-[#FFD700]'
+                          : 'bg-[#14120D] text-[#A8A090] border-[#E5A93C]/15 hover:text-[#E5A93C] hover:border-[#E5A93C]/35'
+                      }`}
+                    >
+                      {p.label}
+                    </button>
+                  );
+                })
+              : lesson.operationType === 'subtraction'
+              ? [
+                  { label: '1000 − 347 (Power of 10 Base)', a: '1000', b: '347' },
+                  { label: '10000 − 6824 (Base 10000)', a: '10000', b: '6824' },
+                  { label: '524 − 189 (General Complement)', a: '524', b: '189' },
+                  { label: '100000 − 45391 (Base 100000)', a: '100000', b: '45391' },
+                ].map(p => {
+                  const isSelected = lesson.aStr === p.a && lesson.bStr === p.b;
+                  return (
+                    <button
+                      key={p.label}
+                      onClick={() => onSelectPreset && onSelectPreset(p.a, p.b)}
                       className={`px-3 py-1 rounded-lg text-xs font-mono transition-all cursor-pointer border ${
                         isSelected
                           ? 'bg-[#E5A93C] text-black font-bold border-[#FFD700]'
@@ -498,6 +522,8 @@ export default function Nikhilam3DPlayer({ lesson, onSelectPreset }: Nikhilam3DP
                   : lesson.squaringMethod === 'ekadhikena'
                     ? `${lesson.a}² = (10a + 5)² = 100·a(a + 1) + 25`
                     : `${lesson.a}² = (${lesson.base} + (${lesson.devAStr}))² = ${lesson.base}(${lesson.base} + 2(${lesson.devAStr})) + (${lesson.devAStr})²`
+                : lesson.operationType === 'subtraction'
+                ? `M − S = M + (B − S) − B = ${lesson.a} + (${lesson.base} − ${lesson.b}) − ${lesson.base}`
                 : `${lesson.a} × ${lesson.b} = ${lesson.base} × (${lesson.base} + ${lesson.devAStr} + ${lesson.devBStr}) + (${lesson.devAStr} × ${lesson.devBStr})`}
             </div>
           </div>
@@ -515,6 +541,8 @@ export default function Nikhilam3DPlayer({ lesson, onSelectPreset }: Nikhilam3DP
                 ) : (
                   <>{lesson.balancedLhs} × {lesson.base} + {lesson.balancedRhsStr} = <strong className="text-[#FFD700]">{lesson.finalAnswer}</strong></>
                 )
+              ) : lesson.operationType === 'subtraction' ? (
+                <>{lesson.a} + {lesson.subtractionData?.complement ?? (lesson.base - lesson.b)} − {lesson.base} = <strong className="text-[#FFD700]">{lesson.finalAnswer}</strong></>
               ) : (
                 <>{lesson.balancedLhs} × {lesson.base} + {lesson.balancedRhsStr} = <strong className="text-[#FFD700]">{lesson.finalAnswer}</strong></>
               )}
@@ -529,6 +557,8 @@ export default function Nikhilam3DPlayer({ lesson, onSelectPreset }: Nikhilam3DP
             <div className="font-mono text-xs text-emerald-300">
               {lesson.operationType === 'squaring'
                 ? `${lesson.squaringMethod === 'duplex' ? 'Duplex' : lesson.squaringMethod === 'ekadhikena' ? 'Ekadhikena' : 'Yavadunam'}: ${lesson.finalAnswer} === Standard: ${lesson.groundTruth}`
+                : lesson.operationType === 'subtraction'
+                ? `Addition Check: ${lesson.finalAnswer} + ${lesson.b} = ${lesson.a} === Minuend Ground Truth: ${lesson.groundTruth === lesson.finalAnswer ? 'Passed' : 'Failed'}`
                 : `Nikhilam: ${lesson.finalAnswer} === Standard: ${lesson.groundTruth}`}
             </div>
           </div>

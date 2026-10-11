@@ -4,7 +4,7 @@ import React, { useState, useMemo } from 'react';
 import { useSearchParams } from 'next/navigation';
 import { SUTRA_REGISTRY } from '@/lib/math/registry';
 import { CalculationResult } from '@/lib/math/types';
-import { generateNikhilamLesson, generateSquaringLesson, NikhilamLessonData } from '@/lib/math/nikhilamLesson';
+import { generateNikhilamLesson, generateSquaringLesson, generateSubtractionLesson, NikhilamLessonData } from '@/lib/math/nikhilamLesson';
 import InputForm from './InputForm';
 import StepPlayer from './StepPlayer';
 import StepCard from './StepCard';
@@ -94,6 +94,11 @@ export default function CalculatorShell() {
         ? 'yavadunam'
         : undefined;
       return generateSquaringLesson(a, method);
+    }
+    if (activeOpId === 'subtraction') {
+      const a = activeOpState.a || '1000';
+      const b = activeOpState.b || '347';
+      return generateSubtractionLesson(a, b);
     }
     // Default to multiplication lesson
     const a = activeOpState.a || '98';
@@ -295,7 +300,9 @@ export default function CalculatorShell() {
                       : currentLesson.squaringMethod === 'duplex'
                         ? 'Digit-wise duplex contributions, place values and carries.'
                         : 'Base selection, signed deviations and place-value alignment.'
-                    : 'YouTube-style interactive 3D player · animated deviations, cross-addition & place-value synthesis'
+                    : activeOpId === 'subtraction'
+                      ? 'All from 9 and last from 10 · Power-of-ten complement, minuend addition and base removal.'
+                      : 'YouTube-style interactive 3D player · animated deviations, cross-addition & place-value synthesis'
                 }
               />
               <Nikhilam3DPlayer

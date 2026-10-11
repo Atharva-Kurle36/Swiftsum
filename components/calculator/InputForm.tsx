@@ -133,11 +133,13 @@ export default function InputForm({
       <form onSubmit={validateAndSubmit} className="space-y-4">
         {/* Input A */}
         <div>
-          <label className="flex items-center justify-between text-xs font-mono uppercase tracking-wider text-[#E5A93C] mb-2">
+          <label htmlFor="calculator-input-a" className="flex items-center justify-between text-xs font-mono uppercase tracking-wider text-[#E5A93C] mb-2">
             <span>{config.labelA}</span>
             <span className="text-[10px] text-[#A8A090] lowercase tracking-normal">digits only</span>
           </label>
           <input
+            id="calculator-input-a"
+            name="valA"
             type="text"
             value={valA}
             onChange={e => setValA(e.target.value)}
@@ -152,11 +154,13 @@ export default function InputForm({
         {/* Input B (if required) */}
         {config.requiresSecondInput && config.labelB && (
           <div>
-            <label className="flex items-center justify-between text-xs font-mono uppercase tracking-wider text-[#E5A93C] mb-2">
+            <label htmlFor="calculator-input-b" className="flex items-center justify-between text-xs font-mono uppercase tracking-wider text-[#E5A93C] mb-2">
               <span>{config.labelB}</span>
               <span className="text-[10px] text-[#A8A090] lowercase tracking-normal">digits only</span>
             </label>
             <input
+              id="calculator-input-b"
+              name="valB"
               type="text"
               value={valB}
               onChange={e => setValB(e.target.value)}

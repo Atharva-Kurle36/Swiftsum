@@ -17,6 +17,8 @@ export default function Nikhilam2DFallback({
 }: Nikhilam2DFallbackProps) {
   const { a, b, base, numZeros, devA, devB, lhs, rawRhs, balancedLhs, balancedRhsStr, finalAnswer, groundTruth } = lesson;
   const isSquaring = lesson.operationType === 'squaring';
+  const isSubtraction = lesson.operationType === 'subtraction';
+  const sub = lesson.subtractionData;
   const isDuplex = isSquaring && lesson.squaringMethod === 'duplex';
   const isEkadhikena = isSquaring && lesson.squaringMethod === 'ekadhikena';
   const duplex = lesson.duplexData;
@@ -68,10 +70,18 @@ export default function Nikhilam2DFallback({
             <div className="space-y-4">
               <div className="inline-flex items-center gap-2 px-3 py-1 rounded-full border border-[#E5A93C]/30 bg-[#1A1712] text-[#E5A93C] text-xs font-mono uppercase tracking-wider">
                 <Sparkles className="w-3.5 h-3.5" />
-                {isSquaring ? 'Vedic Squaring Algorithm' : 'Vedic Multiplication Algorithm'}
+                {isSubtraction ? 'Vedic Subtraction Algorithm' : isSquaring ? 'Vedic Squaring Algorithm' : 'Vedic Multiplication Algorithm'}
               </div>
               <div className="text-5xl sm:text-7xl font-display font-medium text-[#F5F0E6] tracking-tight py-4 flex items-center justify-center gap-5">
-                {isSquaring ? (
+                {isSubtraction ? (
+                  <>
+                    <span className="text-[#FFD700]">{a}</span>
+                    <span className="text-[#A8A090] text-3xl sm:text-4xl font-light">&minus;</span>
+                    <span className="text-[#FFD700]">{b}</span>
+                    <span className="text-[#A8A090] text-3xl sm:text-4xl font-light">=</span>
+                    <span className="text-[#FFD700]">?</span>
+                  </>
+                ) : isSquaring ? (
                   <>
                     <span className="text-[#FFD700]">{a}<sup>2</sup></span>
                     <span className="text-[#A8A090] text-3xl sm:text-4xl font-light">=</span>
@@ -94,7 +104,33 @@ export default function Nikhilam2DFallback({
           {/* SCENE 2: IDENTIFY DIGITS (DUPLEX / EKADHIKENA) OR IDENTIFY BASE */}
           {activeChapter.id === 2 && (
             <div className="space-y-5 w-full">
-              {isEkadhikena ? (
+              {isSubtraction ? (
+                <>
+                  <div className="p-4 sm:p-5 rounded-2xl border border-[#E5A93C]/35 bg-[#14120D] shadow-xl inline-block">
+                    <span className="text-[10px] font-mono text-[#A8A090] uppercase tracking-[0.25em] block mb-1">
+                      Reference Base Selection
+                    </span>
+                    <span className="text-3xl sm:text-4xl font-mono font-bold text-[#FFD700] tracking-wider">
+                      BASE = {sub ? sub.base : base}
+                    </span>
+                  </div>
+                  <div className="grid grid-cols-2 gap-4 max-w-md mx-auto">
+                    <div className="p-4 rounded-xl bg-[#14120D] border border-[#E5A93C]/25 text-left">
+                      <div className="text-xs text-[#A8A090] uppercase font-mono">Minuend (M)</div>
+                      <div className="text-2xl font-display font-bold text-[#F5F0E6] mt-1">{a}</div>
+                      <div className="text-[10px] text-[#A8A090] mt-1 font-sans">Target to reduce</div>
+                    </div>
+                    <div className="p-4 rounded-xl bg-[#14120D] border border-[#E5A93C]/25 text-left">
+                      <div className="text-xs text-[#A8A090] uppercase font-mono">Subtrahend (S)</div>
+                      <div className="text-2xl font-display font-bold text-[#F5F0E6] mt-1">{b}</div>
+                      <div className="text-[10px] text-[#A8A090] mt-1 font-sans">Value subtracted</div>
+                    </div>
+                  </div>
+                  <p className="text-xs text-[#A8A090] max-w-sm mx-auto font-sans">
+                    A power-of-10 base is selected as the complement reference benchmark.
+                  </p>
+                </>
+              ) : isEkadhikena ? (
                 <>
                   <div className="p-4 sm:p-5 rounded-2xl border border-[#E5A93C]/35 bg-[#14120D] shadow-xl inline-block">
                     <span className="text-[10px] font-mono text-[#A8A090] uppercase tracking-[0.25em] block mb-1">
@@ -177,10 +213,36 @@ export default function Nikhilam2DFallback({
             </div>
           )}
 
-          {/* SCENE 3: SUCCESSOR (EKADHIKENA) / UNITS DUPLEX (DUPLEX) OR DEVIATIONS */}
+          {/* SCENE 3: COMPLEMENT (SUBTRACTION) / SUCCESSOR (EKADHIKENA) / DUPLEX / DEVIATIONS */}
           {activeChapter.id === 3 && (
             <div className="space-y-4 w-full">
-              {isEkadhikena ? (
+              {isSubtraction ? (
+                <>
+                  <span className="text-xs font-mono text-[#A8A090] uppercase tracking-[0.2em]">
+                    Calculate The Complement (Nikhilam Navatashcaramam Dashatah)
+                  </span>
+                  <div className="p-5 rounded-2xl bg-[#14120D] border border-[#E5A93C]/30 max-w-md mx-auto space-y-3">
+                    <div className="text-xs text-[#A8A090] font-mono">
+                      C = B &minus; S = {sub ? sub.base : base} &minus; {b}
+                    </div>
+                    <div className="text-3xl font-display font-bold text-[#FFD700]">
+                      Complement C = {sub ? sub.complement : finalAnswer}
+                    </div>
+                    {sub && sub.digitSteps && sub.digitSteps.length > 0 && (
+                      <div className="pt-2 border-t border-[#E5A93C]/20 flex flex-wrap justify-center gap-2">
+                        {sub.digitSteps.map((st, i) => (
+                          <span key={i} className="px-2 py-1 rounded bg-[#1A1712] border border-[#E5A93C]/30 text-xs font-mono text-[#E5A93C]">
+                            {st.calc}
+                          </span>
+                        ))}
+                      </div>
+                    )}
+                    <p className="text-xs text-[#A8A090] font-sans">
+                      All digits from 9, last digit from 10.
+                    </p>
+                  </div>
+                </>
+              ) : isEkadhikena ? (
                 <>
                   <span className="text-xs font-mono text-[#A8A090] uppercase tracking-[0.2em]">
                     Find The Successor (Ekadhika)
@@ -242,10 +304,27 @@ export default function Nikhilam2DFallback({
             </div>
           )}
 
-          {/* SCENE 4: MULTIPLY PREFIX & SUCCESSOR (EKADHIKENA) / CROSS DUPLEX (DUPLEX) OR CROSS-ADDITION */}
+          {/* SCENE 4: ADD COMPLEMENT TO MINUEND (SUBTRACTION) / MULTIPLY PREFIX & SUCCESSOR / CROSS-ADDITION */}
           {activeChapter.id === 4 && (
             <div className="space-y-4 w-full">
-              {isEkadhikena ? (
+              {isSubtraction ? (
+                <>
+                  <span className="text-xs font-mono text-[#A8A090] uppercase tracking-[0.2em]">
+                    Add Complement to Minuend
+                  </span>
+                  <div className="p-5 rounded-2xl bg-[#14120D] border border-[#E5A93C]/30 space-y-3 max-w-md mx-auto">
+                    <div className="text-3xl sm:text-4xl font-mono font-bold text-[#FFD700]">
+                      {`${a} + ${sub ? sub.complement : ''} = ${sub ? sub.intermediateSum : ''}`}
+                    </div>
+                    <div className="text-xs font-mono text-[#E5A93C]">
+                      Intermediate Sum = {sub ? sub.intermediateSum : ''}
+                    </div>
+                  </div>
+                  <p className="text-xs text-[#A8A090] max-w-sm mx-auto font-sans">
+                    Adding the complement transforms subtraction into addition using the reference base.
+                  </p>
+                </>
+              ) : isEkadhikena ? (
                 <>
                   <span className="text-xs font-mono text-[#A8A090] uppercase tracking-[0.2em]">
                     Multiply Prefix and Successor
@@ -301,10 +380,24 @@ export default function Nikhilam2DFallback({
             </div>
           )}
 
-          {/* SCENE 5: SQUARE FINAL DIGIT (EKADHIKENA) / TENS DUPLEX (DUPLEX) OR MULTIPLY DEVIATIONS */}
+          {/* SCENE 5: REMOVE REFERENCE BASE (SUBTRACTION) / SQUARE FINAL DIGIT / DUPLEX / DEVIATIONS */}
           {activeChapter.id === 5 && (
             <div className="space-y-4 w-full">
-              {isEkadhikena ? (
+              {isSubtraction ? (
+                <>
+                  <span className="text-xs font-mono text-[#A8A090] uppercase tracking-[0.2em]">
+                    Remove Reference Base
+                  </span>
+                  <div className="p-5 rounded-2xl bg-[#14120D] border border-[#E5A93C]/30 max-w-md mx-auto space-y-3">
+                    <div className="text-2xl sm:text-3xl font-mono font-bold text-[#F5F0E6]">
+                      {`${sub ? sub.intermediateSum : ''} &minus; ${sub ? sub.base : base} = `}<span className="text-[#FFD700]">{finalAnswer}</span>
+                    </div>
+                    <div className="pt-2 border-t border-[#E5A93C]/15 text-xs text-[#E5A93C] font-mono">
+                      Subtracting the base removes the reference offset to reveal the true difference.
+                    </div>
+                  </div>
+                </>
+              ) : isEkadhikena ? (
                 <>
                   <span className="text-xs font-mono text-[#A8A090] uppercase tracking-[0.2em]">
                     Square The Final Digit
@@ -366,14 +459,29 @@ export default function Nikhilam2DFallback({
             </div>
           )}
 
-          {/* SCENE 6: COMBINE CONTRIBUTIONS */}
+          {/* SCENE 6: FINAL RESULT / COMBINE CONTRIBUTIONS */}
           {activeChapter.id === 6 && (
             <div className="space-y-6 w-full">
               <span className="text-xs font-mono text-[#A8A090] uppercase tracking-[0.2em]">
-                {isEkadhikena ? 'Combine The Parts' : isDuplex ? 'Combine Place-Value Contributions' : 'Synthesize Both Coordinate Halves'}
+                {isSubtraction ? 'Final Difference' : isEkadhikena ? 'Combine The Parts' : isDuplex ? 'Combine Place-Value Contributions' : 'Synthesize Both Coordinate Halves'}
               </span>
 
-              {isDuplex ? (
+              {isSubtraction ? (
+                <div className="flex flex-col items-center justify-center p-6 rounded-2xl bg-[#14120D] border border-[#E5A93C]/40 shadow-xl max-w-md mx-auto space-y-3">
+                  <span className="font-mono text-xs uppercase tracking-[0.2em] text-[#A8A090] font-semibold">
+                    SUBTRACTION RESULT
+                  </span>
+                  <span className="font-display text-4xl sm:text-5xl font-bold text-[#FFD700] tracking-tight leading-none">
+                    {finalAnswer}
+                  </span>
+                  <div className="font-mono text-xs text-[#E5A93C] pt-2 border-t border-[#E5A93C]/20">
+                    {`${a} &minus; ${b} = ${finalAnswer}`}
+                  </div>
+                  <div className="font-mono text-[11px] text-[#A8A090]">
+                    Formula: M + (B &minus; S) &minus; B = {finalAnswer}
+                  </div>
+                </div>
+              ) : isDuplex ? (
                 <div className="grid grid-cols-1 sm:grid-cols-3 gap-3 w-full max-w-lg mx-auto">
                   {/* Tens contribution */}
                   <div className="flex flex-col items-center justify-center p-3.5 rounded-2xl bg-[#14120D] border border-[#E5A93C]/40 shadow-xl">
@@ -441,7 +549,12 @@ export default function Nikhilam2DFallback({
               )}
 
               <div className="text-xs sm:text-sm font-mono text-[#D1C9BE] bg-[#14120D] p-3.5 rounded-xl border border-[#E5A93C]/20 max-w-md mx-auto">
-                {isEkadhikena ? (
+                {isSubtraction ? (
+                  <span>
+                    {`${a} &minus; ${b} = `}
+                    <strong className="text-[#FFD700]">{finalAnswer}</strong>
+                  </span>
+                ) : isEkadhikena ? (
                   <span>
                     {`${ekLhs} | ${ekRhs} \u2192 ${ekLhs} \u00d7 100 + ${ekRhs} = `}
                     <strong className="text-[#FFD700]">{finalAnswer}</strong>
@@ -471,14 +584,14 @@ export default function Nikhilam2DFallback({
             <div className="space-y-4 w-full">
               <div className="inline-flex items-center gap-2 px-3 py-1 rounded-full border border-emerald-500/30 bg-emerald-500/10 text-emerald-400 text-xs font-mono">
                 <CheckCircle2 className="w-3.5 h-3.5" />
-                Proof Complete &amp; Arithmetic Verified
+                {isSubtraction ? 'Arithmetic Verification Passed' : 'Proof Complete & Arithmetic Verified'}
               </div>
               <div className="text-5xl sm:text-7xl font-display font-bold text-[#FFD700] py-2">
                 {finalAnswer}
               </div>
               <div className="p-3.5 rounded-xl bg-[#14120D] border border-emerald-500/30 text-xs font-mono text-[#A8A090] max-w-md mx-auto flex items-center justify-between">
-                <span>{isSquaring ? `${a}\u00b2 = ${finalAnswer}` : `${a} \u00d7 ${b} = ${finalAnswer}`}</span>
-                <span>Verification: <strong className="text-emerald-400">{groundTruth} &#10003;</strong></span>
+                <span>{isSubtraction ? `${a} &minus; ${b} = ${finalAnswer}` : isSquaring ? `${a}\u00b2 = ${finalAnswer}` : `${a} \u00d7 ${b} = ${finalAnswer}`}</span>
+                <span>Verification: <strong className="text-emerald-400">{isSubtraction ? `${finalAnswer} + ${b} = ${a}` : groundTruth} &#10003;</strong></span>
               </div>
             </div>
           )}
