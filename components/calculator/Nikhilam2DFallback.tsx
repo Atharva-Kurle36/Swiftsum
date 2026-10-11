@@ -19,8 +19,10 @@ export default function Nikhilam2DFallback({
   const isSquaring = lesson.operationType === 'squaring';
   const isSubtraction = lesson.operationType === 'subtraction';
   const isDivision = lesson.operationType === 'division';
+  const isDivisibility = lesson.operationType === 'divisibility';
   const sub = lesson.subtractionData;
   const div = lesson.divisionData;
+  const divisibility = lesson.divisibilityData;
   const isDuplex = isSquaring && lesson.squaringMethod === 'duplex';
   const isEkadhikena = isSquaring && lesson.squaringMethod === 'ekadhikena';
   const duplex = lesson.duplexData;
@@ -72,10 +74,18 @@ export default function Nikhilam2DFallback({
             <div className="space-y-4">
               <div className="inline-flex items-center gap-2 px-3 py-1 rounded-full border border-[#E5A93C]/30 bg-[#1A1712] text-[#E5A93C] text-xs font-mono uppercase tracking-wider">
                 <Sparkles className="w-3.5 h-3.5" />
-                {isDivision ? 'Vedic Division Algorithm' : isSubtraction ? 'Vedic Subtraction Algorithm' : isSquaring ? 'Vedic Squaring Algorithm' : 'Vedic Multiplication Algorithm'}
+                {isDivisibility ? 'Vedic Divisibility Check' : isDivision ? 'Vedic Division Algorithm' : isSubtraction ? 'Vedic Subtraction Algorithm' : isSquaring ? 'Vedic Squaring Algorithm' : 'Vedic Multiplication Algorithm'}
               </div>
               <div className="text-5xl sm:text-7xl font-display font-medium text-[#F5F0E6] tracking-tight py-4 flex items-center justify-center gap-5">
-                {isDivision ? (
+                {isDivisibility ? (
+                  <>
+                    <span className="text-[#FFD700]">{a}</span>
+                    <span className="text-[#A8A090] text-3xl sm:text-4xl font-light">&divide;</span>
+                    <span className="text-[#FFD700]">{b}</span>
+                    <span className="text-[#A8A090] text-3xl sm:text-4xl font-light">➔</span>
+                    <span className={divisibility?.isDivisible ? 'text-emerald-400' : 'text-amber-400'}>{divisibility?.isDivisible ? 'DIVISIBLE?' : 'NOT DIVISIBLE?'}</span>
+                  </>
+                ) : isDivision ? (
                   <>
                     <span className="text-[#FFD700]">{a}</span>
                     <span className="text-[#A8A090] text-3xl sm:text-4xl font-light">&divide;</span>
@@ -114,7 +124,33 @@ export default function Nikhilam2DFallback({
           {/* SCENE 2: IDENTIFY DIGITS (DUPLEX / EKADHIKENA) OR IDENTIFY BASE */}
           {activeChapter.id === 2 && (
             <div className="space-y-5 w-full">
-              {isDivision ? (
+              {isDivisibility ? (
+                <>
+                  <div className="p-4 sm:p-5 rounded-2xl border border-[#E5A93C]/35 bg-[#14120D] shadow-xl inline-block">
+                    <span className="text-[10px] font-mono text-[#A8A090] uppercase tracking-[0.25em] block mb-1">
+                      Divisibility Criterion for {b}
+                    </span>
+                    <span className="text-2xl sm:text-3xl font-mono font-bold text-[#FFD700] tracking-wider">
+                      {b === 5 ? 'Terminal-Digit Rule (Ends in 0 or 5)' : `Divisor d = ${b}`}
+                    </span>
+                  </div>
+                  <div className="grid grid-cols-2 gap-4 max-w-md mx-auto">
+                    <div className="p-4 rounded-xl bg-[#14120D] border border-[#E5A93C]/25 text-left">
+                      <div className="text-xs text-[#A8A090] uppercase font-mono">Number (N)</div>
+                      <div className="text-2xl font-display font-bold text-[#F5F0E6] mt-1">{a}</div>
+                      <div className="text-[10px] text-[#A8A090] mt-1 font-sans">Number to test</div>
+                    </div>
+                    <div className="p-4 rounded-xl bg-[#14120D] border border-[#E5A93C]/25 text-left">
+                      <div className="text-xs text-[#A8A090] uppercase font-mono">Divisor (d)</div>
+                      <div className="text-2xl font-display font-bold text-[#F5F0E6] mt-1">{b}</div>
+                      <div className="text-[10px] text-[#A8A090] mt-1 font-sans">{b === 5 ? 'A number is divisible by 5 iff last digit is 0 or 5' : `Target divisor ${b}`}</div>
+                    </div>
+                  </div>
+                  <p className="text-xs text-[#A8A090] max-w-sm mx-auto font-sans">
+                    {b === 5 ? 'A number is divisible by 5 exactly when its last digit is 0 or 5.' : `Divisibility rule for divisor ${b}.`}
+                  </p>
+                </>
+              ) : isDivision ? (
                 <>
                   <div className="p-4 sm:p-5 rounded-2xl border border-[#E5A93C]/35 bg-[#14120D] shadow-xl inline-block">
                     <span className="text-[10px] font-mono text-[#A8A090] uppercase tracking-[0.25em] block mb-1">
@@ -249,10 +285,31 @@ export default function Nikhilam2DFallback({
             </div>
           )}
 
-          {/* SCENE 3: COMPLEMENT (SUBTRACTION) / SUCCESSOR (EKADHIKENA) / DUPLEX / DEVIATIONS / DIGITS (DIVISION) */}
+          {/* SCENE 3: COMPLEMENT (SUBTRACTION) / SUCCESSOR (EKADHIKENA) / DUPLEX / DEVIATIONS / DIGITS (DIVISION) / TERMINAL DIGIT (DIVISIBILITY) */}
           {activeChapter.id === 3 && (
             <div className="space-y-4 w-full">
-              {isDivision ? (
+              {isDivisibility ? (
+                <>
+                  <span className="text-xs font-mono text-[#A8A090] uppercase tracking-[0.2em]">
+                    Terminal Digit Rule Inspection
+                  </span>
+                  <div className="p-5 rounded-2xl bg-[#14120D] border border-[#E5A93C]/30 max-w-md mx-auto space-y-3">
+                    <div className="text-xs text-[#A8A090] font-mono">
+                      Last Digit of {a} = <span className="text-[#FFD700] font-bold text-lg">{divisibility?.lastDigit ?? (a % 10)}</span>
+                    </div>
+                    <div className={`text-2xl sm:text-3xl font-display font-bold ${divisibility?.isDivisible ? 'text-emerald-400' : 'text-amber-400'}`}>
+                      {b === 5
+                        ? (divisibility?.isDivisible ? `Ends in ${divisibility?.lastDigit} ∈ {0, 5} ✓` : `Ends in ${divisibility?.lastDigit} ∉ {0, 5} ✗`)
+                        : `Remainder: ${divisibility?.remainder ?? (a % b)}`}
+                    </div>
+                    <p className="text-xs text-[#A8A090] font-sans">
+                      {b === 5
+                        ? (divisibility?.isDivisible ? 'Terminal digit satisfies the condition for divisibility by 5.' : `Terminal digit is ${divisibility?.lastDigit ?? (a % 10)}, which leaves remainder ${divisibility?.remainder ?? (a % b)}.`)
+                        : `Divisibility evaluated for divisor ${b}.`}
+                    </p>
+                  </div>
+                </>
+              ) : isDivision ? (
                 <>
                   <span className="text-xs font-mono text-[#A8A090] uppercase tracking-[0.2em]">
                     Process Dividend Digits
@@ -357,10 +414,30 @@ export default function Nikhilam2DFallback({
             </div>
           )}
 
-          {/* SCENE 4: ADD COMPLEMENT TO MINUEND (SUBTRACTION) / MULTIPLY PREFIX & SUCCESSOR / CROSS-ADDITION / QUOTIENT (DIVISION) */}
+          {/* SCENE 4: ADD COMPLEMENT TO MINUEND (SUBTRACTION) / MULTIPLY PREFIX & SUCCESSOR / CROSS-ADDITION / QUOTIENT (DIVISION / DIVISIBILITY) */}
           {activeChapter.id === 4 && (
             <div className="space-y-4 w-full">
-              {isDivision ? (
+              {isDivisibility ? (
+                <>
+                  <span className="text-xs font-mono text-[#A8A090] uppercase tracking-[0.2em]">
+                    Determine The Quotient
+                  </span>
+                  <div className="p-5 rounded-2xl bg-[#14120D] border border-[#E5A93C]/30 space-y-3 max-w-md mx-auto">
+                    <div className="text-xs font-mono text-[#A8A090]">
+                      quotient = floor(N / d)
+                    </div>
+                    <div className="text-3xl sm:text-4xl font-mono font-bold text-[#FFD700]">
+                      QUOTIENT = {divisibility?.quotient ?? Math.floor(a / b)}
+                    </div>
+                    <div className="text-xs font-mono text-[#E5A93C]">
+                      floor({a} / {b}) = {divisibility?.quotient ?? Math.floor(a / b)}
+                    </div>
+                  </div>
+                  <p className="text-xs text-[#A8A090] max-w-sm mx-auto font-sans">
+                    The whole quotient represents the largest integer multiple of divisor {b} in {a}.
+                  </p>
+                </>
+              ) : isDivision ? (
                 <>
                   <span className="text-xs font-mono text-[#A8A090] uppercase tracking-[0.2em]">
                     Determine The Quotient
@@ -450,10 +527,30 @@ export default function Nikhilam2DFallback({
             </div>
           )}
 
-          {/* SCENE 5: REMOVE REFERENCE BASE (SUBTRACTION) / SQUARE FINAL DIGIT / DUPLEX / DEVIATIONS / REMAINDER (DIVISION) */}
+          {/* SCENE 5: REMOVE REFERENCE BASE (SUBTRACTION) / SQUARE FINAL DIGIT / DUPLEX / DEVIATIONS / REMAINDER (DIVISION / DIVISIBILITY) */}
           {activeChapter.id === 5 && (
             <div className="space-y-4 w-full">
-              {isDivision ? (
+              {isDivisibility ? (
+                <>
+                  <span className="text-xs font-mono text-[#A8A090] uppercase tracking-[0.2em]">
+                    Determine The Remainder
+                  </span>
+                  <div className="p-5 rounded-2xl bg-[#14120D] border border-[#E5A93C]/30 space-y-3 max-w-md mx-auto">
+                    <div className="text-xs font-mono text-[#A8A090]">
+                      remainder = N % d · The number is divisible exactly when remainder === 0
+                    </div>
+                    <div className={`text-3xl sm:text-4xl font-mono font-bold ${divisibility?.isDivisible ? 'text-emerald-400' : 'text-amber-400'}`}>
+                      REMAINDER = {divisibility?.remainder ?? (a % b)}
+                    </div>
+                    <div className={`text-xs font-mono ${divisibility?.isDivisible ? 'text-emerald-400' : 'text-amber-300'}`}>
+                      {divisibility?.isDivisible ? 'remainder === 0 ➔ DIVISIBLE' : `remainder === ${divisibility?.remainder ?? (a % b)} ≠ 0 ➔ NOT DIVISIBLE`}
+                    </div>
+                  </div>
+                  <p className="text-xs text-[#A8A090] max-w-sm mx-auto font-sans">
+                    Constraint satisfied: 0 ≤ {divisibility?.remainder ?? (a % b)} &lt; {b}.
+                  </p>
+                </>
+              ) : isDivision ? (
                 <>
                   <span className="text-xs font-mono text-[#A8A090] uppercase tracking-[0.2em]">
                     Determine The Remainder
@@ -550,10 +647,25 @@ export default function Nikhilam2DFallback({
           {activeChapter.id === 6 && (
             <div className="space-y-6 w-full">
               <span className="text-xs font-mono text-[#A8A090] uppercase tracking-[0.2em]">
-                {isDivision ? 'Division Result' : isSubtraction ? 'Final Difference' : isEkadhikena ? 'Combine The Parts' : isDuplex ? 'Combine Place-Value Contributions' : 'Synthesize Both Coordinate Halves'}
+                {isDivisibility ? 'Divisibility Verdict' : isDivision ? 'Division Result' : isSubtraction ? 'Final Difference' : isEkadhikena ? 'Combine The Parts' : isDuplex ? 'Combine Place-Value Contributions' : 'Synthesize Both Coordinate Halves'}
               </span>
 
-              {isDivision ? (
+              {isDivisibility ? (
+                <div className="flex flex-col items-center justify-center p-6 rounded-2xl bg-[#14120D] border border-[#E5A93C]/40 shadow-xl max-w-md mx-auto space-y-3">
+                  <span className="font-mono text-xs uppercase tracking-[0.2em] text-[#A8A090] font-semibold">
+                    DIVISIBILITY VERDICT
+                  </span>
+                  <span className={`font-display text-3xl sm:text-4xl font-bold tracking-tight leading-none ${divisibility?.isDivisible ? 'text-emerald-400' : 'text-amber-400'}`}>
+                    {divisibility?.isDivisible ? 'DIVISIBLE' : 'NOT DIVISIBLE'}
+                  </span>
+                  <div className="font-mono text-xs text-[#E5A93C] pt-2 border-t border-[#E5A93C]/20">
+                    Quotient: {divisibility?.quotient ?? Math.floor(a / b)} · Remainder: {divisibility?.remainder ?? (a % b)}
+                  </div>
+                  <div className="font-sans text-[11px] text-[#A8A090]">
+                    Reason: Last digit is {divisibility?.lastDigit ?? (a % 10)}; remainder = {divisibility?.remainder ?? (a % b)}.
+                  </div>
+                </div>
+              ) : isDivision ? (
                 <div className="flex flex-col items-center justify-center p-6 rounded-2xl bg-[#14120D] border border-[#E5A93C]/40 shadow-xl max-w-md mx-auto space-y-3">
                   <span className="font-mono text-xs uppercase tracking-[0.2em] text-[#A8A090] font-semibold">
                     DIVISION RESULT
@@ -651,7 +763,18 @@ export default function Nikhilam2DFallback({
               )}
 
               <div className="text-xs sm:text-sm font-mono text-[#D1C9BE] bg-[#14120D] p-3.5 rounded-xl border border-[#E5A93C]/20 max-w-md mx-auto">
-                {isDivision ? (
+                {isDivisibility ? (
+                  <span>
+                    {`For ${a} ÷ ${b}: quotient `}
+                    <strong className="text-[#FFD700]">{divisibility?.quotient ?? Math.floor(a / b)}</strong>
+                    {`, remainder `}
+                    <strong className="text-[#FF9F1C]">{divisibility?.remainder ?? (a % b)}</strong>
+                    {`, `}
+                    <strong className={divisibility?.isDivisible ? 'text-emerald-400' : 'text-amber-400'}>
+                      {divisibility?.isDivisible ? 'DIVISIBLE' : 'NOT DIVISIBLE'}
+                    </strong>
+                  </span>
+                ) : isDivision ? (
                   <span>
                     {`${a} ÷ ${b} = Quotient `}
                     <strong className="text-[#FFD700]">{div?.quotient ?? 114}</strong>
@@ -693,16 +816,42 @@ export default function Nikhilam2DFallback({
             <div className="space-y-4 w-full">
               <div className="inline-flex items-center gap-2 px-3 py-1 rounded-full border border-emerald-500/30 bg-emerald-500/10 text-emerald-400 text-xs font-mono">
                 <CheckCircle2 className="w-3.5 h-3.5" />
-                {isDivision || isSubtraction ? 'Arithmetic Verification Passed' : 'Proof Complete & Arithmetic Verified'}
+                {isDivisibility ? 'Divisibility Verification Passed' : isDivision || isSubtraction ? 'Arithmetic Verification Passed' : 'Proof Complete & Arithmetic Verified'}
               </div>
-              <div className="text-4xl sm:text-6xl font-display font-bold text-[#FFD700] py-2">
-                {isDivision ? (
-                  <span>Quotient: {div?.quotient ?? 114}, Remainder: {div?.remainder ?? 6}</span>
-                ) : finalAnswer}
+              <div className="text-4xl sm:text-6xl font-display font-bold py-2">
+                {isDivisibility ? (
+                  <span className={divisibility?.isDivisible ? 'text-emerald-400' : 'text-amber-400'}>
+                    {divisibility?.isDivisible ? 'DIVISIBLE' : 'NOT DIVISIBLE'}
+                  </span>
+                ) : isDivision ? (
+                  <span className="text-[#FFD700]">Quotient: {div?.quotient ?? 114}, Remainder: {div?.remainder ?? 6}</span>
+                ) : (
+                  <span className="text-[#FFD700]">{finalAnswer}</span>
+                )}
               </div>
               <div className="p-3.5 rounded-xl bg-[#14120D] border border-emerald-500/30 text-xs font-mono text-[#A8A090] max-w-md mx-auto flex items-center justify-between">
-                <span>{isDivision ? `${a} ÷ ${b} = ${div?.quotient ?? 114} rem ${div?.remainder ?? 6}` : isSubtraction ? `${a} &minus; ${b} = ${finalAnswer}` : isSquaring ? `${a}\u00b2 = ${finalAnswer}` : `${a} \u00d7 ${b} = ${finalAnswer}`}</span>
-                <span>Verification: <strong className="text-emerald-400">{isDivision ? `${div?.quotient ?? 114} × ${b} + ${div?.remainder ?? 6} = ${a}` : isSubtraction ? `${finalAnswer} + ${b} = ${a}` : groundTruth} &#10003;</strong></span>
+                <span>
+                  {isDivisibility
+                    ? `Verify: N = d × quotient + remainder: ${a} = ${b} × ${divisibility?.quotient ?? Math.floor(a / b)} + ${divisibility?.remainder ?? (a % b)}`
+                    : isDivision
+                    ? `${a} ÷ ${b} = ${div?.quotient ?? 114} rem ${div?.remainder ?? 6}`
+                    : isSubtraction
+                    ? `${a} &minus; ${b} = ${finalAnswer}`
+                    : isSquaring
+                    ? `${a}\u00b2 = ${finalAnswer}`
+                    : `${a} \u00d7 ${b} = ${finalAnswer}`}
+                </span>
+                <span>
+                  Verification: <strong className="text-emerald-400">
+                    {isDivisibility
+                      ? `${b} × ${divisibility?.quotient ?? Math.floor(a / b)} + ${divisibility?.remainder ?? (a % b)} = ${a} ✓`
+                      : isDivision
+                      ? `${div?.quotient ?? 114} × ${b} + ${div?.remainder ?? 6} = ${a}`
+                      : isSubtraction
+                      ? `${finalAnswer} + ${b} = ${a}`
+                      : groundTruth} &#10003;
+                  </strong>
+                </span>
               </div>
             </div>
           )}

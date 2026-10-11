@@ -237,10 +237,10 @@ export default function Nikhilam3DPlayer({ lesson, onSelectPreset }: Nikhilam3DP
           <span className="w-2 h-2 rounded-full bg-[#E5A93C] shadow-[0_0_8px_#E5A93C] flex-shrink-0 animate-pulse" />
           <div className="truncate">
             <h3 className="font-display font-medium text-sm sm:text-base text-[#F5F0E6] truncate tracking-tight">
-              {lesson.methodTitle || (lesson.operationType === 'squaring' ? 'Squaring Using the Yavadunam Method' : lesson.operationType === 'subtraction' ? 'Subtraction Using the Nikhilam Method' : lesson.operationType === 'division' ? 'Division Using the Nikhilam Method' : 'Multiplication Using the Nikhilam Method')}
+              {lesson.methodTitle || (lesson.operationType === 'squaring' ? 'Squaring Using the Yavadunam Method' : lesson.operationType === 'subtraction' ? 'Subtraction Using the Nikhilam Method' : lesson.operationType === 'division' ? 'Division Using the Nikhilam Method' : lesson.operationType === 'divisibility' ? 'Divisibility Check Using Vedic Mathematics' : 'Multiplication Using the Nikhilam Method')}
             </h3>
             <p className="font-mono text-[11px] text-[#A8A090] truncate">
-              {lesson.sutraSubtitle || (lesson.operationType === 'squaring' ? `${lesson.a}² · Base ${lesson.base} · Deviation ${lesson.devAStr}` : lesson.operationType === 'subtraction' ? `${lesson.a} − ${lesson.b} · Base ${lesson.base} · Sūtra: Nikhilam Navatashcaramam Dashatah` : lesson.operationType === 'division' ? `${lesson.a} ÷ ${lesson.b} · Base ${lesson.base} · Sūtra: Nikhilam Navatashcaramam Dashatah (Vibhāgaḥ)` : `${lesson.a} × ${lesson.b} · Base ${lesson.base} · Sūtra: Nikhilam Navatashcaramam Dashatah`)}
+              {lesson.sutraSubtitle || (lesson.operationType === 'squaring' ? `${lesson.a}² · Base ${lesson.base} · Deviation ${lesson.devAStr}` : lesson.operationType === 'subtraction' ? `${lesson.a} − ${lesson.b} · Base ${lesson.base} · Sūtra: Nikhilam Navatashcaramam Dashatah` : lesson.operationType === 'division' ? `${lesson.a} ÷ ${lesson.b} · Base ${lesson.base} · Sūtra: Nikhilam Navatashcaramam Dashatah (Vibhāgaḥ)` : lesson.operationType === 'divisibility' ? `${lesson.a} ÷ ${lesson.b} · Terminal-Digit Rule · Verdict: ${lesson.finalAnswer}` : `${lesson.a} × ${lesson.b} · Base ${lesson.base} · Sūtra: Nikhilam Navatashcaramam Dashatah`)}
             </p>
           </div>
         </div>
@@ -436,6 +436,8 @@ export default function Nikhilam3DPlayer({ lesson, onSelectPreset }: Nikhilam3DP
               ? 'Try Classical Subtraction Presets:'
               : lesson.operationType === 'division'
               ? 'Classical Division Preset:'
+              : lesson.operationType === 'divisibility'
+              ? 'Classical Divisibility Presets:'
               : 'Try Other Multiplications Near Base:'}
           </span>
           <div className="flex flex-wrap items-center gap-2">
@@ -505,6 +507,29 @@ export default function Nikhilam3DPlayer({ lesson, onSelectPreset }: Nikhilam3DP
                     </button>
                   );
                 })
+              : lesson.operationType === 'divisibility'
+              ? [
+                  { label: '1967 ÷ 5 (Terminal Digit 7 ➔ Not Divisible)', a: '1967', b: '5' },
+                  { label: '1000 ÷ 5 (Terminal Digit 0 ➔ Divisible)', a: '1000', b: '5' },
+                  { label: '27,835 ÷ 7 (Osculator Q = 2)', a: '27835', b: '7' },
+                  { label: '39,416 ÷ 13 (Osculator P = 4)', a: '39416', b: '13' },
+                  { label: '47,289 ÷ 11 (Alternating Sum)', a: '47289', b: '11' },
+                ].map(p => {
+                  const isSelected = lesson.aStr === p.a && lesson.bStr === p.b;
+                  return (
+                    <button
+                      key={p.label}
+                      onClick={() => onSelectPreset && onSelectPreset(p.a, p.b)}
+                      className={`px-3 py-1 rounded-lg text-xs font-mono transition-all cursor-pointer border ${
+                        isSelected
+                          ? 'bg-[#E5A93C] text-black font-bold border-[#FFD700]'
+                          : 'bg-[#14120D] text-[#A8A090] border-[#E5A93C]/15 hover:text-[#E5A93C] hover:border-[#E5A93C]/35'
+                      }`}
+                    >
+                      {p.label}
+                    </button>
+                  );
+                })
               : [
                   { label: '98 × 97 (Original)', a: '98', b: '97' },
                   { label: '96 × 94', a: '96', b: '94' },
@@ -547,6 +572,8 @@ export default function Nikhilam3DPlayer({ lesson, onSelectPreset }: Nikhilam3DP
                 ? `M − S = M + (B − S) − B = ${lesson.a} + (${lesson.base} − ${lesson.b}) − ${lesson.base}`
                 : lesson.operationType === 'division'
                 ? `Dividend = Divisor × Quotient + Remainder: ${lesson.a} = ${lesson.b} × ${lesson.divisionData?.quotient ?? lesson.lhs} + ${lesson.divisionData?.remainder ?? lesson.rawRhs}`
+                : lesson.operationType === 'divisibility'
+                ? `N = d × quotient + remainder: ${lesson.a} = ${lesson.b} × ${lesson.divisibilityData?.quotient ?? Math.floor(lesson.a / lesson.b)} + ${lesson.divisibilityData?.remainder ?? (lesson.a % lesson.b)}`
                 : `${lesson.a} × ${lesson.b} = ${lesson.base} × (${lesson.base} + ${lesson.devAStr} + ${lesson.devBStr}) + (${lesson.devAStr} × ${lesson.devBStr})`}
             </div>
           </div>
@@ -568,6 +595,8 @@ export default function Nikhilam3DPlayer({ lesson, onSelectPreset }: Nikhilam3DP
                 <>{lesson.a} + {lesson.subtractionData?.complement ?? (lesson.base - lesson.b)} − {lesson.base} = <strong className="text-[#FFD700]">{lesson.finalAnswer}</strong></>
               ) : lesson.operationType === 'division' ? (
                 <>{lesson.a} ÷ {lesson.b} = Quotient <strong className="text-[#FFD700]">{lesson.divisionData?.quotient ?? lesson.lhs}</strong>, Remainder <strong className="text-[#FF9F1C]">{lesson.divisionData?.remainder ?? lesson.rawRhs}</strong></>
+              ) : lesson.operationType === 'divisibility' ? (
+                <>{lesson.a} ÷ {lesson.b} ➔ Quotient <strong className="text-[#FFD700]">{lesson.divisibilityData?.quotient ?? Math.floor(lesson.a / lesson.b)}</strong>, Remainder <strong className="text-[#FF9F1C]">{lesson.divisibilityData?.remainder ?? (lesson.a % lesson.b)}</strong> (Verdict: <strong className={lesson.divisibilityData?.isDivisible ? 'text-emerald-400' : 'text-amber-400'}>{lesson.divisibilityData?.isDivisible ? 'DIVISIBLE' : 'NOT DIVISIBLE'}</strong>)</>
               ) : (
                 <>{lesson.balancedLhs} × {lesson.base} + {lesson.balancedRhsStr} = <strong className="text-[#FFD700]">{lesson.finalAnswer}</strong></>
               )}
@@ -586,6 +615,8 @@ export default function Nikhilam3DPlayer({ lesson, onSelectPreset }: Nikhilam3DP
                 ? `Addition Check: ${lesson.finalAnswer} + ${lesson.b} = ${lesson.a} === Minuend Ground Truth: ${lesson.groundTruth === lesson.finalAnswer ? 'Passed' : 'Failed'}`
                 : lesson.operationType === 'division'
                 ? `Verification Check: ${lesson.a} = ${lesson.b} × ${lesson.divisionData?.quotient ?? lesson.lhs} + ${lesson.divisionData?.remainder ?? lesson.rawRhs} (0 ≤ ${lesson.divisionData?.remainder ?? lesson.rawRhs} < ${lesson.b}) === Passed`
+                : lesson.operationType === 'divisibility'
+                ? `Verification Check: ${lesson.a} = ${lesson.b} × ${lesson.divisibilityData?.quotient ?? Math.floor(lesson.a / lesson.b)} + ${lesson.divisibilityData?.remainder ?? (lesson.a % lesson.b)} (${lesson.divisibilityData?.isDivisible ? 'Remainder 0 ➔ DIVISIBLE' : `Remainder ${lesson.divisibilityData?.remainder} ≠ 0 ➔ NOT DIVISIBLE`}) === Passed`
                 : `Nikhilam: ${lesson.finalAnswer} === Standard: ${lesson.groundTruth}`}
             </div>
           </div>

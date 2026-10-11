@@ -111,6 +111,8 @@ export const SUTRA_REGISTRY: Record<string, OperationConfig> = {
     placeholderA: 'e.g. 27835',
     placeholderB: 'e.g. 7 or 13 or 11',
     presets: [
+      { label: '1967 ÷ 5 (Terminal Digit 7 ➔ Not Divisible)', a: '1967', b: '5' },
+      { label: '1000 ÷ 5 (Terminal Digit 0 ➔ Divisible)', a: '1000', b: '5' },
       { label: '27,835 ÷ 7 (Osculator Q = 2)', a: '27835', b: '7' },
       { label: '39,416 ÷ 13 (Osculator P = 4)', a: '39416', b: '13' },
       { label: '47,289 ÷ 11 (Alternating Sum)', a: '47289', b: '11' },

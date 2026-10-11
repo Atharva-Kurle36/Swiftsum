@@ -79,8 +79,10 @@ export default function Nikhilam3DCanvas({ lesson, activeChapter }: Nikhilam3DCa
   const isSquaring = lesson.operationType === 'squaring';
   const isSubtraction = lesson.operationType === 'subtraction';
   const isDivision = lesson.operationType === 'division';
+  const isDivisibility = lesson.operationType === 'divisibility';
   const sub = lesson.subtractionData;
   const div = lesson.divisionData;
+  const divisibility = lesson.divisibilityData;
   const isDuplex = isSquaring && lesson.squaringMethod === 'duplex';
   const isEkadhikena = isSquaring && lesson.squaringMethod === 'ekadhikena';
   const duplex = lesson.duplexData;
@@ -385,8 +387,8 @@ export default function Nikhilam3DCanvas({ lesson, activeChapter }: Nikhilam3DCa
           targetCamX = mouseRef.current.rotY * 4.0;
           targetCamY = (isNarrow ? 1.9 : 1.8) + mouseRef.current.rotX * 3.0;
           targetCamZ = isNarrow ? 11.8 : 10.8;
-        } else if (isSubtraction || isDivision) {
-          // Stable camera for subtraction / division walkthrough
+        } else if (isSubtraction || isDivision || isDivisibility) {
+          // Stable camera for subtraction / division / divisibility walkthrough
           targetCamX = mouseRef.current.rotY * 4.0;
           targetCamY = (isNarrow ? 1.9 : 1.8) + mouseRef.current.rotX * 3.0;
           targetCamZ = isNarrow ? 11.6 : 10.6;
@@ -428,7 +430,7 @@ export default function Nikhilam3DCanvas({ lesson, activeChapter }: Nikhilam3DCa
         const lerpSpeed = 0.15;
 
         // Animate cross particles in Scene 4 along cross addition vectors
-        if (m.crossParticles.length > 0 && !isDuplex && !isEkadhikena && !isSubtraction && !isDivision) {
+        if (m.crossParticles.length > 0 && !isDuplex && !isEkadhikena && !isSubtraction && !isDivision && !isDivisibility) {
           m.crossParticles.forEach((p, idx) => {
             const t = (elapsedTime * 1.05 + idx * 0.16) % 1;
             if (idx < 3) {
@@ -534,7 +536,7 @@ export default function Nikhilam3DCanvas({ lesson, activeChapter }: Nikhilam3DCa
             m.multGroup.scale.lerp(new THREE.Vector3(0.001, 0.001, 0.001), lerpSpeed);
             m.combineGroup.scale.lerp(new THREE.Vector3(0.001, 0.001, 0.001), lerpSpeed);
             m.verifyGroup.scale.lerp(new THREE.Vector3(0.001, 0.001, 0.001), lerpSpeed);
-          } else if (isSubtraction || isDivision) {
+          } else if (isSubtraction || isDivision || isDivisibility) {
             m.groupA.scale.lerp(new THREE.Vector3(0.001, 0.001, 0.001), lerpSpeed);
             m.groupB.scale.lerp(new THREE.Vector3(0.001, 0.001, 0.001), lerpSpeed);
             m.basePillar.scale.lerp(new THREE.Vector3(0.001, 0.001, 0.001), lerpSpeed);
@@ -591,7 +593,7 @@ export default function Nikhilam3DCanvas({ lesson, activeChapter }: Nikhilam3DCa
             m.multGroup.scale.lerp(new THREE.Vector3(0.001, 0.001, 0.001), lerpSpeed);
             m.combineGroup.scale.lerp(new THREE.Vector3(0.001, 0.001, 0.001), lerpSpeed);
             m.verifyGroup.scale.lerp(new THREE.Vector3(0.001, 0.001, 0.001), lerpSpeed);
-          } else if (isSubtraction || isDivision) {
+          } else if (isSubtraction || isDivision || isDivisibility) {
             m.groupA.scale.lerp(new THREE.Vector3(0.001, 0.001, 0.001), lerpSpeed);
             m.groupB.scale.lerp(new THREE.Vector3(0.001, 0.001, 0.001), lerpSpeed);
             m.basePillar.scale.lerp(new THREE.Vector3(0.001, 0.001, 0.001), lerpSpeed);
@@ -646,7 +648,7 @@ export default function Nikhilam3DCanvas({ lesson, activeChapter }: Nikhilam3DCa
 
             m.combineGroup.scale.lerp(new THREE.Vector3(0.001, 0.001, 0.001), lerpSpeed);
             m.verifyGroup.scale.lerp(new THREE.Vector3(0.001, 0.001, 0.001), lerpSpeed);
-          } else if (isSubtraction || isDivision) {
+          } else if (isSubtraction || isDivision || isDivisibility) {
             m.groupA.scale.lerp(new THREE.Vector3(0.001, 0.001, 0.001), lerpSpeed);
             m.groupB.scale.lerp(new THREE.Vector3(0.001, 0.001, 0.001), lerpSpeed);
             m.basePillar.scale.lerp(new THREE.Vector3(0.001, 0.001, 0.001), lerpSpeed);
@@ -682,7 +684,7 @@ export default function Nikhilam3DCanvas({ lesson, activeChapter }: Nikhilam3DCa
 
         // Scene 6: Combine Both Parts / Contributions or Subtraction Final Difference
         else if (currentChapterId === 6) {
-          if (isSubtraction || isDivision) {
+          if (isSubtraction || isDivision || isDivisibility) {
             m.groupA.scale.lerp(new THREE.Vector3(0.001, 0.001, 0.001), lerpSpeed);
             m.groupB.scale.lerp(new THREE.Vector3(0.001, 0.001, 0.001), lerpSpeed);
             m.badgeDevA.scale.lerp(new THREE.Vector3(0.001, 0.001, 0.001), lerpSpeed);
@@ -732,7 +734,7 @@ export default function Nikhilam3DCanvas({ lesson, activeChapter }: Nikhilam3DCa
           m.rhsGroup.scale.lerp(new THREE.Vector3(0.001, 0.001, 0.001), lerpSpeed);
 
           m.verifyGroup.scale.lerp(new THREE.Vector3(1, 1, 1), lerpSpeed);
-          m.verifyGroup.position.lerp(new THREE.Vector3(0, (isSubtraction || isDivision) ? 0.6 : 0.2, 0), lerpSpeed);
+          m.verifyGroup.position.lerp(new THREE.Vector3(0, (isSubtraction || isDivision || isDivisibility) ? 0.6 : 0.2, 0), lerpSpeed);
         }
 
         // Direct hardware-accelerated transform updates to visible DOM cards
@@ -745,7 +747,7 @@ export default function Nikhilam3DCanvas({ lesson, activeChapter }: Nikhilam3DCa
         updateCard(rhsCardRef.current, projectObject(m.rhsGroup, w, h));
         updateCard(combLhsRef.current, projectObject(m.combLhsGroup, w, h));
         updateCard(combRhsRef.current, projectObject(m.combRhsGroup, w, h));
-        updateCard(fusedCardRef.current, projectObject(m.fusedGroup, w, h), (isSubtraction || isDivision) ? 0 : 70);
+        updateCard(fusedCardRef.current, projectObject(m.fusedGroup, w, h), (isSubtraction || isDivision || isDivisibility) ? 0 : 70);
         updateCard(finalCardRef.current, projectObject(m.finalGroup, w, h));
       }
 
@@ -798,9 +800,9 @@ export default function Nikhilam3DCanvas({ lesson, activeChapter }: Nikhilam3DCa
       {/* ── CRISP, CAMERA-ANCHORED TYPOGRAPHY OVERLAYS ── */}
       <div className="absolute inset-0 pointer-events-none z-10 overflow-hidden">
         
-        {/* FACTOR A / NUMBER TO SQUARE / MINUEND / DIVIDEND CARD */}
-        {(((isSubtraction || isDivision) && (activeChapter.id === 1 || activeChapter.id === 2)) ||
-          (!isSubtraction && !isDivision && (activeChapter.id === 1 || activeChapter.id === 2 || activeChapter.id === 3 || activeChapter.id === 4 || (lesson.operationType === 'squaring' && activeChapter.id === 5)))) && (
+        {/* FACTOR A / NUMBER TO SQUARE / MINUEND / DIVIDEND / NUMBER TO TEST CARD */}
+        {(((isSubtraction || isDivision || isDivisibility) && (activeChapter.id === 1 || activeChapter.id === 2)) ||
+          (!isSubtraction && !isDivision && !isDivisibility && (activeChapter.id === 1 || activeChapter.id === 2 || activeChapter.id === 3 || activeChapter.id === 4 || (lesson.operationType === 'squaring' && activeChapter.id === 5)))) && (
           <div
             id="cardA"
             ref={cardARef}
@@ -817,7 +819,7 @@ export default function Nikhilam3DCanvas({ lesson, activeChapter }: Nikhilam3DCa
             }`}
           >
             <span className="font-mono text-[10px] uppercase tracking-[0.2em] text-[#A8A090] font-semibold leading-none text-center">
-              {lesson.operationType === 'squaring' ? 'Number to Square' : isSubtraction ? 'MINUEND' : isDivision ? 'DIVIDEND' : 'Factor 1'}
+              {lesson.operationType === 'squaring' ? 'Number to Square' : isSubtraction ? 'MINUEND' : isDivision ? 'DIVIDEND' : isDivisibility ? 'NUMBER TO TEST' : 'Factor 1'}
             </span>
             <span
               className={`font-display font-bold text-[#F5F0E6] tracking-tight leading-none text-center tabular-nums ${
@@ -829,15 +831,15 @@ export default function Nikhilam3DCanvas({ lesson, activeChapter }: Nikhilam3DCa
               {a}
             </span>
             <span className="font-mono text-[10px] uppercase tracking-[0.2em] text-[#E5A93C]/80 leading-none text-center">
-              {lesson.operationType === 'squaring' ? `${a}² = ?` : isSubtraction ? `${a} − ${b} = ?` : isDivision ? `${a} ÷ ${b} = ?` : 'Factor 1'}
+              {lesson.operationType === 'squaring' ? `${a}² = ?` : isSubtraction ? `${a} − ${b} = ?` : isDivision ? `${a} ÷ ${b} = ?` : isDivisibility ? `${a} ÷ ${b} = ?` : 'Factor 1'}
             </span>
           </div>
         )}
 
-        {/* FACTOR B / SUBTRAHEND / DIVISOR CARD — only displayed for multiplication (scenes 1-4) or subtraction/division (scenes 1-2) */}
+        {/* FACTOR B / SUBTRAHEND / DIVISOR CARD — only displayed for multiplication (scenes 1-4) or subtraction/division/divisibility (scenes 1-2) */}
         {lesson.operationType !== 'squaring' &&
-          (((isSubtraction || isDivision) && (activeChapter.id === 1 || activeChapter.id === 2)) ||
-           (!isSubtraction && !isDivision && (activeChapter.id === 1 || activeChapter.id === 2 || activeChapter.id === 3 || activeChapter.id === 4))) && (
+          (((isSubtraction || isDivision || isDivisibility) && (activeChapter.id === 1 || activeChapter.id === 2)) ||
+           (!isSubtraction && !isDivision && !isDivisibility && (activeChapter.id === 1 || activeChapter.id === 2 || activeChapter.id === 3 || activeChapter.id === 4))) && (
           <div
             id="cardB"
             ref={cardBRef}
@@ -850,19 +852,19 @@ export default function Nikhilam3DCanvas({ lesson, activeChapter }: Nikhilam3DCa
             className="flex flex-col items-center justify-center px-6 py-3 rounded-xl bg-[#14120D]/95 border border-[#E5A93C]/40 shadow-xl min-w-[130px] transition-opacity duration-150"
           >
             <span className="font-mono text-[10px] uppercase tracking-[0.2em] text-[#A8A090] font-semibold leading-none text-center">
-              {isSubtraction ? 'SUBTRAHEND' : isDivision ? 'DIVISOR' : 'Factor 2'}
+              {isSubtraction ? 'SUBTRAHEND' : (isDivision || isDivisibility) ? 'DIVISOR' : 'Factor 2'}
             </span>
             <span className="font-display text-4xl sm:text-5xl font-bold text-[#F5F0E6] tracking-tight leading-none text-center tabular-nums my-1.5">
               {b}
             </span>
             <span className="font-mono text-[10px] uppercase tracking-[0.2em] invisible select-none leading-none text-center" aria-hidden="true">
-              {isSubtraction ? 'SUBTRAHEND' : isDivision ? 'DIVISOR' : 'Factor 2'}
+              {isSubtraction ? 'SUBTRAHEND' : (isDivision || isDivisibility) ? 'DIVISOR' : 'Factor 2'}
             </span>
           </div>
         )}
 
-        {/* BASE MONOLITH LABEL (Yavadunam / Nikhilam / Subtraction / Division — Never in Duplex or Ekadhikena) */}
-        {!isDuplex && !isEkadhikena && (activeChapter.id === 2 || (!isSubtraction && !isDivision && activeChapter.id === 3)) && (
+        {/* BASE MONOLITH LABEL (Yavadunam / Nikhilam / Subtraction / Division / Divisibility — Never in Duplex or Ekadhikena) */}
+        {!isDuplex && !isEkadhikena && (activeChapter.id === 2 || (!isSubtraction && !isDivision && !isDivisibility && activeChapter.id === 3)) && (
           <div
             id="basePillar"
             ref={basePillarRef}
@@ -875,21 +877,23 @@ export default function Nikhilam3DCanvas({ lesson, activeChapter }: Nikhilam3DCa
             className="flex flex-col items-center justify-center px-6 py-3.5 rounded-xl bg-[#1A1712]/95 border border-[#E5A93C]/60 shadow-[0_0_25px_rgba(229,169,60,0.2)] min-w-[190px] transition-opacity duration-150"
           >
             <span className="font-mono text-[10px] uppercase tracking-[0.25em] text-[#E5A93C] font-semibold leading-none text-center mb-1">
-              {isDivision ? 'Divisor Reference Base' : 'Reference Base'}
+              {isDivision ? 'Divisor Reference Base' : isDivisibility ? (b === 5 ? 'Terminal-Digit Rule' : 'Divisibility Rule') : 'Reference Base'}
             </span>
             <span className="font-mono text-2xl sm:text-3xl font-bold text-[#FFD700] tracking-wider leading-none text-center tabular-nums my-1">
-              BASE = {base}
+              {isDivisibility ? `DIVISOR = ${b}` : `BASE = ${base}`}
             </span>
             <span className="font-sans text-[10px] text-[#A8A090] leading-none text-center mt-1">
               {isDivision
                 ? `Complement = ${div?.complement ?? (base - b)}`
+                : isDivisibility
+                ? (b === 5 ? 'Divisible by 5 exactly when last digit is 0 or 5' : `Evaluate criterion for divisor ${b}`)
                 : `${numZeros} zeros allocated`}
             </span>
           </div>
         )}
 
-        {/* DEVIATION A BADGE (Yavadunam / Nikhilam Only — Never in Duplex, Ekadhikena, Subtraction, or Division) */}
-        {!isDuplex && !isEkadhikena && !isSubtraction && !isDivision && (activeChapter.id === 3 || activeChapter.id === 4 || activeChapter.id === 5) && (
+        {/* DEVIATION A BADGE (Yavadunam / Nikhilam Only — Never in Duplex, Ekadhikena, Subtraction, Division, or Divisibility) */}
+        {!isDuplex && !isEkadhikena && !isSubtraction && !isDivision && !isDivisibility && (activeChapter.id === 3 || activeChapter.id === 4 || activeChapter.id === 5) && (
           <div
             id="badgeDevA"
             ref={badgeDevARef}
@@ -914,7 +918,7 @@ export default function Nikhilam3DCanvas({ lesson, activeChapter }: Nikhilam3DCa
         )}
 
         {/* DEVIATION B BADGE — only displayed for multiplication */}
-        {lesson.operationType !== 'squaring' && !isSubtraction && !isDivision && (activeChapter.id === 3 || activeChapter.id === 4 || activeChapter.id === 5) && (
+        {lesson.operationType !== 'squaring' && !isSubtraction && !isDivision && !isDivisibility && (activeChapter.id === 3 || activeChapter.id === 4 || activeChapter.id === 5) && (
           <div
             id="badgeDevB"
             ref={badgeDevBRef}
@@ -1071,6 +1075,46 @@ export default function Nikhilam3DCanvas({ lesson, activeChapter }: Nikhilam3DCa
           </div>
         )}
 
+        {/* SCENE 3 (DIVISIBILITY): INSPECT TERMINAL DIGIT CARD */}
+        {isDivisibility && activeChapter.id === 3 && (
+          <div
+            id="rhsCard"
+            ref={rhsCardRef}
+            style={{
+              position: 'absolute',
+              top: 0,
+              left: 0,
+              willChange: 'transform',
+            }}
+            className="flex flex-col items-center justify-center px-6 py-3.5 sm:px-8 sm:py-4 rounded-2xl bg-[#14120D]/95 border border-[#E5A93C]/50 shadow-[0_10px_35px_rgba(0,0,0,0.85)] min-w-[260px] max-w-[92vw] sm:max-w-lg transition-opacity duration-150"
+          >
+            <span className="font-mono text-[10px] uppercase tracking-[0.2em] text-[#A8A090] font-semibold leading-none text-center mb-1">
+              Inspect Terminal Digit
+            </span>
+            <div className="font-display text-3xl sm:text-4xl font-bold text-[#FFD700] tracking-tight leading-none text-center tabular-nums my-1">
+              Last Digit = {divisibility?.lastDigit ?? (a % 10)}
+            </div>
+            <div className="flex flex-wrap items-center justify-center gap-1.5 sm:gap-2 my-1.5">
+              <div className="flex flex-col items-center px-2.5 py-1 rounded-lg bg-black/50 border border-[#E5A93C]/30">
+                <span className="font-mono text-[8px] sm:text-[9px] uppercase tracking-wider text-[#A8A090]">Rule Criterion</span>
+                <span className="font-mono text-xs sm:text-sm font-bold text-[#FFD700]">
+                  {b === 5 ? 'Last Digit must be 0 or 5' : `Divisibility Rule for ${b}`}
+                </span>
+              </div>
+            </div>
+            <div className="font-mono text-[11px] text-[#E5A93C] font-semibold text-center mt-1">
+              {b === 5
+                ? (divisibility?.isDivisible
+                    ? `Last digit ${divisibility?.lastDigit} is 0 or 5 ➔ Condition Satisfied`
+                    : `Last digit ${divisibility?.lastDigit} is not 0 or 5 ➔ Remainder = ${divisibility?.remainder}`)
+                : `Criterion evaluated for ${a} ÷ ${b}`}
+            </div>
+            <div className="font-sans text-[10px] text-[#A8A090]/80 leading-none text-center mt-0.5">
+              A number is divisible by 5 exactly when its last digit is 0 or 5
+            </div>
+          </div>
+        )}
+
         {/* SCENE 3 (DUPLEX OR EKADHIKENA): UNITS DUPLEX / SUCCESSOR CARD */}
         {(isDuplex || isEkadhikena) && activeChapter.id === 3 && (
           <div
@@ -1133,7 +1177,22 @@ export default function Nikhilam3DCanvas({ lesson, activeChapter }: Nikhilam3DCa
             }}
             className="flex flex-col items-center justify-center px-6 py-3 sm:px-7 sm:py-3.5 rounded-2xl bg-[#14120D]/95 border border-[#E5A93C]/50 shadow-[0_10px_35px_rgba(0,0,0,0.85)] min-w-[240px] max-w-[92vw] sm:max-w-md transition-opacity duration-150"
           >
-            {isDivision ? (
+            {isDivisibility ? (
+              <>
+                <span className="font-mono text-[10px] uppercase tracking-[0.2em] text-[#A8A090] font-semibold leading-none text-center mb-1">
+                  Determine the Quotient
+                </span>
+                <div className="font-display text-4xl sm:text-5xl font-bold text-[#FFD700] tracking-tight leading-none text-center tabular-nums my-1">
+                  QUOTIENT = {divisibility?.quotient ?? Math.floor(a / b)}
+                </div>
+                <div className="font-mono text-[12px] text-[#E5A93C] font-bold leading-none text-center mt-1">
+                  quotient = floor(N / d) = floor({a} / {b}) = {divisibility?.quotient ?? Math.floor(a / b)}
+                </div>
+                <div className="font-sans text-[10px] text-[#A8A090]/80 leading-none text-center mt-1">
+                  Integer division of {a} by {b}
+                </div>
+              </>
+            ) : isDivision ? (
               <>
                 <span className="font-mono text-[10px] uppercase tracking-[0.2em] text-[#A8A090] font-semibold leading-none text-center mb-1">
                   Determine the Quotient
@@ -1226,7 +1285,22 @@ export default function Nikhilam3DCanvas({ lesson, activeChapter }: Nikhilam3DCa
             }}
             className="flex flex-col items-center justify-center px-6 py-3 sm:px-7 sm:py-3.5 rounded-2xl bg-[#14120D]/95 border border-[#E5A93C]/50 shadow-[0_10px_35px_rgba(0,0,0,0.85)] min-w-[240px] max-w-[92vw] sm:max-w-md transition-opacity duration-150"
           >
-            {isDivision ? (
+            {isDivisibility ? (
+              <>
+                <span className="font-mono text-[10px] uppercase tracking-[0.2em] text-[#A8A090] font-semibold leading-none text-center mb-1">
+                  Determine the Remainder
+                </span>
+                <div className="font-display text-4xl sm:text-5xl font-bold text-[#FFD700] tracking-tight leading-none text-center tabular-nums my-1">
+                  REMAINDER = {divisibility?.remainder ?? (a % b)}
+                </div>
+                <div className="font-mono text-[12px] text-[#E5A93C] font-bold leading-none text-center mt-1">
+                  remainder = N % d = {a} % {b} = {divisibility?.remainder ?? (a % b)}
+                </div>
+                <div className={`font-sans text-[11px] font-bold leading-none text-center mt-1.5 ${divisibility?.isDivisible ? 'text-emerald-400' : 'text-amber-400'}`}>
+                  The number is divisible exactly when remainder === 0 ➔ {divisibility?.isDivisible ? 'DIVISIBLE' : 'NOT DIVISIBLE'}
+                </div>
+              </>
+            ) : isDivision ? (
               <>
                 <span className="font-mono text-[10px] uppercase tracking-[0.2em] text-[#A8A090] font-semibold leading-none text-center mb-1">
                   Determine the Remainder
@@ -1307,7 +1381,7 @@ export default function Nikhilam3DCanvas({ lesson, activeChapter }: Nikhilam3DCa
         )}
 
         {/* SCENE 6: COMBINE LEFT PART & RIGHT PART (Multiplication / Squaring Only) */}
-        {!isSubtraction && !isDivision && activeChapter.id === 6 && (
+        {!isSubtraction && !isDivision && !isDivisibility && activeChapter.id === 6 && (
           <div
             id="combLhsCard"
             ref={combLhsRef}
@@ -1347,7 +1421,7 @@ export default function Nikhilam3DCanvas({ lesson, activeChapter }: Nikhilam3DCa
           </div>
         )}
 
-        {!isSubtraction && !isDivision && activeChapter.id === 6 && (
+        {!isSubtraction && !isDivision && !isDivisibility && activeChapter.id === 6 && (
           <div
             id="combRhsCard"
             ref={combRhsRef}
@@ -1402,14 +1476,29 @@ export default function Nikhilam3DCanvas({ lesson, activeChapter }: Nikhilam3DCa
               willChange: 'transform',
             }}
             className={`rounded-2xl bg-[#14120D]/95 border border-[#E5A93C]/50 shadow-2xl transition-opacity duration-150 flex flex-col items-center justify-center ${
-              (isSubtraction || isDivision)
+              (isSubtraction || isDivision || isDivisibility)
                 ? 'px-6 py-3 sm:px-8 sm:py-4 min-w-[280px] max-w-[92vw] sm:max-w-lg'
                 : isDuplex
                 ? 'px-5 py-2.5 min-w-[260px]'
                 : 'px-5 py-2.5 flex-row items-center gap-2 text-xs font-mono text-[#D1C9BE]'
             }`}
           >
-            {isDivision ? (
+            {isDivisibility ? (
+              <>
+                <span className="font-mono text-[10px] uppercase tracking-[0.2em] text-[#A8A090] font-semibold leading-none text-center mb-1">
+                  Divisibility Verdict
+                </span>
+                <div className={`font-display text-3xl sm:text-4xl font-bold tracking-tight leading-none text-center tabular-nums my-1 ${divisibility?.isDivisible ? 'text-emerald-400' : 'text-amber-400'}`}>
+                  {a} ÷ {b} ➔ {divisibility?.isDivisible ? 'DIVISIBLE' : 'NOT DIVISIBLE'}
+                </div>
+                <div className="font-mono text-xs sm:text-sm text-[#E5A93C] font-semibold text-center mt-1">
+                  Quotient: {divisibility?.quotient ?? Math.floor(a / b)} · Remainder: {divisibility?.remainder ?? (a % b)}
+                </div>
+                <div className="font-sans text-[11px] text-[#A8A090] leading-normal text-center mt-1">
+                  Reason: Last digit is {divisibility?.lastDigit ?? (a % 10)}; remainder = {divisibility?.remainder ?? (a % b)}.
+                </div>
+              </>
+            ) : isDivision ? (
               <>
                 <span className="font-mono text-[10px] uppercase tracking-[0.2em] text-[#A8A090] font-semibold leading-none text-center mb-1">
                   Combined Division Result
@@ -1503,12 +1592,22 @@ export default function Nikhilam3DCanvas({ lesson, activeChapter }: Nikhilam3DCa
               />
               {/* Subtle Concentric Outer Accent Ring */}
               <div
-                className="absolute -inset-2.5 rounded-full border border-[#E5A93C]/35 pointer-events-none"
+                className="absolute -inset-2.5 rounded-full border border-[#E5A93C]/30 pointer-events-none"
                 style={{ boxSizing: 'border-box' }}
               />
 
               {/* The Final Answer: Dead Center */}
-              {isDivision ? (
+              {isDivisibility ? (
+                <div className="relative z-10 flex flex-col items-center justify-center leading-tight">
+                  <span className="font-mono text-[9px] uppercase tracking-wider text-[#A8A090]">Verdict</span>
+                  <span className={`font-display text-2xl sm:text-3xl font-bold tracking-tight leading-none text-center select-none drop-shadow-[0_2px_14px_rgba(255,215,0,0.45)] ${divisibility?.isDivisible ? 'text-emerald-400' : 'text-amber-400'}`}>
+                    {divisibility?.isDivisible ? 'DIVISIBLE' : 'NOT DIVISIBLE'}
+                  </span>
+                  <span className="font-mono text-[10px] text-[#E5A93C] font-semibold mt-1">
+                    Q: {divisibility?.quotient ?? Math.floor(a / b)} · Rem: {divisibility?.remainder ?? (a % b)}
+                  </span>
+                </div>
+              ) : isDivision ? (
                 <div className="relative z-10 flex flex-col items-center justify-center leading-tight">
                   <span className="font-mono text-[10px] uppercase tracking-wider text-[#A8A090]">Quotient</span>
                   <span className="font-display text-4xl sm:text-5xl font-bold text-[#FFD700] tracking-tight leading-none text-center tabular-nums select-none drop-shadow-[0_2px_14px_rgba(255,215,0,0.45)]">
@@ -1540,6 +1639,13 @@ export default function Nikhilam3DCanvas({ lesson, activeChapter }: Nikhilam3DCa
                   <div className="flex flex-col items-center gap-0.5 text-emerald-300 font-medium">
                     <span>{a} = {b} × {div?.quotient ?? 114} + {div?.remainder ?? 6} ({div?.quotient ?? 114} × {b} + {div?.remainder ?? 6} = {a})</span>
                     <span className="text-[11px] text-emerald-400">0 ≤ {div?.remainder ?? 6} &lt; {b} ✓</span>
+                  </div>
+                )
+                : isDivisibility
+                ? (
+                  <div className="flex flex-col items-center gap-0.5 text-emerald-300 font-medium">
+                    <span>Verify: N = d × quotient + remainder: {a} = {b} × {divisibility?.quotient ?? Math.floor(a / b)} + {divisibility?.remainder ?? (a % b)}</span>
+                    <span className="text-[11px] text-emerald-400">({b} × {divisibility?.quotient ?? Math.floor(a / b)} + {divisibility?.remainder ?? (a % b)} = {a} ✓)</span>
                   </div>
                 )
                 : `${a} × ${b} = ${finalAnswer}`}

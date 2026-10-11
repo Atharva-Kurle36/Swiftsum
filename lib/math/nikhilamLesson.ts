@@ -18,7 +18,7 @@ export interface NikhilamChapter {
 }
 
 export interface NikhilamLessonData {
-  operationType: 'multiplication' | 'squaring' | 'subtraction' | 'division';
+  operationType: 'multiplication' | 'squaring' | 'subtraction' | 'division' | 'divisibility';
   squaringMethod?: 'yavadunam' | 'ekadhikena' | 'duplex';
   methodTitle: string;
   sutraSubtitle: string;
@@ -117,6 +117,21 @@ export interface NikhilamLessonData {
     stepsSummary: string[];
     verificationFormula: string;
     verificationPassed: boolean;
+  };
+  divisibilityData?: {
+    num: number;
+    divisor: number;
+    numStr: string;
+    divisorStr: string;
+    quotient: number;
+    remainder: number;
+    quotientStr: string;
+    remainderStr: string;
+    isDivisible: boolean;
+    lastDigit: number;
+    ruleDescription: string;
+    verificationFormula: string;
+    verdictText: string;
   };
 }
 
@@ -1673,6 +1688,291 @@ export function generateDivisionLesson(dividendInput: string | number, divisorIn
       stepsSummary,
       verificationFormula: `${quotient} × ${divisor} + ${remainder} = ${dividend}`,
       verificationPassed: isVerified
+    }
+  };
+}
+
+/**
+ * Generate 7-scene animated lesson for Divisibility Check
+ */
+export function generateDivisibilityLesson(aInput: string | number, bInput: string | number): NikhilamLessonData {
+  const cleanA = String(aInput).replace(/^0+(?!$)/, '') || '0';
+  const cleanB = String(bInput).replace(/^0+(?!$)/, '') || '1';
+  const num = parseInt(cleanA, 10) || 0;
+  const divisor = parseInt(cleanB, 10) || 1;
+
+  const quotient = Math.floor(num / divisor);
+  const remainder = num % divisor;
+  const isDivisible = remainder === 0;
+  const lastDigit = Math.abs(num) % 10;
+
+  const verdictText = isDivisible ? 'DIVISIBLE' : 'NOT DIVISIBLE';
+  const finalAnswer = verdictText;
+  const groundTruth = verdictText;
+  const isVerified = num === divisor * quotient + remainder;
+
+  const methodTitle = divisor === 5
+    ? 'Divisibility Check Using the Terminal-Digit Rule'
+    : 'Divisibility Check Using Vedic Mathematics';
+
+  const sutraSubtitle = divisor === 5
+    ? `${num} ÷ 5 · Terminal-Digit Rule · Last Digit ${lastDigit} · ${verdictText}`
+    : `${num} ÷ ${divisor} · Quotient ${quotient}, Remainder ${remainder} · ${verdictText}`;
+
+  const durations = [4.5, 4.5, 5.0, 5.0, 5.0, 5.0, 4.5];
+  const totalDurationSeconds = durations.reduce((acc, d) => acc + d, 0);
+
+  let currentStart = 0;
+  const chapters: NikhilamChapter[] = [
+    // SCENE 1 — INTRODUCTION
+    {
+      id: 1,
+      title: divisor === 5 ? 'Divisibility Check Using the Terminal-Digit Rule' : `Divisibility Check for ${cleanA} ÷ ${cleanB}`,
+      shortTitle: 'Introduction',
+      subtitle: `Is ${cleanA} divisible by ${cleanB}?`,
+      durationSeconds: durations[0],
+      startTimeSeconds: currentStart,
+      endTimeSeconds: (currentStart += durations[0]),
+      narrationText: divisor === 5
+        ? `Divisibility Check for ${cleanA} by 5. For divisibility by 5, explain the terminal-digit rule: a number is divisible by 5 exactly when its last digit is 0 or 5.`
+        : `Divisibility Check for ${cleanA} by ${cleanB}. We test whether ${cleanA} is evenly divisible by ${cleanB}.`,
+      captionText: divisor === 5
+        ? `Divisibility Check for ${cleanA} by 5. A number is divisible by 5 exactly when its last digit is 0 or 5.`
+        : `Divisibility Check for ${cleanA} by ${cleanB}. Evaluating whether ${cleanA} is divisible by ${cleanB}.`,
+      equations: [
+        `Test: Is ${cleanA} divisible by ${cleanB}?`,
+        `NUMBER = ${cleanA} · DIVISOR = ${cleanB}`
+      ],
+      active3dFocus: 'intro',
+      explanationDetails: {
+        what: `Number = ${cleanA}, Divisor = ${cleanB}`,
+        why: divisor === 5
+          ? 'Divisibility by 5 depends strictly on the terminal units digit in base 10.'
+          : `Evaluates divisibility of ${cleanA} by ${cleanB}.`,
+        how: `Setup: ${cleanA} ÷ ${cleanB}`
+      }
+    },
+
+    // SCENE 2 — IDENTIFY RULE & CRITERION
+    {
+      id: 2,
+      title: divisor === 5 ? 'Terminal-Digit Rule for 5' : 'Divisibility Rule & Criterion',
+      shortTitle: 'Rule Selection',
+      subtitle: divisor === 5
+        ? 'A number is divisible by 5 exactly when its last digit is 0 or 5'
+        : `Divisibility criterion for divisor ${cleanB}`,
+      durationSeconds: durations[1],
+      startTimeSeconds: currentStart,
+      endTimeSeconds: (currentStart += durations[1]),
+      narrationText: divisor === 5
+        ? `For divisibility by 5, explain the terminal-digit rule: a number is divisible by 5 exactly when its last digit is 0 or 5. The last digit of ${cleanA} is ${lastDigit}.`
+        : `Divisibility rule for divisor ${cleanB}. Evaluating criterion for ${cleanA}.`,
+      captionText: divisor === 5
+        ? `Terminal-digit rule: a number is divisible by 5 exactly when its last digit is 0 or 5. The last digit of ${cleanA} is ${lastDigit}.`
+        : `Divisibility rule for divisor ${cleanB} on ${cleanA}.`,
+      equations: [
+        divisor === 5 ? `Rule: Last digit must be 0 or 5` : `Divisibility Rule for ${cleanB}`,
+        `Last digit of ${cleanA} is ${lastDigit}`
+      ],
+      active3dFocus: 'base',
+      explanationDetails: {
+        what: divisor === 5 ? `Terminal digit rule: last digit 0 or 5` : `Rule for divisor ${cleanB}`,
+        why: `Because 10 = 2 × 5, every power of 10 above units is already a multiple of 5.`,
+        how: `Inspect terminal digit: ${lastDigit}`
+      }
+    },
+
+    // SCENE 3 — INSPECT TERMINAL DIGIT
+    {
+      id: 3,
+      title: divisor === 5 ? `Inspect Terminal Digit (${lastDigit})` : 'Evaluate Divisibility Criterion',
+      shortTitle: 'Inspect Digit',
+      subtitle: divisor === 5
+        ? (isDivisible ? `Last digit is ${lastDigit} ➔ Matches 0 or 5` : `Last digit is ${lastDigit} ➔ Does not match 0 or 5`)
+        : `Evaluating ${cleanA} with divisor ${cleanB}`,
+      durationSeconds: durations[2],
+      startTimeSeconds: currentStart,
+      endTimeSeconds: (currentStart += durations[2]),
+      narrationText: divisor === 5
+        ? (isDivisible
+            ? `The last digit of ${cleanA} is ${lastDigit}. Since ${lastDigit} is 0 or 5, ${cleanA} is divisible by 5.`
+            : `The last digit of ${cleanA} is ${lastDigit}. Since ${lastDigit} is not 0 or 5, ${cleanA} is not divisible by 5. Remainder is ${remainder}.`)
+        : `Evaluating criterion on ${cleanA} with divisor ${cleanB}.`,
+      captionText: divisor === 5
+        ? (isDivisible
+            ? `Last digit is ${lastDigit}. Since ${lastDigit} ∈ {0, 5}, the divisibility condition for 5 is satisfied.`
+            : `Last digit is ${lastDigit}. Since ${lastDigit} ∉ {0, 5}, the divisibility condition for 5 fails (Remainder: ${remainder}).`)
+        : `Criterion result for ${cleanA} ÷ ${cleanB}.`,
+      equations: [
+        `Last digit of ${cleanA} = ${lastDigit}`,
+        divisor === 5
+          ? (isDivisible ? `${lastDigit} ∈ {0, 5} ➔ Condition Met` : `${lastDigit} ∉ {0, 5} ➔ Condition Failed (Rem: ${remainder})`)
+          : `Criterion evaluated: ${isDivisible ? 'Passed' : 'Failed'}`
+      ],
+      active3dFocus: 'deviations',
+      explanationDetails: {
+        what: `Last digit: ${lastDigit}`,
+        why: divisor === 5
+          ? (isDivisible ? `${lastDigit} is 0 or 5` : `${lastDigit} is not 0 or 5`)
+          : `Evaluates divisibility property`,
+        how: divisor === 5 ? `${lastDigit} mod 5 = ${remainder}` : `${cleanA} mod ${cleanB} = ${remainder}`
+      }
+    },
+
+    // SCENE 4 — DETERMINE THE QUOTIENT
+    {
+      id: 4,
+      title: 'Determine the Quotient',
+      shortTitle: 'Quotient',
+      subtitle: `QUOTIENT = ${quotient}`,
+      durationSeconds: durations[3],
+      startTimeSeconds: currentStart,
+      endTimeSeconds: (currentStart += durations[3]),
+      narrationText: `quotient = floor(N / d). quotient = floor(${cleanA} / ${cleanB}) = ${quotient}. The quotient is ${quotient}.`,
+      captionText: `quotient = floor(N / d) = floor(${cleanA} / ${cleanB}) = ${quotient}. QUOTIENT = ${quotient}.`,
+      equations: [
+        `quotient = floor(N / d)`,
+        `floor(${cleanA} / ${cleanB}) = ${quotient}`,
+        `QUOTIENT = ${quotient}`
+      ],
+      active3dFocus: 'crossAdd',
+      explanationDetails: {
+        what: `quotient = floor(N / d) = ${quotient}`,
+        why: `Computes the greatest integer multiple of divisor ${cleanB} contained in ${cleanA}.`,
+        how: `floor(${cleanA} / ${cleanB}) = ${quotient}`
+      }
+    },
+
+    // SCENE 5 — DETERMINE THE REMAINDER
+    {
+      id: 5,
+      title: 'Determine the Remainder',
+      shortTitle: 'Remainder',
+      subtitle: `REMAINDER = ${remainder} ➔ ${verdictText}`,
+      durationSeconds: durations[4],
+      startTimeSeconds: currentStart,
+      endTimeSeconds: (currentStart += durations[4]),
+      narrationText: `remainder = N % d. remainder = ${cleanA} % ${cleanB} = ${remainder}. The number is divisible exactly when remainder === 0. Because remainder is ${remainder}, ${cleanA} is ${verdictText}.`,
+      captionText: `remainder = N % d = ${cleanA} % ${cleanB} = ${remainder}. The number is divisible exactly when remainder === 0. Result: ${verdictText}.`,
+      equations: [
+        `remainder = N % d`,
+        `${cleanA} % ${cleanB} = ${remainder}`,
+        `The number is divisible exactly when remainder === 0`,
+        `Result: ${isDivisible ? 'remainder === 0 ➔ DIVISIBLE' : `remainder === ${remainder} ≠ 0 ➔ NOT DIVISIBLE`}`
+      ],
+      active3dFocus: 'multiplyDev',
+      explanationDetails: {
+        what: `remainder = N % d = ${remainder}`,
+        why: `A number is divisible exactly when remainder === 0.`,
+        how: `${cleanA} % ${cleanB} = ${remainder}`
+      }
+    },
+
+    // SCENE 6 — COMBINE RESULT & VERDICT
+    {
+      id: 6,
+      title: 'Divisibility Verdict',
+      shortTitle: 'Verdict',
+      subtitle: `${cleanA} ÷ ${cleanB} = ${quotient} rem ${remainder} ➔ ${verdictText}`,
+      durationSeconds: durations[5],
+      startTimeSeconds: currentStart,
+      endTimeSeconds: (currentStart += durations[5]),
+      narrationText: divisor === 5
+        ? (isDivisible
+            ? `${cleanA} divided by 5: quotient ${quotient}, remainder ${remainder}. Last digit is ${lastDigit}; remainder = ${remainder}. ${cleanA} is DIVISIBLE by 5.`
+            : `${cleanA} divided by 5: quotient ${quotient}, remainder ${remainder}. Last digit is ${lastDigit}; remainder = ${remainder}. ${cleanA} is NOT DIVISIBLE by 5.`)
+        : `${cleanA} divided by ${cleanB}: quotient ${quotient}, remainder ${remainder}. ${cleanA} is ${verdictText} by ${cleanB}.`,
+      captionText: divisor === 5
+        ? (isDivisible
+            ? `For ${cleanA} ÷ 5, show quotient ${quotient}, remainder ${remainder}, DIVISIBLE. Reason: Last digit is ${lastDigit}; remainder = ${remainder}.`
+            : `For ${cleanA} ÷ 5, show quotient ${quotient}, remainder ${remainder}, NOT DIVISIBLE. Reason: Last digit is ${lastDigit}; remainder = ${remainder}.`)
+        : `For ${cleanA} ÷ ${cleanB}: quotient ${quotient}, remainder ${remainder}, ${verdictText}.`,
+      equations: [
+        `${cleanA} ÷ ${cleanB} = ${quotient} remainder ${remainder}`,
+        `Verdict: ${verdictText}`,
+        divisor === 5
+          ? `Reason: Last digit is ${lastDigit}; remainder = ${remainder}.`
+          : `Remainder = ${remainder} (${isDivisible ? 'Divisible' : 'Not Divisible'})`
+      ],
+      active3dFocus: 'combine',
+      explanationDetails: {
+        what: `Verdict: ${verdictText} (Quotient: ${quotient}, Remainder: ${remainder})`,
+        why: divisor === 5
+          ? `Last digit is ${lastDigit}; remainder = ${remainder}.`
+          : `Remainder is ${remainder}`,
+        how: `${cleanA} ÷ ${cleanB} = ${quotient} rem ${remainder}`
+      }
+    },
+
+    // SCENE 7 — INDEPENDENT ARITHMETIC VERIFICATION
+    {
+      id: 7,
+      title: 'Independent Arithmetic Verification',
+      shortTitle: 'Verification',
+      subtitle: `${cleanA} = ${cleanB} × ${quotient} + ${remainder} · ${verdictText}`,
+      durationSeconds: durations[6],
+      startTimeSeconds: currentStart,
+      endTimeSeconds: (currentStart += durations[6]),
+      narrationText: `Verify using: N = d × quotient + remainder. ${cleanA} = ${cleanB} × ${quotient} + ${remainder}. ${cleanB} times ${quotient} plus ${remainder} equals ${cleanA}. Arithmetic Verification Passed. Verdict: ${verdictText}.`,
+      captionText: `Verify using: N = d × quotient + remainder. ${cleanA} = ${cleanB} × ${quotient} + ${remainder}. (${cleanB} × ${quotient} + ${remainder} = ${divisor * quotient} + ${remainder} = ${cleanA}). Verdict: ${verdictText}.`,
+      equations: [
+        `Verify using: N = d × quotient + remainder`,
+        `${cleanA} = ${cleanB} × ${quotient} + ${remainder}`,
+        `Verdict: ${isDivisible ? 'DIVISIBLE (remainder === 0)' : `NOT DIVISIBLE (remainder = ${remainder})`} ✓`
+      ],
+      active3dFocus: 'verify',
+      explanationDetails: {
+        what: `Verification: ${cleanA} = ${cleanB} × ${quotient} + ${remainder}`,
+        why: `Confirms the Euclidean division theorem: N = d × quotient + remainder.`,
+        how: `${cleanB} × ${quotient} + ${remainder} = ${cleanA}`
+      }
+    }
+  ];
+
+  return {
+    operationType: 'divisibility',
+    methodTitle,
+    sutraSubtitle,
+    a: num,
+    b: divisor,
+    aStr: cleanA,
+    bStr: cleanB,
+    base: 10,
+    numZeros: 1,
+    devA: 0,
+    devB: 0,
+    devAStr: '',
+    devBStr: '',
+    absDevA: 0,
+    absDevB: 0,
+    lhs1: quotient,
+    lhs2: quotient,
+    lhs: quotient,
+    rawRhs: remainder,
+    balancedLhs: quotient,
+    balancedRhsStr: String(remainder),
+    finalAnswer,
+    groundTruth,
+    isVerified,
+    isSuitableForNikhilam: true,
+    totalDurationSeconds,
+    chapters,
+    divisibilityData: {
+      num,
+      divisor,
+      numStr: cleanA,
+      divisorStr: cleanB,
+      quotient,
+      remainder,
+      quotientStr: String(quotient),
+      remainderStr: String(remainder),
+      isDivisible,
+      lastDigit,
+      ruleDescription: divisor === 5
+        ? 'A number is divisible by 5 exactly when its last digit is 0 or 5.'
+        : `Divisibility rule for divisor ${divisor}`,
+      verificationFormula: `${cleanA} = ${cleanB} × ${quotient} + ${remainder}`,
+      verdictText
     }
   };
 }

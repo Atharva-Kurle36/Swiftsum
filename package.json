@@ -7,7 +7,7 @@
     "build": "next build",
     "start": "next start",
     "lint": "tsc --noEmit",
-    "test": "npx tsx tests/math.test.mjs && npx tsx tests/nikhilamLesson.test.mjs && npx tsx tests/squaring.test.mjs"
+    "test": "npx tsx tests/math.test.mjs && npx tsx tests/nikhilamLesson.test.mjs && npx tsx tests/squaring.test.mjs && npx tsx tests/subtraction.test.mjs && npx tsx tests/divisibility.test.mjs"
   },
   "dependencies": {
     "@radix-ui/react-slot": "^1.4.0",

@@ -1,10 +1,10 @@
 'use client';
 
-import React, { useState, useMemo } from 'react';
+import React, { useState, useMemo, useEffect } from 'react';
 import { useSearchParams } from 'next/navigation';
 import { SUTRA_REGISTRY } from '@/lib/math/registry';
 import { CalculationResult } from '@/lib/math/types';
-import { generateNikhilamLesson, generateSquaringLesson, generateSubtractionLesson, generateDivisionLesson, NikhilamLessonData } from '@/lib/math/nikhilamLesson';
+import { generateNikhilamLesson, generateSquaringLesson, generateSubtractionLesson, generateDivisionLesson, generateDivisibilityLesson, NikhilamLessonData } from '@/lib/math/nikhilamLesson';
 import InputForm from './InputForm';
 import StepPlayer from './StepPlayer';
 import StepCard from './StepCard';
@@ -79,6 +79,28 @@ export default function CalculatorShell() {
   const [currentStep, setCurrentStep] = useState<number>(1);
   const [isPlaying, setIsPlaying] = useState<boolean>(false);
 
+  // Synchronize URL search params with activeOpId and opStates on navigation
+  useEffect(() => {
+    const op = searchParams.get('op');
+    const a = searchParams.get('a');
+    const b = searchParams.get('b');
+    if (op && SUTRA_REGISTRY[op]) {
+      setActiveOpId(op);
+      if (a) {
+        const config = SUTRA_REGISTRY[op];
+        const cleanB = config.requiresSecondInput ? (b || undefined) : undefined;
+        setOpStates(prev => ({
+          ...prev,
+          [op]: {
+            a,
+            b: cleanB,
+            result: config.calculate(a, cleanB),
+          },
+        }));
+      }
+    }
+  }, [searchParams]);
+
   // View mode switcher: '3d' for cinematic educational walkthrough, 'steps' for classic step-by-step
   const [viewMode, setViewMode] = useState<'3d' | 'steps'>('3d');
 
@@ -104,6 +126,11 @@ export default function CalculatorShell() {
       const a = activeOpState.a || '1032';
       const b = activeOpState.b || '9';
       return generateDivisionLesson(a, b);
+    }
+    if (activeOpId === 'divisibility') {
+      const a = activeOpState.a || '1967';
+      const b = activeOpState.b || '5';
+      return generateDivisibilityLesson(a, b);
     }
     // Default to multiplication lesson
     const a = activeOpState.a || '98';
@@ -309,7 +336,9 @@ export default function CalculatorShell() {
                       ? 'All from 9 and last from 10 · Power-of-ten complement, minuend addition and base removal.'
                       : activeOpId === 'division'
                         ? 'Nikhilam base-10 division · deficiency complement, quotient digit propagation and remainder resolution.'
-                        : 'YouTube-style interactive 3D player · animated deviations, cross-addition & place-value synthesis'
+                        : activeOpId === 'divisibility'
+                          ? 'Vedic divisibility evaluation · terminal-digit rules, osculators & place-value remainder verification.'
+                          : 'YouTube-style interactive 3D player · animated deviations, cross-addition & place-value synthesis'
                 }
               />
               <Nikhilam3DPlayer
