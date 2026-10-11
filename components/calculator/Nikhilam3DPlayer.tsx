@@ -261,7 +261,7 @@ export default function Nikhilam3DPlayer({ lesson, onSelectPreset }: Nikhilam3DP
       </div>
 
       {/* ── MAIN 3D VIEWPORT CANVAS ── */}
-      <div className="relative w-full h-[360px] sm:h-[440px] md:h-[480px] bg-black flex items-center justify-center overflow-hidden">
+      <div className="relative w-full h-[400px] sm:h-[440px] md:h-[480px] bg-black flex items-center justify-center overflow-hidden">
         {hasWebGL ? (
           <Nikhilam3DCanvas lesson={lesson} activeChapter={activeChapter} />
         ) : (
@@ -269,12 +269,12 @@ export default function Nikhilam3DPlayer({ lesson, onSelectPreset }: Nikhilam3DP
         )}
 
         {/* Captions / Subtitle Bar (Clean, High-Contrast Editorial Overlay) */}
-        <div className="absolute bottom-4 left-4 right-4 sm:left-8 sm:right-8 pointer-events-none z-20 flex justify-center">
-          <div className="max-w-2xl w-full bg-[#0D0C0A]/95 border border-[#E5A93C]/30 rounded-xl px-5 py-3 shadow-2xl text-center transition-all">
-            <span className="font-mono text-[10px] uppercase tracking-[0.25em] text-[#E5A93C] font-bold block mb-1">
+        <div id="captionPanel" className="absolute bottom-2.5 sm:bottom-4 left-3 right-3 sm:left-8 sm:right-8 pointer-events-none z-20 flex justify-center">
+          <div className="max-w-2xl w-full bg-[#0D0C0A]/95 border border-[#E5A93C]/30 rounded-xl px-4 py-2 sm:px-5 sm:py-3 shadow-2xl text-center transition-all">
+            <span className="font-mono text-[10px] uppercase tracking-[0.25em] text-[#E5A93C] font-bold block mb-0.5 sm:mb-1">
               {activeChapter.title}
             </span>
-            <p className="font-sans text-xs sm:text-sm text-[#F5F0E6] leading-relaxed font-normal">
+            <p className="font-sans text-xs sm:text-sm text-[#F5F0E6] leading-snug sm:leading-relaxed font-normal">
               {activeChapter.captionText}
             </p>
           </div>
