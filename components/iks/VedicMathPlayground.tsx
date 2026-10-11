@@ -141,10 +141,12 @@ export default function VedicMathPlayground() {
                 <div className="flex flex-col sm:flex-row items-center justify-between gap-4 mb-8">
                   {/* First Input */}
                   <div className="w-full sm:w-1/2">
-                    <label className="block font-mono text-xs uppercase tracking-wider text-[#A8A090] mb-2">
+                    <label htmlFor="playground-input-a" className="block font-mono text-xs uppercase tracking-wider text-[#A8A090] mb-2">
                       First number
                     </label>
                     <input
+                      id="playground-input-a"
+                      name="numA"
                       type="number"
                       value={numA}
                       onChange={(e) => setNumA(e.target.value)}
@@ -160,10 +162,12 @@ export default function VedicMathPlayground() {
 
                   {/* Second Input */}
                   <div className="w-full sm:w-1/2">
-                    <label className="block font-mono text-xs uppercase tracking-wider text-[#A8A090] mb-2">
+                    <label htmlFor="playground-input-b" className="block font-mono text-xs uppercase tracking-wider text-[#A8A090] mb-2">
                       Second number
                     </label>
                     <input
+                      id="playground-input-b"
+                      name="numB"
                       type="number"
                       value={numB}
                       onChange={(e) => setNumB(e.target.value)}

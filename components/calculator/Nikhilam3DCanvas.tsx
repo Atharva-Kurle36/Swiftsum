@@ -811,6 +811,7 @@ export default function Nikhilam3DCanvas({ lesson, activeChapter }: Nikhilam3DCa
               top: 0,
               left: 0,
               willChange: 'transform',
+              opacity: 0,
             }}
             className={`flex flex-col items-center justify-center rounded-xl bg-[#14120D]/95 border border-[#E5A93C]/40 shadow-xl transition-opacity duration-150 ${
               isSquaring && activeChapter.id !== 1
@@ -848,6 +849,7 @@ export default function Nikhilam3DCanvas({ lesson, activeChapter }: Nikhilam3DCa
               top: 0,
               left: 0,
               willChange: 'transform',
+              opacity: 0,
             }}
             className="flex flex-col items-center justify-center px-6 py-3 rounded-xl bg-[#14120D]/95 border border-[#E5A93C]/40 shadow-xl min-w-[130px] transition-opacity duration-150"
           >
@@ -1089,10 +1091,10 @@ export default function Nikhilam3DCanvas({ lesson, activeChapter }: Nikhilam3DCa
             className="flex flex-col items-center justify-center px-6 py-3.5 sm:px-8 sm:py-4 rounded-2xl bg-[#14120D]/95 border border-[#E5A93C]/50 shadow-[0_10px_35px_rgba(0,0,0,0.85)] min-w-[260px] max-w-[92vw] sm:max-w-lg transition-opacity duration-150"
           >
             <span className="font-mono text-[10px] uppercase tracking-[0.2em] text-[#A8A090] font-semibold leading-none text-center mb-1">
-              Inspect Terminal Digit
+              {b === 5 ? 'Inspect Terminal Digit' : 'Divisibility Criterion'}
             </span>
             <div className="font-display text-3xl sm:text-4xl font-bold text-[#FFD700] tracking-tight leading-none text-center tabular-nums my-1">
-              Last Digit = {divisibility?.lastDigit ?? (a % 10)}
+              {b === 5 ? `Last Digit = ${divisibility?.lastDigit ?? (a % 10)}` : `${a} mod ${b} = ${divisibility?.remainder ?? (a % b)}`}
             </div>
             <div className="flex flex-wrap items-center justify-center gap-1.5 sm:gap-2 my-1.5">
               <div className="flex flex-col items-center px-2.5 py-1 rounded-lg bg-black/50 border border-[#E5A93C]/30">
@@ -1110,7 +1112,7 @@ export default function Nikhilam3DCanvas({ lesson, activeChapter }: Nikhilam3DCa
                 : `Criterion evaluated for ${a} ÷ ${b}`}
             </div>
             <div className="font-sans text-[10px] text-[#A8A090]/80 leading-none text-center mt-0.5">
-              A number is divisible by 5 exactly when its last digit is 0 or 5
+              {b === 5 ? 'A number is divisible by 5 exactly when its last digit is 0 or 5' : `Evaluating divisibility criterion for divisor ${b}`}
             </div>
           </div>
         )}
@@ -1495,7 +1497,7 @@ export default function Nikhilam3DCanvas({ lesson, activeChapter }: Nikhilam3DCa
                   Quotient: {divisibility?.quotient ?? Math.floor(a / b)} · Remainder: {divisibility?.remainder ?? (a % b)}
                 </div>
                 <div className="font-sans text-[11px] text-[#A8A090] leading-normal text-center mt-1">
-                  Reason: Last digit is {divisibility?.lastDigit ?? (a % 10)}; remainder = {divisibility?.remainder ?? (a % b)}.
+                  {b === 5 ? `Reason: Last digit is ${divisibility?.lastDigit ?? (a % 10)}; remainder = ${divisibility?.remainder ?? (a % b)}.` : `Remainder = ${divisibility?.remainder ?? (a % b)} (${divisibility?.isDivisible ? 'Divisible' : 'Not Divisible'})`}
                 </div>
               </>
             ) : isDivision ? (

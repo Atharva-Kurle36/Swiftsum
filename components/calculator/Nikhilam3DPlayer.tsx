@@ -299,7 +299,7 @@ export default function Nikhilam3DPlayer({ lesson, onSelectPreset }: Nikhilam3DP
           </div>
 
           {/* Chapter Ticks & Labels */}
-          <div className="grid grid-cols-7 gap-1 pt-1">
+          <div className="flex sm:grid sm:grid-cols-7 gap-1 pt-1 overflow-x-auto no-scrollbar">
             {lesson.chapters.map((chap, idx) => {
               const isCurrent = currentChapterIndex === idx;
               const isPassed = currentChapterIndex > idx;
@@ -308,7 +308,7 @@ export default function Nikhilam3DPlayer({ lesson, onSelectPreset }: Nikhilam3DP
                   key={chap.id}
                   onClick={() => jumpToChapter(idx)}
                   title={`${chap.id}. ${chap.title}`}
-                  className={`text-left p-1.5 rounded-lg border text-[10px] font-mono truncate transition-all cursor-pointer ${
+                  className={`flex-shrink-0 min-w-[70px] sm:min-w-0 text-left p-1.5 rounded-lg border text-[10px] font-mono truncate transition-all cursor-pointer ${
                     isCurrent
                       ? 'bg-[#E5A93C] text-black border-[#FFD700] font-bold shadow-[0_0_10px_rgba(229,169,60,0.25)]'
                       : isPassed

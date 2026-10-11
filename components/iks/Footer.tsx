@@ -128,6 +128,9 @@ export default function Footer() {
                 className="relative flex items-center"
               >
                 <input
+                  id="newsletter-email"
+                  name="email"
+                  aria-label="Email address"
                   type="email"
                   value={email}
                   onChange={(e) => setEmail(e.target.value)}

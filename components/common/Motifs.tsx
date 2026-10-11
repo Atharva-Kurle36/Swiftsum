@@ -87,10 +87,13 @@ export function NalandaIllustration() {
       <g stroke="#9A7730" fill="none" strokeWidth="1.1">
         <circle cx="90" cy="52" r="14" />
         <circle cx="90" cy="52" r="7" />
-        {[0, 45, 90, 135].map(a => (
-          <line key={a} x1={90 - 20 * Math.cos(a * Math.PI / 180)} y1={52 - 20 * Math.sin(a * Math.PI / 180)}
-            x2={90 - 26 * Math.cos(a * Math.PI / 180)} y2={52 - 26 * Math.sin(a * Math.PI / 180)} />
-        ))}
+        {[0, 45, 90, 135].map(a => {
+          const x1 = Math.round((90 - 20 * Math.cos(a * Math.PI / 180)) * 100) / 100;
+          const y1 = Math.round((52 - 20 * Math.sin(a * Math.PI / 180)) * 100) / 100;
+          const x2 = Math.round((90 - 26 * Math.cos(a * Math.PI / 180)) * 100) / 100;
+          const y2 = Math.round((52 - 26 * Math.sin(a * Math.PI / 180)) * 100) / 100;
+          return <line key={a} x1={x1} y1={y1} x2={x2} y2={y2} />;
+        })}
       </g>
       {/* lotus base accents */}
       <g stroke="#9A7730" fill="none" strokeWidth="1.1">
@@ -107,12 +110,18 @@ export function PillarAccent() {
     <svg width="72" height="40" viewBox="0 0 72 40" fill="none" aria-hidden="true" style={{ display: 'block', margin: '0 auto' }}>
       <circle cx="36" cy="14" r="10" stroke="#9A7730" strokeWidth="1.3" />
       <circle cx="36" cy="14" r="3" stroke="#641E16" strokeWidth="1.2" />
-      {[0, 30, 60, 90, 120, 150].map(a => (
-        <line key={a}
-          x1={36 + 4 * Math.cos(a * Math.PI / 180)} y1={14 + 4 * Math.sin(a * Math.PI / 180)}
-          x2={36 + 9 * Math.cos(a * Math.PI / 180)} y2={14 + 9 * Math.sin(a * Math.PI / 180)}
-          stroke="#9A7730" strokeWidth="1" />
-      ))}
+      {[0, 30, 60, 90, 120, 150].map(a => {
+        const x1 = Math.round((36 + 4 * Math.cos(a * Math.PI / 180)) * 100) / 100;
+        const y1 = Math.round((14 + 4 * Math.sin(a * Math.PI / 180)) * 100) / 100;
+        const x2 = Math.round((36 + 9 * Math.cos(a * Math.PI / 180)) * 100) / 100;
+        const y2 = Math.round((14 + 9 * Math.sin(a * Math.PI / 180)) * 100) / 100;
+        return (
+          <line key={a}
+            x1={x1} y1={y1}
+            x2={x2} y2={y2}
+            stroke="#9A7730" strokeWidth="1" />
+        );
+      })}
       <path d="M22 30 C28 26 44 26 50 30 C44 36 28 36 22 30 Z" stroke="#9A7730" strokeWidth="1.2" />
     </svg>
   );

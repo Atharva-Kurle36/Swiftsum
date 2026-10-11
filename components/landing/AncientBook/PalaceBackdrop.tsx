@@ -246,13 +246,17 @@ export default function PalaceBackdrop() {
                 <circle cx="0" cy="0" r="22" stroke="#C49A45" strokeWidth="1.2" />
                 {[0, 30, 60, 90, 120, 150, 180, 210, 240, 270, 300, 330].map(deg => {
                   const rad = (deg * Math.PI) / 180;
+                  const x1 = Math.round(12 * Math.cos(rad) * 100) / 100;
+                  const y1 = Math.round(12 * Math.sin(rad) * 100) / 100;
+                  const x2 = Math.round(38 * Math.cos(rad) * 100) / 100;
+                  const y2 = Math.round(38 * Math.sin(rad) * 100) / 100;
                   return (
                     <line
                       key={deg}
-                      x1={12 * Math.cos(rad)}
-                      y1={12 * Math.sin(rad)}
-                      x2={38 * Math.cos(rad)}
-                      y2={38 * Math.sin(rad)}
+                      x1={x1}
+                      y1={y1}
+                      x2={x2}
+                      y2={y2}
                       stroke="#9A7730"
                       strokeWidth={deg % 90 === 0 ? 1.2 : 0.6}
                       strokeDasharray={deg % 90 === 0 ? undefined : '2 2'}

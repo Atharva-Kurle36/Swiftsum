@@ -9,6 +9,8 @@ import React from 'react';
    - Inner: Navagraha coordinates & glowing Bindu core
    ========================================================================== */
 
+const roundCoord = (n: number) => Math.round(n * 100) / 100;
+
 export function CelestialBookYantra() {
   return (
     <div
@@ -79,13 +81,17 @@ export function CelestialBookYantra() {
             const isMajor = i % 2 === 0;
             const r1 = isMajor ? 224 : 227;
             const r2 = 234;
+            const x1 = roundCoord(250 + r1 * Math.cos(angle));
+            const y1 = roundCoord(250 + r1 * Math.sin(angle));
+            const x2 = roundCoord(250 + r2 * Math.cos(angle));
+            const y2 = roundCoord(250 + r2 * Math.sin(angle));
             return (
               <line
                 key={`tick-${i}`}
-                x1={250 + r1 * Math.cos(angle)}
-                y1={250 + r1 * Math.sin(angle)}
-                x2={250 + r2 * Math.cos(angle)}
-                y2={250 + r2 * Math.sin(angle)}
+                x1={x1}
+                y1={y1}
+                x2={x2}
+                y2={y2}
                 stroke="#E5A93C"
                 strokeWidth={isMajor ? 1.2 : 0.6}
                 opacity={isMajor ? 0.6 : 0.3}
@@ -109,8 +115,8 @@ export function CelestialBookYantra() {
             { sym: '♓', name: 'मीन', deg: 330 },
           ].map((rasi) => {
             const rad = (rasi.deg * Math.PI) / 180;
-            const cx = 250 + 216 * Math.cos(rad);
-            const cy = 250 + 216 * Math.sin(rad);
+            const cx = roundCoord(250 + 216 * Math.cos(rad));
+            const cy = roundCoord(250 + 216 * Math.sin(rad));
             return (
               <g key={rasi.name}>
                 <circle cx={cx} cy={cy} r="7" fill="#15130F" stroke="#E5A93C" strokeWidth="0.8" opacity="0.8" />
@@ -206,8 +212,8 @@ export function CelestialBookYantra() {
             { sym: '∫', deg: 315 },
           ].map((item) => {
             const rad = (item.deg * Math.PI) / 180;
-            const cx = 250 + 165 * Math.cos(rad);
-            const cy = 250 + 165 * Math.sin(rad);
+            const cx = roundCoord(250 + 165 * Math.cos(rad));
+            const cy = roundCoord(250 + 165 * Math.sin(rad));
             return (
               <g key={item.sym}>
                 <rect

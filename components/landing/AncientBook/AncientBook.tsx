@@ -27,10 +27,14 @@ function ChakraMini() {
       <circle cx="32" cy="32" r="3.5" fill="#C49A45" />
       {Array.from({ length: 12 }).map((_, i) => {
         const a = (i * 30 * Math.PI) / 180;
+        const x1 = Math.round((32 + 14 * Math.cos(a)) * 100) / 100;
+        const y1 = Math.round((32 + 14 * Math.sin(a)) * 100) / 100;
+        const x2 = Math.round((32 + 21 * Math.cos(a)) * 100) / 100;
+        const y2 = Math.round((32 + 21 * Math.sin(a)) * 100) / 100;
         return (
           <line key={i}
-            x1={32 + 14 * Math.cos(a)} y1={32 + 14 * Math.sin(a)}
-            x2={32 + 21 * Math.cos(a)} y2={32 + 21 * Math.sin(a)}
+            x1={x1} y1={y1}
+            x2={x2} y2={y2}
             stroke="#9A7730" strokeWidth="1" />
         );
       })}
