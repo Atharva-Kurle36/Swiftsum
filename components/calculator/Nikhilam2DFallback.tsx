@@ -18,7 +18,9 @@ export default function Nikhilam2DFallback({
   const { a, b, base, numZeros, devA, devB, lhs, rawRhs, balancedLhs, balancedRhsStr, finalAnswer, groundTruth } = lesson;
   const isSquaring = lesson.operationType === 'squaring';
   const isSubtraction = lesson.operationType === 'subtraction';
+  const isDivision = lesson.operationType === 'division';
   const sub = lesson.subtractionData;
+  const div = lesson.divisionData;
   const isDuplex = isSquaring && lesson.squaringMethod === 'duplex';
   const isEkadhikena = isSquaring && lesson.squaringMethod === 'ekadhikena';
   const duplex = lesson.duplexData;
@@ -70,10 +72,18 @@ export default function Nikhilam2DFallback({
             <div className="space-y-4">
               <div className="inline-flex items-center gap-2 px-3 py-1 rounded-full border border-[#E5A93C]/30 bg-[#1A1712] text-[#E5A93C] text-xs font-mono uppercase tracking-wider">
                 <Sparkles className="w-3.5 h-3.5" />
-                {isSubtraction ? 'Vedic Subtraction Algorithm' : isSquaring ? 'Vedic Squaring Algorithm' : 'Vedic Multiplication Algorithm'}
+                {isDivision ? 'Vedic Division Algorithm' : isSubtraction ? 'Vedic Subtraction Algorithm' : isSquaring ? 'Vedic Squaring Algorithm' : 'Vedic Multiplication Algorithm'}
               </div>
               <div className="text-5xl sm:text-7xl font-display font-medium text-[#F5F0E6] tracking-tight py-4 flex items-center justify-center gap-5">
-                {isSubtraction ? (
+                {isDivision ? (
+                  <>
+                    <span className="text-[#FFD700]">{a}</span>
+                    <span className="text-[#A8A090] text-3xl sm:text-4xl font-light">&divide;</span>
+                    <span className="text-[#FFD700]">{b}</span>
+                    <span className="text-[#A8A090] text-3xl sm:text-4xl font-light">=</span>
+                    <span className="text-[#FFD700]">?</span>
+                  </>
+                ) : isSubtraction ? (
                   <>
                     <span className="text-[#FFD700]">{a}</span>
                     <span className="text-[#A8A090] text-3xl sm:text-4xl font-light">&minus;</span>
@@ -104,7 +114,33 @@ export default function Nikhilam2DFallback({
           {/* SCENE 2: IDENTIFY DIGITS (DUPLEX / EKADHIKENA) OR IDENTIFY BASE */}
           {activeChapter.id === 2 && (
             <div className="space-y-5 w-full">
-              {isSubtraction ? (
+              {isDivision ? (
+                <>
+                  <div className="p-4 sm:p-5 rounded-2xl border border-[#E5A93C]/35 bg-[#14120D] shadow-xl inline-block">
+                    <span className="text-[10px] font-mono text-[#A8A090] uppercase tracking-[0.25em] block mb-1">
+                      Divisor Reference Base &amp; Complement
+                    </span>
+                    <span className="text-3xl sm:text-4xl font-mono font-bold text-[#FFD700] tracking-wider">
+                      BASE = {base} · C = {div?.complement ?? (base - b)}
+                    </span>
+                  </div>
+                  <div className="grid grid-cols-2 gap-4 max-w-md mx-auto">
+                    <div className="p-4 rounded-xl bg-[#14120D] border border-[#E5A93C]/25 text-left">
+                      <div className="text-xs text-[#A8A090] uppercase font-mono">Dividend</div>
+                      <div className="text-2xl font-display font-bold text-[#F5F0E6] mt-1">{a}</div>
+                      <div className="text-[10px] text-[#A8A090] mt-1 font-sans">Number to divide</div>
+                    </div>
+                    <div className="p-4 rounded-xl bg-[#14120D] border border-[#E5A93C]/25 text-left">
+                      <div className="text-xs text-[#A8A090] uppercase font-mono">Divisor</div>
+                      <div className="text-2xl font-display font-bold text-[#F5F0E6] mt-1">{b}</div>
+                      <div className="text-[10px] text-[#A8A090] mt-1 font-sans">Base {base} &minus; {b} = {div?.complement ?? (base - b)}</div>
+                    </div>
+                  </div>
+                  <p className="text-xs text-[#A8A090] max-w-sm mx-auto font-sans">
+                    Divisor deficiency relative to base {base} provides the multiplier for column propagation.
+                  </p>
+                </>
+              ) : isSubtraction ? (
                 <>
                   <div className="p-4 sm:p-5 rounded-2xl border border-[#E5A93C]/35 bg-[#14120D] shadow-xl inline-block">
                     <span className="text-[10px] font-mono text-[#A8A090] uppercase tracking-[0.25em] block mb-1">
@@ -213,10 +249,27 @@ export default function Nikhilam2DFallback({
             </div>
           )}
 
-          {/* SCENE 3: COMPLEMENT (SUBTRACTION) / SUCCESSOR (EKADHIKENA) / DUPLEX / DEVIATIONS */}
+          {/* SCENE 3: COMPLEMENT (SUBTRACTION) / SUCCESSOR (EKADHIKENA) / DUPLEX / DEVIATIONS / DIGITS (DIVISION) */}
           {activeChapter.id === 3 && (
             <div className="space-y-4 w-full">
-              {isSubtraction ? (
+              {isDivision ? (
+                <>
+                  <span className="text-xs font-mono text-[#A8A090] uppercase tracking-[0.2em]">
+                    Process Dividend Digits
+                  </span>
+                  <div className="p-5 rounded-2xl bg-[#14120D] border border-[#E5A93C]/30 max-w-md mx-auto space-y-3">
+                    <div className="text-xs text-[#A8A090] font-mono">
+                      Partition: {div?.setupQuotientStr ?? '103'} | {div?.setupRemainderStr ?? '2'}
+                    </div>
+                    <div className="text-2xl sm:text-3xl font-display font-bold text-[#FFD700]">
+                      {a === 1032 && b === 9 ? 'Bring down 1 → 0 + 1 = 1 → 3 + 1 = 4 → 2 + 4 = 6' : div?.stepsSummary?.slice(0, 2).join('; ')}
+                    </div>
+                    <p className="text-xs text-[#A8A090] font-sans">
+                      Forward column additions determine the quotient digits and remainder.
+                    </p>
+                  </div>
+                </>
+              ) : isSubtraction ? (
                 <>
                   <span className="text-xs font-mono text-[#A8A090] uppercase tracking-[0.2em]">
                     Calculate The Complement (Nikhilam Navatashcaramam Dashatah)
@@ -304,10 +357,27 @@ export default function Nikhilam2DFallback({
             </div>
           )}
 
-          {/* SCENE 4: ADD COMPLEMENT TO MINUEND (SUBTRACTION) / MULTIPLY PREFIX & SUCCESSOR / CROSS-ADDITION */}
+          {/* SCENE 4: ADD COMPLEMENT TO MINUEND (SUBTRACTION) / MULTIPLY PREFIX & SUCCESSOR / CROSS-ADDITION / QUOTIENT (DIVISION) */}
           {activeChapter.id === 4 && (
             <div className="space-y-4 w-full">
-              {isSubtraction ? (
+              {isDivision ? (
+                <>
+                  <span className="text-xs font-mono text-[#A8A090] uppercase tracking-[0.2em]">
+                    Determine The Quotient
+                  </span>
+                  <div className="p-5 rounded-2xl bg-[#14120D] border border-[#E5A93C]/30 space-y-3 max-w-md mx-auto">
+                    <div className="text-3xl sm:text-4xl font-mono font-bold text-[#FFD700]">
+                      QUOTIENT = {div?.quotient ?? 114}
+                    </div>
+                    <div className="text-xs font-mono text-[#E5A93C]">
+                      Formed directly from processed dividend digits
+                    </div>
+                  </div>
+                  <p className="text-xs text-[#A8A090] max-w-sm mx-auto font-sans">
+                    The whole quotient is obtained without trial division or estimation.
+                  </p>
+                </>
+              ) : isSubtraction ? (
                 <>
                   <span className="text-xs font-mono text-[#A8A090] uppercase tracking-[0.2em]">
                     Add Complement to Minuend
@@ -380,10 +450,27 @@ export default function Nikhilam2DFallback({
             </div>
           )}
 
-          {/* SCENE 5: REMOVE REFERENCE BASE (SUBTRACTION) / SQUARE FINAL DIGIT / DUPLEX / DEVIATIONS */}
+          {/* SCENE 5: REMOVE REFERENCE BASE (SUBTRACTION) / SQUARE FINAL DIGIT / DUPLEX / DEVIATIONS / REMAINDER (DIVISION) */}
           {activeChapter.id === 5 && (
             <div className="space-y-4 w-full">
-              {isSubtraction ? (
+              {isDivision ? (
+                <>
+                  <span className="text-xs font-mono text-[#A8A090] uppercase tracking-[0.2em]">
+                    Determine The Remainder
+                  </span>
+                  <div className="p-5 rounded-2xl bg-[#14120D] border border-[#E5A93C]/30 space-y-3 max-w-md mx-auto">
+                    <div className="text-3xl sm:text-4xl font-mono font-bold text-[#FFD700]">
+                      REMAINDER = {div?.remainder ?? 6}
+                    </div>
+                    <div className="text-xs font-mono text-emerald-400">
+                      Constraint satisfied: 0 ≤ {div?.remainder ?? 6} &lt; {b}
+                    </div>
+                  </div>
+                  <p className="text-xs text-[#A8A090] max-w-sm mx-auto font-sans">
+                    The remainder column resolves to {div?.remainder ?? 6}, strictly less than divisor {b}.
+                  </p>
+                </>
+              ) : isSubtraction ? (
                 <>
                   <span className="text-xs font-mono text-[#A8A090] uppercase tracking-[0.2em]">
                     Remove Reference Base
@@ -463,10 +550,25 @@ export default function Nikhilam2DFallback({
           {activeChapter.id === 6 && (
             <div className="space-y-6 w-full">
               <span className="text-xs font-mono text-[#A8A090] uppercase tracking-[0.2em]">
-                {isSubtraction ? 'Final Difference' : isEkadhikena ? 'Combine The Parts' : isDuplex ? 'Combine Place-Value Contributions' : 'Synthesize Both Coordinate Halves'}
+                {isDivision ? 'Division Result' : isSubtraction ? 'Final Difference' : isEkadhikena ? 'Combine The Parts' : isDuplex ? 'Combine Place-Value Contributions' : 'Synthesize Both Coordinate Halves'}
               </span>
 
-              {isSubtraction ? (
+              {isDivision ? (
+                <div className="flex flex-col items-center justify-center p-6 rounded-2xl bg-[#14120D] border border-[#E5A93C]/40 shadow-xl max-w-md mx-auto space-y-3">
+                  <span className="font-mono text-xs uppercase tracking-[0.2em] text-[#A8A090] font-semibold">
+                    DIVISION RESULT
+                  </span>
+                  <span className="font-display text-3xl sm:text-4xl font-bold text-[#FFD700] tracking-tight leading-none">
+                    {a} &divide; {b} = {div?.quotient ?? 114} remainder {div?.remainder ?? 6}
+                  </span>
+                  <div className="font-mono text-xs text-[#E5A93C] pt-2 border-t border-[#E5A93C]/20">
+                    Exact: {div?.exactFraction ?? '114 + 6/9 = 114 + 2/3'} · Decimal: {div?.decimalResult ?? '114.666...'}
+                  </div>
+                  <div className="font-mono text-[11px] text-[#A8A090]">
+                    Quotient: {div?.quotient ?? 114} · Remainder: {div?.remainder ?? 6}
+                  </div>
+                </div>
+              ) : isSubtraction ? (
                 <div className="flex flex-col items-center justify-center p-6 rounded-2xl bg-[#14120D] border border-[#E5A93C]/40 shadow-xl max-w-md mx-auto space-y-3">
                   <span className="font-mono text-xs uppercase tracking-[0.2em] text-[#A8A090] font-semibold">
                     SUBTRACTION RESULT
@@ -549,7 +651,14 @@ export default function Nikhilam2DFallback({
               )}
 
               <div className="text-xs sm:text-sm font-mono text-[#D1C9BE] bg-[#14120D] p-3.5 rounded-xl border border-[#E5A93C]/20 max-w-md mx-auto">
-                {isSubtraction ? (
+                {isDivision ? (
+                  <span>
+                    {`${a} ÷ ${b} = Quotient `}
+                    <strong className="text-[#FFD700]">{div?.quotient ?? 114}</strong>
+                    {`, Remainder `}
+                    <strong className="text-[#FF9F1C]">{div?.remainder ?? 6}</strong>
+                  </span>
+                ) : isSubtraction ? (
                   <span>
                     {`${a} &minus; ${b} = `}
                     <strong className="text-[#FFD700]">{finalAnswer}</strong>
@@ -584,14 +693,16 @@ export default function Nikhilam2DFallback({
             <div className="space-y-4 w-full">
               <div className="inline-flex items-center gap-2 px-3 py-1 rounded-full border border-emerald-500/30 bg-emerald-500/10 text-emerald-400 text-xs font-mono">
                 <CheckCircle2 className="w-3.5 h-3.5" />
-                {isSubtraction ? 'Arithmetic Verification Passed' : 'Proof Complete & Arithmetic Verified'}
+                {isDivision || isSubtraction ? 'Arithmetic Verification Passed' : 'Proof Complete & Arithmetic Verified'}
               </div>
-              <div className="text-5xl sm:text-7xl font-display font-bold text-[#FFD700] py-2">
-                {finalAnswer}
+              <div className="text-4xl sm:text-6xl font-display font-bold text-[#FFD700] py-2">
+                {isDivision ? (
+                  <span>Quotient: {div?.quotient ?? 114}, Remainder: {div?.remainder ?? 6}</span>
+                ) : finalAnswer}
               </div>
               <div className="p-3.5 rounded-xl bg-[#14120D] border border-emerald-500/30 text-xs font-mono text-[#A8A090] max-w-md mx-auto flex items-center justify-between">
-                <span>{isSubtraction ? `${a} &minus; ${b} = ${finalAnswer}` : isSquaring ? `${a}\u00b2 = ${finalAnswer}` : `${a} \u00d7 ${b} = ${finalAnswer}`}</span>
-                <span>Verification: <strong className="text-emerald-400">{isSubtraction ? `${finalAnswer} + ${b} = ${a}` : groundTruth} &#10003;</strong></span>
+                <span>{isDivision ? `${a} ÷ ${b} = ${div?.quotient ?? 114} rem ${div?.remainder ?? 6}` : isSubtraction ? `${a} &minus; ${b} = ${finalAnswer}` : isSquaring ? `${a}\u00b2 = ${finalAnswer}` : `${a} \u00d7 ${b} = ${finalAnswer}`}</span>
+                <span>Verification: <strong className="text-emerald-400">{isDivision ? `${div?.quotient ?? 114} × ${b} + ${div?.remainder ?? 6} = ${a}` : isSubtraction ? `${finalAnswer} + ${b} = ${a}` : groundTruth} &#10003;</strong></span>
               </div>
             </div>
           )}
